@@ -1,0 +1,6 @@
+{
+    "type": "module",
+    "scripts": {
+        "generate-statement": "node --experimental-transform-types main.ts"
+    }
+}
