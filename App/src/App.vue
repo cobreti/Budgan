@@ -8,7 +8,7 @@
           ></v-img>
         </template>
         <template v-slot:prepend>
-          <v-app-bar-nav-icon @click.stop="onToggleDrawer"></v-app-bar-nav-icon>
+          <v-app-bar-nav-icon></v-app-bar-nav-icon>
         </template>
         <template v-slot:append>
           v{{version}}
