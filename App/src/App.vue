@@ -31,6 +31,10 @@ import { RouterView } from 'vue-router'
 import { useAppSettingsStore } from '@/stores/appSettings-store'
 import settings from './assets/settings.json';
 import { computed } from 'vue'
+import {container} from "@/inversify/setup-inversify";
+import {IdGenerator} from "@engine/services/IdGenerator";
+
+const IdGen = container.get(IdGenerator);
 
 const appSettingsStore = useAppSettingsStore();
 

@@ -52,7 +52,8 @@ export default defineConfig({
             '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
             '@libComponents': fileURLToPath(new URL('./src/libComponents', import.meta.url)),
             '@filters': fileURLToPath(new URL('./src/core/models/filters', import.meta.url)),
-            '@views': fileURLToPath(new URL('./src/views', import.meta.url))
+            '@views': fileURLToPath(new URL('./src/views', import.meta.url)),
+            '@engine': fileURLToPath(new URL('./src/engine', import.meta.url))
         }
     }
 })
