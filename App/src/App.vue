@@ -33,8 +33,10 @@ import settings from './assets/settings.json';
 import { computed } from 'vue'
 import {container} from "@/inversify/setup-inversify";
 import {IdGenerator} from "@engine/services/IdGenerator";
+import {ReaderFactory} from "@engine/services/FileReaderFactory.ts";
 
-const IdGen = container.get(IdGenerator);
+const IdGen = container.get<IdGenerator>(IdGenerator.bindingId);
+const reader = container.get<ReaderFactory>(ReaderFactory.bindingId);
 
 const appSettingsStore = useAppSettingsStore();
 

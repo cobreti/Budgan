@@ -1,8 +1,8 @@
 import {injectable} from "inversify";
-import {InversifyIdentifierBase} from "@/inversify/inversify-identifier-base";
+import {InversifyUtils} from "@/inversify/inversify-utils.ts";
 
-export abstract class IdGenerator extends InversifyIdentifierBase {
-    static readonly bindingId: string = 'IdGenerator';
+export abstract class IdGenerator {
+    static readonly bindingId: string = InversifyUtils.createBindingId('IdGenerator');
 
     abstract generateId(): string;
 }
