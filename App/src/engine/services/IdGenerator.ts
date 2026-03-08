@@ -2,7 +2,7 @@ import {injectable} from "inversify";
 import {InversifyUtils} from "@/inversify/inversify-utils.ts";
 
 export abstract class IdGenerator {
-    static readonly bindingId: string = InversifyUtils.createBindingId('IdGenerator');
+    static readonly bindingTypeId: string = InversifyUtils.createBindingId('IdGenerator');
 
     abstract generateId(): string;
 }

@@ -34,9 +34,11 @@ import { computed } from 'vue'
 import {container} from "@/inversify/setup-inversify";
 import {IdGenerator} from "@engine/services/IdGenerator";
 import {ReaderFactory} from "@engine/services/FileReaderFactory.ts";
+import {CsvToBankAccount} from "@engine/services/CsvToBankAccount.ts";
 
-const IdGen = container.get<IdGenerator>(IdGenerator.bindingId);
-const reader = container.get<ReaderFactory>(ReaderFactory.bindingId);
+const IdGen = container.get<IdGenerator>(IdGenerator.bindingTypeId);
+const reader = container.get<ReaderFactory>(ReaderFactory.bindingTypeId);
+const csvToBankAccount = container.get<CsvToBankAccount>(CsvToBankAccount.bindingTypeId);
 
 const appSettingsStore = useAppSettingsStore();
 

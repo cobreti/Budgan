@@ -3,7 +3,7 @@ import { injectable } from 'inversify'
 import {InversifyUtils} from "@/inversify/inversify-utils.ts";
 
 export abstract class ReaderFactory {
-    static readonly bindingId: string = InversifyUtils.createBindingId('FileReaderFactory');
+    static readonly bindingTypeId: string = InversifyUtils.createBindingId('FileReaderFactory');
 
     abstract createReader(): FileReader;
 }
