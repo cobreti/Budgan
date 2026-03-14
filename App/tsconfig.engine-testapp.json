@@ -3,6 +3,7 @@
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "config/engine-testapp/**/*"],
   "compilerOptions": {
     "composite": true,
-    "noEmit": true
+    "noEmit": true,
+    "tsBuildInfoFile": "dist/tsconfig.engine-testapp.tsbuildinfo"
   }
 }

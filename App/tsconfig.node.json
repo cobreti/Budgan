@@ -12,6 +12,7 @@
   "compilerOptions": {
     "composite": true,
     "noEmit": true,
+    "tsBuildInfoFile": "dist/tsconfig.node.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "types": ["node"]
