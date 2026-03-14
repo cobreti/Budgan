@@ -9,6 +9,12 @@
     },
     {
       "path": "./tsconfig.vitest.json"
+    },
+    {
+      "path": "./tsconfig.budgan.json"
+    },
+    {
+      "path": "./tsconfig.engine-testapp.json"
     }
   ],
   "compilerOptions": {

@@ -14,7 +14,8 @@
         "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'",
         "build:budgan": "vite build ./config/budgan --config ./config/budgan/vite.config.ts",
         "build:engine-testapp": "vite build ./config/engine-testapp --config ./config/engine-testapp/vite.config.ts",
-        "type-check:budgan": "vue-tsc --build --force",
+        "type-check:budgan": "vue-tsc --build tsconfig.budgan.json --force",
+        "type-check:engine-testapp": "vue-tsc --build tsconfig.engine-testapp.json --force",
         "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
         "format": "prettier --write src/"
     },
