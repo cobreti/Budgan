@@ -1,4 +1,4 @@
-import './assets/main.css'
+import '../../src/assets/main.css'
 import { createApp } from 'vue'
 import { createVuetify } from 'vuetify'
 import { createPinia } from 'pinia'
@@ -6,14 +6,14 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import 'vuetify/styles'
-import { container } from './inversify/setup-inversify'
+import { container } from '../../src/inversify/setup-inversify'
 import '@mdi/font/css/materialdesignicons.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
-import App from './App.vue'
-import router from './router'
+import router from '../../src/router'
+import EngineTestApp from '../../src/EngineTestApp.vue'
 
-const app = createApp(App)
+const app = createApp(EngineTestApp)
 const pinia = createPinia()
 
 pinia.use(piniaPluginPersistedstate);

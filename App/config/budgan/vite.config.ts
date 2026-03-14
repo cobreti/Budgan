@@ -45,15 +45,15 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url)),
-            '@XmlParser': fileURLToPath(new URL('./src/core/modules/XmlParser', import.meta.url)),
-            '@models': fileURLToPath(new URL('./src/core/models', import.meta.url)),
-            '@services': fileURLToPath(new URL('./src/core/services', import.meta.url)),
-            '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
-            '@libComponents': fileURLToPath(new URL('./src/libComponents', import.meta.url)),
-            '@filters': fileURLToPath(new URL('./src/core/models/filters', import.meta.url)),
-            '@views': fileURLToPath(new URL('./src/views', import.meta.url)),
-            '@engine': fileURLToPath(new URL('./src/engine', import.meta.url))
+            '@': fileURLToPath(new URL('../../src', import.meta.url)),
+            '@XmlParser': fileURLToPath(new URL('../../src/core/modules/XmlParser', import.meta.url)),
+            '@models': fileURLToPath(new URL('../../src/core/models', import.meta.url)),
+            '@services': fileURLToPath(new URL('../../src/core/services', import.meta.url)),
+            '@components': fileURLToPath(new URL('../../src/components', import.meta.url)),
+            '@libComponents': fileURLToPath(new URL('../..src/libComponents', import.meta.url)),
+            '@filters': fileURLToPath(new URL('../../src/core/models/filters', import.meta.url)),
+            '@views': fileURLToPath(new URL('../../src/views', import.meta.url)),
+            '@engine': fileURLToPath(new URL('../../src/engine', import.meta.url))
         }
     }
 })
