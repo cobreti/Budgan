@@ -33,9 +33,5 @@ export const useAppSettingsStore = defineStore<string, AppSettingsStore>('appSet
     appSettings,
     setVersion
   };
-}, {
-  persist: {
-    storage: sessionStorage
-  },
 });
 

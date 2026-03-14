@@ -12,7 +12,7 @@ import { type CSVColumnContentMapping } from '@engine/models/csvDocument'
 import type { CsvContent } from './CsvParser'
 import { CsvColumnsToBankAccountTransactionMapper } from '@engine/services/CsvColumnsToBankAccountTransactionMapper'
 import { IdGenerator } from './IdGenerator'
-import {InversifyUtils} from "@/inversify/inversify-utils.ts";
+import {InversifyUtils} from "@inversify/inversify-utils.ts";
 
 export type TransactionsConvertionResult = {
     transactions: BankAccountTransaction[]

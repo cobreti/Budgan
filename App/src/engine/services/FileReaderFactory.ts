@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { injectable } from 'inversify'
-import {InversifyUtils} from "@/inversify/inversify-utils.ts";
+import {InversifyUtils} from "@inversify/inversify-utils.ts";
 
 export abstract class ReaderFactory {
     static readonly bindingTypeId: string = InversifyUtils.createBindingId('FileReaderFactory');

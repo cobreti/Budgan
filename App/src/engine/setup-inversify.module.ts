@@ -2,8 +2,8 @@ import {ContainerModule, type ContainerModuleLoadOptions} from "inversify";
 import {
     FileReaderFactoryImpl,
     ReaderFactory
-} from "@/engine/services/FileReaderFactory";
-import {IdGenerator, IdGeneratorImpl} from "@/engine/services/IdGenerator";
+} from "@engine/services/FileReaderFactory";
+import {IdGenerator, IdGeneratorImpl} from "@engine/services/IdGenerator";
 import {CsvToBankAccount, CsvToBankAccountImpl} from "@engine/services/CsvToBankAccount.ts";
 
 

@@ -10,7 +10,7 @@ import { container } from '../../src/inversify/setup-inversify'
 import '@mdi/font/css/materialdesignicons.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
-import router from '../../src/router'
+import router from '@/budgan/router'
 import EngineTestApp from '../../src/EngineTestApp.vue'
 
 const app = createApp(EngineTestApp)
