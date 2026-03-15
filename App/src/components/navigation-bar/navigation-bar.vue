@@ -5,9 +5,6 @@
 </template>
 
 <style scoped>
-    .test {
-        color: red;
-    }
 </style>
 
 <script setup lang="ts">

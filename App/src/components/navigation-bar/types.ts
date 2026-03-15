@@ -7,5 +7,5 @@ export type NavigationBarItem = {
 export type NavigationBarItems = NavigationBarItem[]
 
 export type NavigationBarProps = {
-    items: NavigationBarItems
+    items?: NavigationBarItems
 }
