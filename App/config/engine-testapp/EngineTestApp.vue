@@ -1,12 +1,12 @@
 <template>
-    <div>
+    <v-app>
         <div class="nav-bar-header">
             <navigation-bar></navigation-bar>
         </div>
         <div class="main-content">
             <h1>Engine Test App</h1>
         </div>
-    </div>
+    </v-app>
 </template>
 
 <style scoped>
@@ -16,7 +16,8 @@
         left: 0;
         width: 100%;
         padding: 1em;
-        background-color: lightblue;
+        background-color: rgb(var(--v-theme-primary));
+        color: rgb(var(--v-theme-on-primary));
     }
 
     .main-content {
