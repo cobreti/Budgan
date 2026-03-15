@@ -11,6 +11,7 @@ import {Container} from "inversify";
 import {engineModule} from "@engine/setup-inversify.module";
 
 
-export const container = new Container();
+const container = new Container();
+export default container
 
 container.loadSync(engineModule);
