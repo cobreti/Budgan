@@ -13,6 +13,7 @@ export default defineConfig({
         host: '0.0.0.0'
     },
     build: {
+        outDir: '../../dist/Engine-TestApp',
         rollupOptions: {
             output: {
                 assetFileNames: (assetInfo) => {
