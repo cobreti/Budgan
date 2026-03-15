@@ -1,4 +1,4 @@
-import '@/engine-testapp/assets/main.css'
+import '@/engine-testapp/assets/main.scss'
 import { createApp } from 'vue'
 import { createVuetify } from 'vuetify'
 import { createPinia } from 'pinia'
