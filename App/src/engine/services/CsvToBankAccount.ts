@@ -12,7 +12,7 @@ import { type CSVColumnContentMapping } from '@engine/models/csvDocument'
 import type { CsvContent } from './CsvParser'
 import { CsvColumnsToBankAccountTransactionMapper } from '@engine/services/CsvColumnsToBankAccountTransactionMapper'
 import { IdGenerator } from './IdGenerator'
-import {InversifyUtils} from "@inversify/inversify-utils.ts";
+import { InversifyUtils } from '@inversify/inversify-utils.ts'
 
 export type TransactionsConvertionResult = {
     transactions: BankAccountTransaction[]
@@ -20,7 +20,7 @@ export type TransactionsConvertionResult = {
 }
 
 export abstract class CsvToBankAccount {
-    static readonly bindingTypeId: string = InversifyUtils.createBindingId('CsvToBankAccount');
+    static readonly bindingTypeId: string = InversifyUtils.createBindingId('CsvToBankAccount')
 
     abstract loadCsvFile(file: File): Promise<BankAccount>
     abstract convertToBankAccountTransactionsGroup(
@@ -31,7 +31,6 @@ export abstract class CsvToBankAccount {
 
 @injectable()
 export class CsvToBankAccountImpl implements CsvToBankAccount {
-
     constructor(
         @inject(ReaderFactory.bindingTypeId) private fileReaderFactory: ReaderFactory,
         @inject(IdGenerator.bindingTypeId) private idGenerator: IdGenerator

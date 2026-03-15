@@ -1,145 +1,142 @@
-import 'reflect-metadata';
+import 'reflect-metadata'
 import { injectable } from 'inversify'
-import { parse, Parser } from 'csv-parse/browser/esm';
+import { parse, Parser } from 'csv-parse/browser/esm'
 
-export type CsvRecords = string[];
+export type CsvRecords = string[]
 
 export type CsvSettings = {
-  delimiter: string;
-  minimumColumnsCount?: number;
-};
+    delimiter: string
+    minimumColumnsCount?: number
+}
 
 export type CsvRow = {
-  lineNumber?: number;
-  records: CsvRecords;
-};
+    lineNumber?: number
+    records: CsvRecords
+}
 
 export type CsvContent = {
-  header?: CsvRow;
-  rows: CsvRow[];
+    header?: CsvRow
+    rows: CsvRow[]
 }
 
 export type CsvIgnoredLine = {
-  lineNumber: number;
-  content: string;
+    lineNumber: number
+    content: string
 }
 
 export type CsvParseResult = {
-  ignoredLines: CsvIgnoredLine[];
-  content: CsvContent;
+    ignoredLines: CsvIgnoredLine[]
+    content: CsvContent
 }
 
 export interface ICsvParser {
-  minimumColumnsCount: number;
-  delimiter: string;
+    minimumColumnsCount: number
+    delimiter: string
 
-  parse(text: string): CsvParseResult;
+    parse(text: string): CsvParseResult
 }
 
 @injectable()
 export class CsvParser implements ICsvParser {
-
-  settings: CsvSettings = {
-    delimiter: ','
-  };
-
-  constructor() {
-
-  }
-
-  set minimumColumnsCount(value: number) {
-    this.settings.minimumColumnsCount = value;
-  }
-
-  set delimiter(value: string) {
-    this.settings.delimiter = value;
-  }
-
-  get delimiter() {
-    return this.settings.delimiter;
-  }
-
-  parse(text: string): CsvParseResult {
-    const parser: Parser = parse({
-      delimiter: this.settings.delimiter,
-      columns: false,
-      skip_empty_lines: true,
-      trim: true,
-      relax_column_count: false
-    });
-
-    const ignoredLines: CsvIgnoredLine[] = [];
-    let header: CsvRow | undefined = undefined;
-    const rows: CsvRow[] = [];
-
-    type addRecordFct = (lineNo: number, records: string[]) => void;
-
-    const addHeader: addRecordFct = (lineNo, records) => {
-      header = {
-        lineNumber: lineNo,
-        records: records
-      };
-
-      addRecords = addRow;
+    settings: CsvSettings = {
+        delimiter: ','
     }
 
-    const addRow: addRecordFct = (lineNo, records) => {
-      rows.push({
-        lineNumber: lineNo,
-        records: records
-      });
+    constructor() {}
+
+    set minimumColumnsCount(value: number) {
+        this.settings.minimumColumnsCount = value
     }
 
-    let addRecords: addRecordFct = addHeader;
+    set delimiter(value: string) {
+        this.settings.delimiter = value
+    }
 
-    parser.on('readable', () => {
-      let record;
-      while ((record = parser.read()) !== null ) {
+    get delimiter() {
+        return this.settings.delimiter
+    }
 
-        const lineNo = Number(record[0]);
-        const records: string[] = [];
-        delete record[0];
+    parse(text: string): CsvParseResult {
+        const parser: Parser = parse({
+            delimiter: this.settings.delimiter,
+            columns: false,
+            skip_empty_lines: true,
+            trim: true,
+            relax_column_count: false
+        })
 
-        let idx = 1;
-        while (record[idx] !== undefined) {
-          records.push(record[idx]);
-          idx++;
+        const ignoredLines: CsvIgnoredLine[] = []
+        let header: CsvRow | undefined = undefined
+        const rows: CsvRow[] = []
+
+        type addRecordFct = (lineNo: number, records: string[]) => void
+
+        const addHeader: addRecordFct = (lineNo, records) => {
+            header = {
+                lineNumber: lineNo,
+                records: records
+            }
+
+            addRecords = addRow
         }
 
-        addRecords(lineNo, records);
-      }
-    });
+        const addRow: addRecordFct = (lineNo, records) => {
+            rows.push({
+                lineNumber: lineNo,
+                records: records
+            })
+        }
 
-    const lines = text.split(/\r?\n/);
-    const length = lines.length;
+        let addRecords: addRecordFct = addHeader
 
-    for (let lineNo = 0; lineNo < length; lineNo++) {
-      const line = lines[lineNo];
-      const items = line.split(this.settings.delimiter);
+        parser.on('readable', () => {
+            let record
+            while ((record = parser.read()) !== null) {
+                const lineNo = Number(record[0])
+                const records: string[] = []
+                delete record[0]
 
-      if (line.trim().length === 0)
-        continue;
+                let idx = 1
+                while (record[idx] !== undefined) {
+                    records.push(record[idx])
+                    idx++
+                }
 
-      if (this.settings.minimumColumnsCount && items.length < this.settings.minimumColumnsCount) {
-        ignoredLines.push({
-          lineNumber: lineNo,
-          content: line.trim()
-        });
-      }
-      else {
-        parser.write(`${lineNo}${this.settings.delimiter}${line}`);
-        parser.write('\n');
-      }
+                addRecords(lineNo, records)
+            }
+        })
+
+        const lines = text.split(/\r?\n/)
+        const length = lines.length
+
+        for (let lineNo = 0; lineNo < length; lineNo++) {
+            const line = lines[lineNo]
+            const items = line.split(this.settings.delimiter)
+
+            if (line.trim().length === 0) continue
+
+            if (
+                this.settings.minimumColumnsCount &&
+                items.length < this.settings.minimumColumnsCount
+            ) {
+                ignoredLines.push({
+                    lineNumber: lineNo,
+                    content: line.trim()
+                })
+            } else {
+                parser.write(`${lineNo}${this.settings.delimiter}${line}`)
+                parser.write('\n')
+            }
+        }
+
+        parser.end()
+
+        return {
+            ignoredLines: ignoredLines,
+            content: {
+                header: header,
+                rows: rows
+            }
+        }
     }
-
-    parser.end();
-
-    return {
-      ignoredLines: ignoredLines,
-      content: {
-        header: header,
-        rows: rows
-      }
-    };
-  }
 }

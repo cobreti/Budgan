@@ -1,87 +1,81 @@
-import { describe, beforeEach, afterEach, vi, test, expect } from 'vitest';
+import { describe, beforeEach, afterEach, vi, test, expect } from 'vitest'
 
 import {
-  headerAndData,
-  headerAndDataHeaderExpected,
-  headerAndDataRowsExpected,
-  headerAndDataWithDifferentDelimiter,
-  headerAndDataWithDifferentDelimiterHeaderExpected,
-  headerAndDataWithDifferentDelimiterRowsExpected,
-  headerAndDataWithInvalidLinesAtTop,
-  headerAndDataWithInvalidLinesAtTopHeaderExpected,
-  headerAndDataWithInvalidLinesAtTopIgnoredLinesExpected,
-  headerAndDataWithInvalidLinesAtTopRowsExpected
+    headerAndData,
+    headerAndDataHeaderExpected,
+    headerAndDataRowsExpected,
+    headerAndDataWithDifferentDelimiter,
+    headerAndDataWithDifferentDelimiterHeaderExpected,
+    headerAndDataWithDifferentDelimiterRowsExpected,
+    headerAndDataWithInvalidLinesAtTop,
+    headerAndDataWithInvalidLinesAtTopHeaderExpected,
+    headerAndDataWithInvalidLinesAtTopIgnoredLinesExpected,
+    headerAndDataWithInvalidLinesAtTopRowsExpected
 } from '@engine/tests-files/CsvReader/samples'
 import { CsvParser } from '@engine/services/CsvParser'
 
 describe('CsvReader', () => {
+    beforeEach(() => {})
 
-  beforeEach(() => {
+    afterEach(() => {
+        vi.resetAllMocks()
+    })
 
-  });
+    test('default construction', () => {
+        const parser = new CsvParser()
 
-  afterEach(() => {
-    vi.resetAllMocks();
-  });
+        expect(parser.settings.delimiter).toBe(',')
+        expect(parser.delimiter).toBe(',')
+        expect(parser.settings.minimumColumnsCount).toBeUndefined()
+    })
 
-  test('default construction', () => {
-    const parser = new CsvParser();
+    test('set minimum columns count', () => {
+        const parser = new CsvParser()
+        parser.minimumColumnsCount = 3
 
-    expect(parser.settings.delimiter).toBe(',');
-    expect(parser.delimiter).toBe(',');
-    expect(parser.settings.minimumColumnsCount).toBeUndefined();
-  })
+        expect(parser.settings.minimumColumnsCount).toBe(3)
+    })
 
-  test('set minimum columns count', () => {
-    const parser = new CsvParser();
-    parser.minimumColumnsCount = 3;
+    test('set delimiter', () => {
+        const parser = new CsvParser()
+        parser.delimiter = ';'
 
-    expect(parser.settings.minimumColumnsCount).toBe(3);
-  });
+        expect(parser.settings.delimiter).toBe(';')
+        expect(parser.delimiter).toBe(';')
+    })
 
-  test('set delimiter', () => {
-    const parser = new CsvParser();
-    parser.delimiter = ';';
+    test('successfully get header and rows', () => {
+        const parser = new CsvParser()
+        parser.minimumColumnsCount = 3
 
-    expect(parser.settings.delimiter).toBe(';');
-    expect(parser.delimiter).toBe(';');
-  });
+        const result = parser.parse(headerAndData)
 
-  test('successfully get header and rows', () => {
-    const parser = new CsvParser();
-    parser.minimumColumnsCount = 3;
+        expect(result.content.header).toBeDefined()
+        expect(result.content.header).toEqual(headerAndDataHeaderExpected)
+        expect(result.content.rows).toEqual(headerAndDataRowsExpected)
+    })
 
-    const result = parser.parse(headerAndData);
+    test('skip invalid lines at top', () => {
+        const parser = new CsvParser()
+        parser.minimumColumnsCount = 3
 
-    expect(result.content.header).toBeDefined();
-    expect(result.content.header).toEqual(headerAndDataHeaderExpected);
-    expect(result.content.rows).toEqual(headerAndDataRowsExpected);
-  });
+        const result = parser.parse(headerAndDataWithInvalidLinesAtTop)
 
-  test('skip invalid lines at top', () => {
+        expect(result.content.header).toBeDefined()
+        expect(result.content.header).toEqual(headerAndDataWithInvalidLinesAtTopHeaderExpected)
+        expect(result.content.rows).toEqual(headerAndDataWithInvalidLinesAtTopRowsExpected)
+        expect(result.ignoredLines).toEqual(headerAndDataWithInvalidLinesAtTopIgnoredLinesExpected)
+    })
 
-    const parser = new CsvParser();
-    parser.minimumColumnsCount = 3;
+    test('header and data with different delimiter', () => {
+        const parser = new CsvParser()
+        parser.delimiter = ';'
+        parser.minimumColumnsCount = 3
 
-    const result = parser.parse(headerAndDataWithInvalidLinesAtTop);
+        const result = parser.parse(headerAndDataWithDifferentDelimiter)
 
-    expect(result.content.header).toBeDefined();
-    expect(result.content.header).toEqual(headerAndDataWithInvalidLinesAtTopHeaderExpected);
-    expect(result.content.rows).toEqual(headerAndDataWithInvalidLinesAtTopRowsExpected);
-    expect(result.ignoredLines).toEqual(headerAndDataWithInvalidLinesAtTopIgnoredLinesExpected);
-  });
-
-
-  test('header and data with different delimiter', () => {
-    const parser = new CsvParser();
-    parser.delimiter = ';';
-    parser.minimumColumnsCount = 3;
-
-    const result = parser.parse(headerAndDataWithDifferentDelimiter);
-
-    expect(result.content.header).toBeDefined();
-    expect(result.content.header).toEqual(headerAndDataWithDifferentDelimiterHeaderExpected);
-    expect(result.content.rows).toEqual(headerAndDataWithDifferentDelimiterRowsExpected);
-  })
-
-});
+        expect(result.content.header).toBeDefined()
+        expect(result.content.header).toEqual(headerAndDataWithDifferentDelimiterHeaderExpected)
+        expect(result.content.rows).toEqual(headerAndDataWithDifferentDelimiterRowsExpected)
+    })
+})
