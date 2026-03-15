@@ -16,8 +16,8 @@
         left: 0;
         width: 100%;
         padding: 1em;
-        background-color: rgb(var(--v-theme-primary));
-        color: rgb(var(--v-theme-on-primary));
+        background-color: var(--app-nav-background);
+        color: var(--app-nav-active-menu-item);
     }
 
     .main-content {
