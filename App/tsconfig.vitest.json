@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.app.json",
+  "exclude": [],
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "dist/tsconfig.vitest.tsbuildinfo",
+    "lib": [],
+    "baseUrl": ".",
+    "types": ["node", "jsdom"]
+  }
+}

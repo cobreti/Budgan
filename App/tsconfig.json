@@ -1,0 +1,26 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.vitest.json"
+    },
+    {
+      "path": "./tsconfig.budgan.json"
+    },
+    {
+      "path": "./tsconfig.engine-testapp.json"
+    }
+  ],
+  "compilerOptions": {
+    "module": "NodeNext",
+    "types": ["reflect-metadata"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+  }
+}

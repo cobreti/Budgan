@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.app.json",
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "config/engine-testapp/**/*"],
+  "compilerOptions": {
+      "paths": {
+          "@engineTestApp/*": ["./src/engine-testapp/*"],
+          "@engineTestAppViews/*": ["./src/engine-testapp/views/*"],
+          "@engineTestAppRouter/*": ["./src/engine-testapp/router/*"]
+      },
+      "composite": true,
+      "noEmit": true,
+      "tsBuildInfoFile": "dist/tsconfig.engine-testapp.tsbuildinfo"
+  }
+}

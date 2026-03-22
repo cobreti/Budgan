@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.app.json",
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "config/budgan/**/*"],
+  "compilerOptions": {
+      "paths": {
+          "@/*": ["./src/budgan/*"],
+          "@engine/*": ["./src/engine/*"],
+          "@inversify/*": ["./src/inversify/*"]
+      },
+      "composite": true,
+      "noEmit": true,
+      "tsBuildInfoFile": "dist/tsconfig.budgan.tsbuildinfo"
+  }
+}
