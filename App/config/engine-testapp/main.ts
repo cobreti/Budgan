@@ -10,8 +10,9 @@ import container from '../../src/inversify/setup-inversify'
 import '@mdi/font/css/materialdesignicons.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
-import router from '@/budgan/router'
 import EngineTestApp from './EngineTestApp.vue'
+import { router } from '@engineTestAppRouter/index.ts'
+import { i18n } from '@engineTestApp/i18n.ts'
 
 const app = createApp(EngineTestApp)
 const pinia = createPinia()
@@ -42,6 +43,7 @@ const vuetify = createVuetify({
                 dark: false,
                 colors: {
                     primary: '#1976D2', // Stronger blue (better for light backgrounds)
+                    'primary-variant': '#1565C0',
                     secondary: '#424242', // Dark grey for contrast
                     accent: '#82B1FF', // Light blue accent (still works here)
                     surface: '#FFFFFF', // MUST be white or very light for light mode
@@ -67,6 +69,9 @@ app.use<any>(vuetify, {
     }
 })
 
+
+
+app.use(i18n);
 app.use(pinia)
 app.use(router)
 

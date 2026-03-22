@@ -10,7 +10,7 @@
         "paths": {
             "@/*": ["./src/*"],
             "@engine/*": ["./src/engine/*"],
-            "@inversify/*": ["./src/inversify/*"]
+            "@inversify/*": ["./src/inversify/*"],
         },
         "types": ["reflect-metadata"],
         "experimentalDecorators": true,

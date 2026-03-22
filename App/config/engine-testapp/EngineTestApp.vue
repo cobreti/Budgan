@@ -5,6 +5,7 @@
         </div>
         <div class="main-content">
             <h1>Engine Test App</h1>
+            <router-view></router-view>
         </div>
     </v-app>
 </template>
@@ -26,5 +27,5 @@
 </style>
 
 <script setup lang="ts">
-    import NavigationBar from '@/components/navigation-bar/navigation-bar.vue'
+    import NavigationBar from '@/engine-testapp/components/navigation-bar/navigation-bar.vue'
 </script>

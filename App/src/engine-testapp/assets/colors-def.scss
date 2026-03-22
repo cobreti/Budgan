@@ -3,5 +3,6 @@
 :root {
     --app-nav-background: rgb(var(--v-theme-primary));
     --app-nav-active-menu-item: rgb(var(--v-theme-on-primary));
+    --app-nav-active-menu-item-selected: rgb(var(--v-theme-on-primary));
     --app-nav-inactive-menu-item: rgb(var(--v-theme-on-primary-variant), var(--v-medium-emphasis-opacity));
 }
