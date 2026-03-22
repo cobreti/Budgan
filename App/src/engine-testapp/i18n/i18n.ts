@@ -21,10 +21,6 @@ async function loadLocaleMessages(locale: SupportedLocales) {
 router.beforeEach(async (to, from, next) => {
     const locale = to.params.locale as SupportedLocales
 
-    if (!locale) {
-        throw new Error('Locale parameter is required')
-    }
-
     // fallback if invalid
     if (!supportedLocales.includes(locale)) {
         return next('/en')
