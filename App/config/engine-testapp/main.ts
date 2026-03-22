@@ -12,7 +12,7 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 import EngineTestApp from './EngineTestApp.vue'
 import { router } from '@engineTestAppRouter/index.ts'
-import { i18n } from '@engineTestApp/i18n.ts'
+import { i18n } from '@engineTestApp/i18n/i18n.ts'
 
 const app = createApp(EngineTestApp)
 const pinia = createPinia()

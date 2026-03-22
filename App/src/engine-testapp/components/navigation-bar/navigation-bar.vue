@@ -1,18 +1,16 @@
 <template>
     <div class="menu">
-        <a :href="`/${locale}/`" >Home</a>
-        <a :href="`/${locale}/zip-file`" >Zip File</a>
+        <a :href="`/${locale}/`">{{ t('navbar.home') }}</a>
+        <a :href="`/${locale}/zip-file`">{{ t('navbar.zipfile' )}}</a>
     </div>
 </template>
 
 <script setup lang="ts">
-    import { useRoute } from 'vue-router'
     import type { NavigationBarProps } from './types.ts'
     import { useI18n } from 'vue-i18n'
 
-    const { locale } = useI18n();
+    const { locale, t } = useI18n()
     const props = defineProps<NavigationBarProps>()
-
 </script>
 
 <style scoped>
