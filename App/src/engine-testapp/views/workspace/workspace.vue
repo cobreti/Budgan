@@ -6,45 +6,7 @@
     </header>
 
     <div class="workspace-view__panel">
-      <p class="workspace-view__status" data-testid="workspace-status">
-        {{
-          selectedFile
-            ? t('workspace.selected', { fileName: selectedFile.name })
-            : t('workspace.empty')
-        }}
-      </p>
-
-      <div class="workspace-view__actions">
-        <button class="workspace-view__button" type="button" @click="openFilePicker">
-          {{ t('workspace.select') }}
-        </button>
-        <button
-          v-if="selectedFile"
-          class="workspace-view__secondary-button"
-          type="button"
-          @click="clearSelection"
-        >
-          {{ t('workspace.clear') }}
-        </button>
-      </div>
-
-      <input
-        id="workspace-csv-input"
-        data-testid="workspace-csv-input"
-        class="workspace-view__file-input"
-        type="file"
-        accept=".csv,text/csv"
-        @change="onFileSelected"
-        ref="fileInput"
-      />
-
-      <p v-if="selectedFile" class="workspace-view__meta" data-testid="workspace-file-meta">
-        {{ t('workspace.fileDetails', { size: formatFileSize(selectedFile.size) }) }}
-      </p>
-
-      <p v-if="parseError" class="workspace-view__error" data-testid="workspace-parse-error">
-        {{ parseError }}
-      </p>
+      <CsvSelection @csv-content-selected="onCsvContentSelected" />
 
       <section
         v-if="parsedJson"
@@ -140,15 +102,13 @@
 <script setup lang="ts">
   import { computed, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import CsvSelection from '../../components/csv-selection/csv-selection.vue'
   import {
     CsvColumns,
     type CsvColumnMapping,
     type CsvColumns as CsvColumnId
   } from '../../../engine/modules/csv-import/csv-column-content'
-  import {
-    CsvContentExtractor,
-    type CsvContentExtractionResult
-  } from '../../../engine/modules/csv-import/csv-content-extractor'
+  import { type CsvContentExtractionResult } from '../../../engine/modules/csv-import/csv-content-extractor'
 
   type CsvMappingColumnDefinition = {
     key: CsvColumnId
@@ -185,14 +145,9 @@
   ]
 
   const { t } = useI18n()
-  const csvContentExtractor = new CsvContentExtractor()
-
-  const fileInput = ref<HTMLInputElement | null>(null)
-  const selectedFile = ref<File | null>(null)
   const parsedJson = ref<CsvContentExtractionResult | null>(null)
   const selectedColumns = ref<Partial<Record<CsvColumnId, string>>>({})
   const appliedMapping = ref<CsvColumnMapping | null>(null)
-  const parseError = ref('')
   const isJsonVisible = ref(false)
 
   const missingRequiredColumns = computed(() => {
@@ -245,53 +200,11 @@
     return JSON.stringify(parsedJson.value, null, 2)
   })
 
-  function openFilePicker(): void {
-    fileInput.value?.click()
-  }
-
-  async function onFileSelected(event: Event): Promise<void> {
-    const input = event.target as HTMLInputElement
-    const file = input.files?.[0]
-
-    if (!file) {
-      selectedFile.value = null
-      parsedJson.value = null
-      selectedColumns.value = {}
-      appliedMapping.value = null
-      parseError.value = ''
-      isJsonVisible.value = false
-      return
-    }
-
-    const isCsvFile = file.name.toLowerCase().endsWith('.csv') || file.type === 'text/csv'
-
-    if (!isCsvFile) {
-      input.value = ''
-      selectedFile.value = null
-      parsedJson.value = null
-      selectedColumns.value = {}
-      appliedMapping.value = null
-      parseError.value = t('workspace.invalidCsv')
-      isJsonVisible.value = false
-      return
-    }
-
-    selectedFile.value = file
-
-    try {
-      const csvText = await file.text()
-      parsedJson.value = csvContentExtractor.analyze(csvText)
-      selectedColumns.value = {}
-      appliedMapping.value = null
-      parseError.value = ''
-      isJsonVisible.value = true
-    } catch {
-      parsedJson.value = null
-      selectedColumns.value = {}
-      appliedMapping.value = null
-      parseError.value = t('workspace.parseError')
-      isJsonVisible.value = false
-    }
+  function onCsvContentSelected(result: CsvContentExtractionResult | null): void {
+    parsedJson.value = result
+    selectedColumns.value = {}
+    appliedMapping.value = null
+    isJsonVisible.value = !!result
   }
 
   function onMappingChange(column: CsvColumnId, event: Event): void {
@@ -320,30 +233,8 @@
     appliedMapping.value = { ...currentMapping.value }
   }
 
-  function clearSelection(): void {
-    if (fileInput.value) {
-      fileInput.value.value = ''
-    }
-
-    selectedFile.value = null
-    parsedJson.value = null
-    selectedColumns.value = {}
-    appliedMapping.value = null
-    parseError.value = ''
-    isJsonVisible.value = false
-  }
-
   function toggleJsonVisibility(): void {
     isJsonVisible.value = !isJsonVisible.value
-  }
-
-  function formatFileSize(sizeInBytes: number): string {
-    if (sizeInBytes < 1024) {
-      return `${sizeInBytes} B`
-    }
-
-    const sizeInKilobytes = sizeInBytes / 1024
-    return `${sizeInKilobytes.toFixed(1)} KB`
   }
 </script>
 
@@ -378,20 +269,9 @@
     box-shadow: 0 16px 40px -28px rgba(15, 23, 42, 0.45);
   }
 
-  .workspace-view__status,
-  .workspace-view__meta {
-    margin: 0;
-  }
-
   .workspace-view__error {
     margin: 0;
     color: #b91c1c;
-  }
-
-  .workspace-view__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
   }
 
   .workspace-view__mapping {
@@ -453,7 +333,6 @@
     background-color: #ffffff;
   }
 
-  .workspace-view__button,
   .workspace-view__secondary-button {
     display: inline-flex;
     align-items: center;
@@ -463,11 +342,6 @@
     border-radius: 999px;
     font: inherit;
     cursor: pointer;
-  }
-
-  .workspace-view__button {
-    background-color: #0f766e;
-    color: #ffffff;
   }
 
   .workspace-view__secondary-button {
@@ -491,24 +365,7 @@
     line-height: 1.5;
   }
 
-  .workspace-view__file-input {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
   @media (max-width: 640px) {
-    .workspace-view__actions {
-      flex-direction: column;
-    }
-
-    .workspace-view__button,
     .workspace-view__secondary-button {
       width: 100%;
     }
