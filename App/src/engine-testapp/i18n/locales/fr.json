@@ -1,4 +1,5 @@
 {
-    "navbar.home": "Accueil",
-    "navbar.zipfile": "Fichier zip"
+  "navbar.home": "Accueil",
+  "navbar.zipfile": "Fichier zip",
+  "navbar.workspace": "Espace de travail"
 }
