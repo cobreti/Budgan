@@ -7,7 +7,7 @@ type ParsedLine = {
 
 export type CsvJsonRecord = Record<string, string>
 
-export type CsvContentAnalysisResult = {
+export type CsvContentExtractionResult = {
   delimiter: string
   headerRowIndex: number
   header: string[]
@@ -17,7 +17,7 @@ export type CsvContentAnalysisResult = {
 export class CsvContentExtractor {
   private readonly candidateDelimiters = [',', ';', '\t', '|']
 
-  analyze(csvText: string): CsvContentAnalysisResult {
+  analyze(csvText: string): CsvContentExtractionResult {
     const lines = csvText.split(/\r?\n/)
 
     const delimiter = this.detectDelimiter(lines)

@@ -12,5 +12,17 @@
   "workspace.invalidCsv": "Please select a valid CSV file.",
   "workspace.parseError": "Unable to read or parse the selected CSV file.",
   "workspace.showJson": "Show JSON",
-  "workspace.hideJson": "Hide JSON"
+  "workspace.hideJson": "Hide JSON",
+  "workspace.mapping.title": "Column Mapping",
+  "workspace.mapping.description": "Map extracted JSON columns to Budgan CSV fields.",
+  "workspace.mapping.cardNumber": "Card Number",
+  "workspace.mapping.dateInscription": "Date Inscription",
+  "workspace.mapping.dateTransaction": "Date Transaction",
+  "workspace.mapping.amount": "Amount",
+  "workspace.mapping.descriptionLabel": "Description",
+  "workspace.mapping.required": "Required",
+  "workspace.mapping.optional": "Optional",
+  "workspace.mapping.unmapped": "Not mapped",
+  "workspace.mapping.missingRequired": "Mandatory columns must be mapped: {columns}",
+  "workspace.mapping.apply": "Apply Mapping"
 }
