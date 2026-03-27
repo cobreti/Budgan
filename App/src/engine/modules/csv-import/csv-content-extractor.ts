@@ -1,3 +1,5 @@
+// Extracts structured data from in-memory CSV text by detecting the delimiter,
+// finding the header row, normalizing header keys, and returning JSON records.
 type ParsedLine = {
   lineNumber: number
   fields: string[]
