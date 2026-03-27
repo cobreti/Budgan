@@ -1,5 +1,12 @@
 {
   "navbar.home": "Home",
   "navbar.zipfile": "Zip File",
-  "navbar.workspace": "Workspace"
+  "navbar.workspace": "Workspace",
+  "workspace.title": "Workspace Test",
+  "workspace.description": "Choose a CSV file from disk to load it into the workspace.",
+  "workspace.empty": "No CSV file selected",
+  "workspace.selected": "Selected CSV file: {fileName}",
+  "workspace.select": "Select CSV File",
+  "workspace.clear": "Clear Selection",
+  "workspace.fileDetails": "File size: {size}"
 }

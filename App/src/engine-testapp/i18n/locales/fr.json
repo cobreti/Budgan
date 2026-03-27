@@ -1,5 +1,12 @@
 {
   "navbar.home": "Accueil",
   "navbar.zipfile": "Fichier zip",
-  "navbar.workspace": "Espace de travail"
+  "navbar.workspace": "Espace de travail",
+  "workspace.title": "Test de l'espace de travail",
+  "workspace.description": "Choisissez un fichier CSV sur le disque pour le charger dans l'espace de travail.",
+  "workspace.empty": "Aucun fichier CSV selectionne",
+  "workspace.selected": "Fichier CSV selectionne : {fileName}",
+  "workspace.select": "Choisir un fichier CSV",
+  "workspace.clear": "Effacer la selection",
+  "workspace.fileDetails": "Taille du fichier : {size}"
 }
