@@ -41,29 +41,66 @@
       <p v-if="selectedFile" class="workspace-view__meta" data-testid="workspace-file-meta">
         {{ t('workspace.fileDetails', { size: formatFileSize(selectedFile.size) }) }}
       </p>
+
+      <p v-if="parseError" class="workspace-view__error" data-testid="workspace-parse-error">
+        {{ parseError }}
+      </p>
+
+      <div v-if="parsedJson" class="workspace-view__json-controls">
+        <button
+          class="workspace-view__secondary-button"
+          type="button"
+          data-testid="workspace-toggle-json"
+          @click="toggleJsonVisibility"
+        >
+          {{ isJsonVisible ? t('workspace.hideJson') : t('workspace.showJson') }}
+        </button>
+      </div>
+
+      <pre
+        v-if="parsedJson && isJsonVisible"
+        class="workspace-view__json-output"
+        data-testid="workspace-json-output"
+      ><code>{{ formattedJson }}</code></pre>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { computed, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { CsvContentExtractor } from '../../../engine/modules/csv-import/csv-content-extractor'
 
   const { t } = useI18n()
+  const csvContentExtractor = new CsvContentExtractor()
 
   const fileInput = ref<HTMLInputElement | null>(null)
   const selectedFile = ref<File | null>(null)
+  const parsedJson = ref<Record<string, unknown> | null>(null)
+  const parseError = ref('')
+  const isJsonVisible = ref(false)
+
+  const formattedJson = computed(() => {
+    if (!parsedJson.value) {
+      return ''
+    }
+
+    return JSON.stringify(parsedJson.value, null, 2)
+  })
 
   function openFilePicker(): void {
     fileInput.value?.click()
   }
 
-  function onFileSelected(event: Event): void {
+  async function onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement
     const file = input.files?.[0]
 
     if (!file) {
       selectedFile.value = null
+      parsedJson.value = null
+      parseError.value = ''
+      isJsonVisible.value = false
       return
     }
 
@@ -72,10 +109,24 @@
     if (!isCsvFile) {
       input.value = ''
       selectedFile.value = null
+      parsedJson.value = null
+      parseError.value = t('workspace.invalidCsv')
+      isJsonVisible.value = false
       return
     }
 
     selectedFile.value = file
+
+    try {
+      const csvText = await file.text()
+      parsedJson.value = csvContentExtractor.analyze(csvText)
+      parseError.value = ''
+      isJsonVisible.value = true
+    } catch {
+      parsedJson.value = null
+      parseError.value = t('workspace.parseError')
+      isJsonVisible.value = false
+    }
   }
 
   function clearSelection(): void {
@@ -84,6 +135,13 @@
     }
 
     selectedFile.value = null
+    parsedJson.value = null
+    parseError.value = ''
+    isJsonVisible.value = false
+  }
+
+  function toggleJsonVisibility(): void {
+    isJsonVisible.value = !isJsonVisible.value
   }
 
   function formatFileSize(sizeInBytes: number): string {
@@ -132,6 +190,11 @@
     margin: 0;
   }
 
+  .workspace-view__error {
+    margin: 0;
+    color: #b91c1c;
+  }
+
   .workspace-view__actions {
     display: flex;
     flex-wrap: wrap;
@@ -159,6 +222,21 @@
     border: 1px solid #cbd5e1;
     background-color: #ffffff;
     color: #0f172a;
+  }
+
+  .workspace-view__json-controls {
+    display: flex;
+  }
+
+  .workspace-view__json-output {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    border-radius: 0.75rem;
+    background-color: #0f172a;
+    color: #e2e8f0;
+    font-size: 0.875rem;
+    line-height: 1.5;
   }
 
   .workspace-view__file-input {

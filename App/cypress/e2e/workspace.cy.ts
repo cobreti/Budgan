@@ -23,5 +23,17 @@ describe('Workspace Management', () => {
 
     cy.get('[data-testid="workspace-status"]').contains('Selected CSV file: statement.csv')
     cy.get('[data-testid="workspace-file-meta"]').contains('File size:')
+    cy.get('[data-testid="workspace-toggle-json"]').contains('Hide JSON')
+    cy.get('[data-testid="workspace-json-output"]').should('contain.text', '"delimiter": ","')
+    cy.get('[data-testid="workspace-json-output"]').should('contain.text', '"header"')
+    cy.get('[data-testid="workspace-json-output"]').should('contain.text', '"date": "2026-03-27"')
+    cy.get('[data-testid="workspace-json-output"]').should(
+      'contain.text',
+      '"description": "Coffee"'
+    )
+
+    cy.get('[data-testid="workspace-toggle-json"]').click()
+    cy.get('[data-testid="workspace-json-output"]').should('not.exist')
+    cy.get('[data-testid="workspace-toggle-json"]').contains('Show JSON')
   })
 })

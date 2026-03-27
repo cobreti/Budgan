@@ -8,5 +8,9 @@
   "workspace.selected": "Selected CSV file: {fileName}",
   "workspace.select": "Select CSV File",
   "workspace.clear": "Clear Selection",
-  "workspace.fileDetails": "File size: {size}"
+  "workspace.fileDetails": "File size: {size}",
+  "workspace.invalidCsv": "Please select a valid CSV file.",
+  "workspace.parseError": "Unable to read or parse the selected CSV file.",
+  "workspace.showJson": "Show JSON",
+  "workspace.hideJson": "Hide JSON"
 }
