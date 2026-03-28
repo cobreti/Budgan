@@ -15,7 +15,7 @@
                 'workspace-view__menu-item--active': route.name === 'workspace-csv-selection'
               }"
             >
-              CSV Selection
+              {{ t('workspace.menu.csvSelection') }}
             </RouterLink>
           </li>
           <li>
@@ -26,7 +26,7 @@
                 'workspace-view__menu-item--active': route.name === 'workspace-column-mapping'
               }"
             >
-              Column Mapping
+              {{ t('workspace.menu.columnMapping') }}
             </RouterLink>
           </li>
           <li>
@@ -37,7 +37,7 @@
                 'workspace-view__menu-item--active': route.name === 'workspace-json-data-view'
               }"
             >
-              Json Data View
+              {{ t('workspace.menu.jsonDataView') }}
             </RouterLink>
           </li>
         </ul>
