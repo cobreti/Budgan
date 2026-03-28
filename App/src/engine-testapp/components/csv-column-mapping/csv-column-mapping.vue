@@ -28,7 +28,7 @@
           @change="onMappingChange(column.key, $event)"
         >
           <option value="">{{ t('workspace.mapping.unmapped') }}</option>
-          <option v-for="header in csvContent.header" :key="header" :value="header">
+          <option v-for="header in csvHeaders" :key="header" :value="header">
             {{ header }}
           </option>
         </select>
@@ -58,12 +58,12 @@
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { useWorkspaceStore } from '../../stores/workspace-store'
   import {
     CsvColumns,
     type CsvColumnMapping,
     type CsvColumns as CsvColumnId
   } from '../../../engine/modules/csv-import/csv-column-content'
-  import { type CsvContentExtractionResult } from '../../../engine/modules/csv-import/csv-content-extractor'
 
   type CsvMappingColumnDefinition = {
     key: CsvColumnId
@@ -99,16 +99,10 @@
     }
   ]
 
-  const props = defineProps<{
-    csvContent: CsvContentExtractionResult
-  }>()
-  const emit = defineEmits<{
-    (e: 'mapping-applied', value: CsvColumnMapping): void
-    (e: 'mapping-reset', value: null): void
-  }>()
-
   const { t } = useI18n()
+  const workspaceStore = useWorkspaceStore()
   const selectedColumns = ref<Partial<Record<CsvColumnId, string>>>({})
+  const csvHeaders = computed(() => workspaceStore.parsedJson?.header ?? [])
 
   const missingRequiredColumns = computed(() => {
     return mappingColumns.filter((column) => column.required && !selectedColumns.value[column.key])
@@ -131,7 +125,7 @@
         continue
       }
 
-      const headerIndex = props.csvContent.header.indexOf(selectedHeader)
+      const headerIndex = csvHeaders.value.indexOf(selectedHeader)
       if (headerIndex >= 0) {
         mapping[column.key] = headerIndex
       }
@@ -141,10 +135,10 @@
   })
 
   watch(
-    () => props.csvContent,
+    () => workspaceStore.parsedJson,
     () => {
       selectedColumns.value = {}
-      emit('mapping-reset', null)
+      workspaceStore.setAppliedMapping(null)
     }
   )
 
@@ -155,7 +149,7 @@
       const updatedMapping = { ...selectedColumns.value }
       delete updatedMapping[column]
       selectedColumns.value = updatedMapping
-      emit('mapping-reset', null)
+      workspaceStore.setAppliedMapping(null)
       return
     }
 
@@ -163,7 +157,7 @@
       ...selectedColumns.value,
       [column]: selectedHeader
     }
-    emit('mapping-reset', null)
+    workspaceStore.setAppliedMapping(null)
   }
 
   function applyMapping(): void {
@@ -171,7 +165,7 @@
       return
     }
 
-    emit('mapping-applied', { ...currentMapping.value })
+    workspaceStore.setAppliedMapping({ ...currentMapping.value })
   }
 </script>
 

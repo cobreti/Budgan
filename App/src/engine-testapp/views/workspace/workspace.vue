@@ -14,34 +14,29 @@
       </aside>
 
       <div class="workspace-view__panel">
-        <CsvSelection @csv-content-selected="onCsvContentSelected" />
+        <CsvSelection />
 
-        <CsvColumnMapping
-          v-if="parsedJson"
-          :csv-content="parsedJson"
-          @mapping-applied="onMappingApplied"
-          @mapping-reset="onMappingReset"
-        />
+        <CsvColumnMapping v-if="workspaceStore.parsedJson" />
 
         <pre
-          v-if="appliedMapping"
+          v-if="workspaceStore.appliedMapping"
           class="workspace-view__json-output"
           data-testid="workspace-mapping-output"
         ><code>{{ formattedAppliedMapping }}</code></pre>
 
-        <div v-if="parsedJson" class="workspace-view__json-controls">
+        <div v-if="workspaceStore.parsedJson" class="workspace-view__json-controls">
           <button
             class="workspace-view__secondary-button"
             type="button"
             data-testid="workspace-toggle-json"
-            @click="toggleJsonVisibility"
+            @click="workspaceStore.toggleJsonVisibility"
           >
-            {{ isJsonVisible ? t('workspace.hideJson') : t('workspace.showJson') }}
+            {{ workspaceStore.isJsonVisible ? t('workspace.hideJson') : t('workspace.showJson') }}
           </button>
         </div>
 
         <pre
-          v-if="parsedJson && isJsonVisible"
+          v-if="workspaceStore.parsedJson && workspaceStore.isJsonVisible"
           class="workspace-view__json-output"
           data-testid="workspace-json-output"
         ><code>{{ formattedJson }}</code></pre>
@@ -51,51 +46,30 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from 'vue'
+  import { computed } from 'vue'
   import { useI18n } from 'vue-i18n'
   import CsvColumnMapping from '../../components/csv-column-mapping/csv-column-mapping.vue'
   import CsvSelection from '../../components/csv-selection/csv-selection.vue'
-  import { type CsvColumnMapping as AppliedCsvColumnMapping } from '../../../engine/modules/csv-import/csv-column-content'
-  import { type CsvContentExtractionResult } from '../../../engine/modules/csv-import/csv-content-extractor'
+  import { useWorkspaceStore } from '../../stores/workspace-store'
 
   const { t } = useI18n()
-  const parsedJson = ref<CsvContentExtractionResult | null>(null)
-  const appliedMapping = ref<AppliedCsvColumnMapping | null>(null)
-  const isJsonVisible = ref(false)
+  const workspaceStore = useWorkspaceStore()
 
   const formattedAppliedMapping = computed(() => {
-    if (!appliedMapping.value) {
+    if (!workspaceStore.appliedMapping) {
       return ''
     }
 
-    return JSON.stringify(appliedMapping.value, null, 2)
+    return JSON.stringify(workspaceStore.appliedMapping, null, 2)
   })
 
   const formattedJson = computed(() => {
-    if (!parsedJson.value) {
+    if (!workspaceStore.parsedJson) {
       return ''
     }
 
-    return JSON.stringify(parsedJson.value, null, 2)
+    return JSON.stringify(workspaceStore.parsedJson, null, 2)
   })
-
-  function onCsvContentSelected(result: CsvContentExtractionResult | null): void {
-    parsedJson.value = result
-    appliedMapping.value = null
-    isJsonVisible.value = !!result
-  }
-
-  function onMappingApplied(mapping: AppliedCsvColumnMapping): void {
-    appliedMapping.value = mapping
-  }
-
-  function onMappingReset(): void {
-    appliedMapping.value = null
-  }
-
-  function toggleJsonVisibility(): void {
-    isJsonVisible.value = !isJsonVisible.value
-  }
 </script>
 
 <style scoped>

@@ -45,17 +45,15 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { useWorkspaceStore } from '../../stores/workspace-store'
   import {
     CsvContentExtractor,
     type CsvContentExtractionResult
   } from '../../../engine/modules/csv-import/csv-content-extractor'
 
-  const emit = defineEmits<{
-    (e: 'csv-content-selected', result: CsvContentExtractionResult | null): void
-  }>()
-
   const { t } = useI18n()
   const csvContentExtractor = new CsvContentExtractor()
+  const workspaceStore = useWorkspaceStore()
 
   const fileInput = ref<HTMLInputElement | null>(null)
   const selectedFile = ref<File | null>(null)
@@ -72,7 +70,7 @@
     if (!file) {
       selectedFile.value = null
       parseError.value = ''
-      emit('csv-content-selected', null)
+      workspaceStore.setParsedJson(null)
       return
     }
 
@@ -82,7 +80,7 @@
       input.value = ''
       selectedFile.value = null
       parseError.value = t('workspace.invalidCsv')
-      emit('csv-content-selected', null)
+      workspaceStore.setParsedJson(null)
       return
     }
 
@@ -92,10 +90,10 @@
       const csvText = await file.text()
       const extractionResult = csvContentExtractor.analyze(csvText)
       parseError.value = ''
-      emit('csv-content-selected', extractionResult)
+      workspaceStore.setParsedJson(extractionResult)
     } catch {
       parseError.value = t('workspace.parseError')
-      emit('csv-content-selected', null)
+      workspaceStore.setParsedJson(null)
     }
   }
 
@@ -106,7 +104,7 @@
 
     selectedFile.value = null
     parseError.value = ''
-    emit('csv-content-selected', null)
+    workspaceStore.setParsedJson(null)
   }
 
   function formatFileSize(sizeInBytes: number): string {
