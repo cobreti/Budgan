@@ -97,7 +97,7 @@
 
     try {
       const csvText = await file.text()
-      const extractionResult = csvContentExtractor.analyze(csvText)
+      const extractionResult = csvContentExtractor.extract(csvText)
       parseError.value = ''
       workspaceStore.setParsedJson(extractionResult)
     } catch {

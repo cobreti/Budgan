@@ -17,7 +17,7 @@ export type CsvContentExtractionResult = {
 export class CsvContentExtractor {
   private readonly candidateDelimiters = [',', ';', '\t', '|']
 
-  analyze(csvText: string): CsvContentExtractionResult {
+  extract(csvText: string): CsvContentExtractionResult {
     const lines = csvText.split(/\r?\n/)
 
     const delimiter = this.detectDelimiter(lines)

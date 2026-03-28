@@ -11,8 +11,8 @@ describe('CsvContentExtractor', () => {
       '2024-01-02,Salary,1200.00'
     ].join('\n')
 
-    const analyzer = new CsvContentExtractor()
-    const result = analyzer.analyze(csvContent)
+    const extractor = new CsvContentExtractor()
+    const result = extractor.extract(csvContent)
 
     expect(result.delimiter).toBe(',')
     expect(result.headerRowIndex).toBe(2)
@@ -30,8 +30,8 @@ describe('CsvContentExtractor', () => {
       '2024-02-02;"Dinner";-31.40'
     ].join('\n')
 
-    const analyzer = new CsvContentExtractor()
-    const result = analyzer.analyze(csvContent)
+    const extractor = new CsvContentExtractor()
+    const result = extractor.extract(csvContent)
 
     expect(result.delimiter).toBe(';')
     expect(result.headerRowIndex).toBe(0)
