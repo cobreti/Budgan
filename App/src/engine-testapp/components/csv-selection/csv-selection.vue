@@ -2,8 +2,8 @@
   <div class="csv-selection">
     <p class="csv-selection__status" data-testid="workspace-status">
       {{
-        selectedFile
-          ? t('workspace.selected', { fileName: selectedFile.name })
+        workspaceStore.selectedFileName
+          ? t('workspace.selected', { fileName: workspaceStore.selectedFileName })
           : t('workspace.empty')
       }}
     </p>
@@ -13,7 +13,7 @@
         {{ t('workspace.select') }}
       </button>
       <button
-        v-if="selectedFile"
+        v-if="workspaceStore.selectedFileName"
         class="csv-selection__secondary-button"
         type="button"
         @click="clearSelection"
@@ -32,8 +32,12 @@
       @change="onFileSelected"
     />
 
-    <p v-if="selectedFile" class="csv-selection__meta" data-testid="workspace-file-meta">
-      {{ t('workspace.fileDetails', { size: formatFileSize(selectedFile.size) }) }}
+    <p
+      v-if="workspaceStore.selectedFileSize !== null"
+      class="csv-selection__meta"
+      data-testid="workspace-file-meta"
+    >
+      {{ t('workspace.fileDetails', { size: formatFileSize(workspaceStore.selectedFileSize) }) }}
     </p>
 
     <p v-if="parseError" class="csv-selection__error" data-testid="workspace-parse-error">
@@ -46,17 +50,13 @@
   import { ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useWorkspaceStore } from '../../stores/workspace-store'
-  import {
-    CsvContentExtractor,
-    type CsvContentExtractionResult
-  } from '../../../engine/modules/csv-import/csv-content-extractor'
+  import { CsvContentExtractor } from '../../../engine/modules/csv-import/csv-content-extractor'
 
   const { t } = useI18n()
   const csvContentExtractor = new CsvContentExtractor()
   const workspaceStore = useWorkspaceStore()
 
   const fileInput = ref<HTMLInputElement | null>(null)
-  const selectedFile = ref<File | null>(null)
   const parseError = ref('')
 
   function openFilePicker(): void {
@@ -68,7 +68,7 @@
     const file = input.files?.[0]
 
     if (!file) {
-      selectedFile.value = null
+      workspaceStore.setSelectedFile(null)
       parseError.value = ''
       workspaceStore.setParsedJson(null)
       return
@@ -78,13 +78,13 @@
 
     if (!isCsvFile) {
       input.value = ''
-      selectedFile.value = null
+      workspaceStore.setSelectedFile(null)
       parseError.value = t('workspace.invalidCsv')
       workspaceStore.setParsedJson(null)
       return
     }
 
-    selectedFile.value = file
+    workspaceStore.setSelectedFile(file)
 
     try {
       const csvText = await file.text()
@@ -102,7 +102,7 @@
       fileInput.value.value = ''
     }
 
-    selectedFile.value = null
+    workspaceStore.setSelectedFile(null)
     parseError.value = ''
     workspaceStore.setParsedJson(null)
   }

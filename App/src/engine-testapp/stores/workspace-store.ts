@@ -6,6 +6,8 @@ import { type CsvContentExtractionResult } from '../../engine/modules/csv-import
 export const useWorkspaceStore = defineStore('workspace', () => {
   const parsedJson = ref<CsvContentExtractionResult | null>(null)
   const appliedMapping = ref<CsvColumnMapping | null>(null)
+  const selectedFileName = ref<string | null>(null)
+  const selectedFileSize = ref<number | null>(null)
   const isJsonVisible = ref(false)
 
   function setParsedJson(content: CsvContentExtractionResult | null): void {
@@ -18,6 +20,17 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     appliedMapping.value = mapping
   }
 
+  function setSelectedFile(file: File | null): void {
+    if (!file) {
+      selectedFileName.value = null
+      selectedFileSize.value = null
+      return
+    }
+
+    selectedFileName.value = file.name
+    selectedFileSize.value = file.size
+  }
+
   function toggleJsonVisibility(): void {
     isJsonVisible.value = !isJsonVisible.value
   }
@@ -25,9 +38,12 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   return {
     parsedJson,
     appliedMapping,
+    selectedFileName,
+    selectedFileSize,
     isJsonVisible,
     setParsedJson,
     setAppliedMapping,
+    setSelectedFile,
     toggleJsonVisibility
   }
 })
