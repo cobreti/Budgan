@@ -4,7 +4,6 @@
             <navigation-bar></navigation-bar>
         </div>
         <div class="main-content">
-            <h1>Engine Test App</h1>
             <router-view></router-view>
         </div>
     </v-app>

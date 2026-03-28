@@ -1,7 +1,6 @@
 <template>
   <section class="workspace-view">
     <header class="workspace-view__header">
-      <h2>{{ t('workspace.title') }}</h2>
       <p>{{ t('workspace.description') }}</p>
     </header>
 
@@ -99,10 +98,6 @@
   .workspace-view__header {
     display: grid;
     gap: 0.5rem;
-  }
-
-  .workspace-view__header h2 {
-    margin: 0;
   }
 
   .workspace-view__header p {
