@@ -1,31 +1,37 @@
 <template>
   <section class="workspace-json-data-view">
-    <pre
-      v-if="workspaceStore.appliedMapping"
-      class="workspace-json-data-view__output"
-      data-testid="workspace-mapping-output"
-    ><code>{{ formattedAppliedMapping }}</code></pre>
-
-    <div v-if="workspaceStore.parsedJson" class="workspace-json-data-view__controls">
-      <button
-        class="workspace-json-data-view__button"
-        type="button"
-        data-testid="workspace-toggle-json"
-        @click="workspaceStore.toggleJsonVisibility"
-      >
-        {{ workspaceStore.isJsonVisible ? t('workspace.hideJson') : t('workspace.showJson') }}
-      </button>
+    <div
+      v-if="!workspaceStore.parsedJson"
+      class="workspace-json-data-view__status"
+      data-testid="workspace-json-status"
+    >
+      <p class="workspace-json-data-view__status-text">Select a CSV file to view JSON data.</p>
     </div>
 
-    <pre
-      v-if="workspaceStore.parsedJson && workspaceStore.isJsonVisible"
-      class="workspace-json-data-view__output"
-      data-testid="workspace-json-output"
-    ><code>{{ formattedJson }}</code></pre>
+    <template v-if="workspaceStore.parsedJson">
+      <pre
+        v-if="workspaceStore.appliedMapping"
+        class="workspace-json-data-view__output"
+        data-testid="workspace-mapping-output"
+      ><code>{{ formattedAppliedMapping }}</code></pre>
 
-    <p v-if="!workspaceStore.parsedJson" class="workspace-json-data-view__hint">
-      Select a CSV file to view JSON data.
-    </p>
+      <div class="workspace-json-data-view__controls">
+        <button
+          class="workspace-json-data-view__button"
+          type="button"
+          data-testid="workspace-toggle-json"
+          @click="workspaceStore.toggleJsonVisibility"
+        >
+          {{ workspaceStore.isJsonVisible ? t('workspace.hideJson') : t('workspace.showJson') }}
+        </button>
+      </div>
+
+      <pre
+        v-if="workspaceStore.isJsonVisible"
+        class="workspace-json-data-view__output"
+        data-testid="workspace-json-output"
+      ><code>{{ formattedJson }}</code></pre>
+    </template>
   </section>
 </template>
 
@@ -62,6 +68,19 @@
     gap: 1rem;
   }
 
+  .workspace-json-data-view__status {
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--json-view-status-empty-border);
+    background-color: var(--json-view-status-empty-background);
+  }
+
+  .workspace-json-data-view__status-text {
+    margin: 0;
+    color: var(--json-view-status-empty-text);
+    font-weight: 500;
+  }
+
   .workspace-json-data-view__controls {
     display: flex;
   }
@@ -89,11 +108,6 @@
     color: var(--json-view-output-text);
     font-size: 0.875rem;
     line-height: 1.5;
-  }
-
-  .workspace-json-data-view__hint {
-    margin: 0;
-    color: var(--json-view-hint-text);
   }
 
   @media (max-width: 640px) {
