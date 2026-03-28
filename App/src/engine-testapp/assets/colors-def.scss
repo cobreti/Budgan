@@ -43,10 +43,18 @@
   --csv-selection-status-empty-text: rgb(var(--v-theme-on-surface));
 
   /* Column Mapping colors */
-  --column-mapping-success-background: rgb(var(--v-theme-success), var(--v-low-emphasis-opacity));
-  --column-mapping-success-border: rgb(var(--v-theme-success), var(--v-medium-emphasis-opacity));
-  --column-mapping-success-text: rgb(var(--v-theme-on-success));
-  --column-mapping-hint-text: rgb(var(--v-theme-on-surface-variant));
+  --column-mapping-status-applied-background: rgb(
+    var(--v-theme-success),
+    var(--v-low-emphasis-opacity)
+  );
+  --column-mapping-status-applied-border: rgb(
+    var(--v-theme-success),
+    var(--v-medium-emphasis-opacity)
+  );
+  --column-mapping-status-applied-text: rgb(var(--v-theme-success));
+  --column-mapping-status-empty-background: rgb(var(--v-theme-surface));
+  --column-mapping-status-empty-border: rgb(var(--v-theme-outline));
+  --column-mapping-status-empty-text: rgb(var(--v-theme-on-surface));
 
   /* JSON Data View colors */
   --json-view-button-background: rgb(var(--v-theme-surface));

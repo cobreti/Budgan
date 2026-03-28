@@ -1,17 +1,23 @@
 <template>
   <section class="workspace-column-mapping-page">
-    <p
-      v-if="workspaceStore.appliedMapping"
-      class="workspace-column-mapping-page__success"
-      data-testid="workspace-mapping-applied-message"
+    <div
+      class="workspace-column-mapping-page__status"
+      :class="{
+        'workspace-column-mapping-page__status--applied': workspaceStore.appliedMapping,
+        'workspace-column-mapping-page__status--empty': !workspaceStore.appliedMapping
+      }"
+      data-testid="workspace-mapping-status"
     >
-      Mapping is applied.
-    </p>
+      <p class="workspace-column-mapping-page__status-text">
+        {{
+          workspaceStore.appliedMapping
+            ? 'Mapping is applied.'
+            : 'Select a CSV file to configure mapping.'
+        }}
+      </p>
+    </div>
 
     <CsvColumnMapping v-if="workspaceStore.parsedJson" />
-    <p v-else class="workspace-column-mapping-page__hint">
-      Select a CSV file to configure mapping.
-    </p>
   </section>
 </template>
 
@@ -30,18 +36,32 @@
     gap: 0.75rem;
   }
 
-  .workspace-column-mapping-page__success {
-    margin: 0;
-    padding: 0.625rem 0.75rem;
-    border: 1px solid var(--column-mapping-success-border);
-    border-radius: 0.625rem;
-    background-color: var(--column-mapping-success-background);
-    color: var(--column-mapping-success-text);
-    font-weight: 600;
+  .workspace-column-mapping-page__status {
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid;
   }
 
-  .workspace-column-mapping-page__hint {
+  .workspace-column-mapping-page__status--applied {
+    background-color: var(--column-mapping-status-applied-background);
+    border-color: var(--column-mapping-status-applied-border);
+  }
+
+  .workspace-column-mapping-page__status--empty {
+    background-color: var(--column-mapping-status-empty-background);
+    border-color: var(--column-mapping-status-empty-border);
+  }
+
+  .workspace-column-mapping-page__status-text {
     margin: 0;
-    color: var(--column-mapping-hint-text);
+    font-weight: 500;
+  }
+
+  .workspace-column-mapping-page__status--applied .workspace-column-mapping-page__status-text {
+    color: var(--column-mapping-status-applied-text);
+  }
+
+  .workspace-column-mapping-page__status--empty .workspace-column-mapping-page__status-text {
+    color: var(--column-mapping-status-empty-text);
   }
 </style>
