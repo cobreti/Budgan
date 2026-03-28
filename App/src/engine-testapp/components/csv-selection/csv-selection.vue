@@ -1,12 +1,21 @@
 <template>
   <div class="csv-selection">
-    <p class="csv-selection__status" data-testid="workspace-status">
-      {{
-        workspaceStore.selectedFileName
-          ? t('workspace.selected', { fileName: workspaceStore.selectedFileName })
-          : t('workspace.empty')
-      }}
-    </p>
+    <div
+      class="csv-selection__status"
+      :class="{
+        'csv-selection__status--selected': workspaceStore.selectedFileName,
+        'csv-selection__status--empty': !workspaceStore.selectedFileName
+      }"
+      data-testid="workspace-status"
+    >
+      <p class="csv-selection__status-text">
+        {{
+          workspaceStore.selectedFileName
+            ? t('workspace.selected', { fileName: workspaceStore.selectedFileName })
+            : t('workspace.empty')
+        }}
+      </p>
+    </div>
 
     <div class="csv-selection__actions">
       <button class="csv-selection__button" type="button" @click="openFilePicker">
@@ -118,19 +127,49 @@
 </script>
 
 <style scoped>
+  @use 'colors-def';
+
   .csv-selection {
     display: grid;
     gap: 1rem;
   }
 
-  .csv-selection__status,
+  .csv-selection__status {
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid;
+  }
+
+  .csv-selection__status--selected {
+    background-color: var(--csv-selection-status-selected-background);
+    border-color: var(--csv-selection-status-selected-border);
+  }
+
+  .csv-selection__status--empty {
+    background-color: var(--csv-selection-status-empty-background);
+    border-color: var(--csv-selection-status-empty-border);
+  }
+
+  .csv-selection__status-text {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .csv-selection__status--selected .csv-selection__status-text {
+    color: var(--csv-selection-status-selected-text);
+  }
+
+  .csv-selection__status--empty .csv-selection__status-text {
+    color: var(--csv-selection-status-empty-text);
+  }
+
   .csv-selection__meta {
     margin: 0;
   }
 
   .csv-selection__error {
     margin: 0;
-    color: #b91c1c;
+    color: var(--csv-selection-error-text);
   }
 
   .csv-selection__actions {
@@ -152,14 +191,14 @@
   }
 
   .csv-selection__button {
-    background-color: #0f766e;
-    color: #ffffff;
+    background-color: var(--csv-selection-button-background);
+    color: var(--csv-selection-button-text);
   }
 
   .csv-selection__secondary-button {
-    border: 1px solid #cbd5e1;
-    background-color: #ffffff;
-    color: #0f172a;
+    border: 1px solid var(--csv-selection-secondary-button-border);
+    background-color: var(--csv-selection-secondary-button-background);
+    color: var(--csv-selection-secondary-button-text);
   }
 
   .csv-selection__file-input {

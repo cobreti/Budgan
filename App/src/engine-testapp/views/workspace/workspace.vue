@@ -65,6 +65,8 @@
 </script>
 
 <style scoped>
+  @use 'colors-def';
+
   .workspace-view {
     display: grid;
     gap: 1.5rem;
@@ -78,7 +80,7 @@
 
   .workspace-view__header p {
     margin: 0;
-    color: #4b5563;
+    color: rgb(var(--v-theme-on-surface-variant));
   }
 
   .workspace-view__layout {
@@ -89,9 +91,9 @@
   }
 
   .workspace-view__menu {
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--workspace-menu-border);
     border-radius: 1rem;
-    background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%);
+    background-color: var(--workspace-menu-background);
     box-shadow: 0 16px 40px -28px rgba(15, 23, 42, 0.45);
     padding: 1rem;
   }
@@ -107,19 +109,19 @@
   .workspace-view__menu-item {
     display: block;
     padding: 0.6rem 0.75rem;
-    border: 1px solid #dbe5ef;
+    border: 1px solid var(--workspace-menu-item-border);
     border-radius: 0.625rem;
-    color: #0f172a;
-    background-color: #ffffff;
+    color: var(--workspace-menu-item-text);
+    background-color: var(--workspace-menu-item-background);
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
   }
 
   .workspace-view__menu-item--active {
-    border-color: #0f766e;
-    background-color: #ccfbf1;
-    color: #134e4a;
+    border-color: var(--workspace-menu-item-active-border);
+    background-color: var(--workspace-menu-item-active-background);
+    color: var(--workspace-menu-item-active-text);
   }
 
   .workspace-view__panel {

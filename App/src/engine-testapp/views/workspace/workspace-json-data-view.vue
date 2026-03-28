@@ -55,6 +55,8 @@
 </script>
 
 <style scoped>
+  @use 'colors-def';
+
   .workspace-json-data-view {
     display: grid;
     gap: 1rem;
@@ -70,10 +72,10 @@
     justify-content: center;
     min-height: 2.75rem;
     padding: 0.75rem 1.2rem;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--json-view-button-border);
     border-radius: 999px;
-    background-color: #ffffff;
-    color: #0f172a;
+    background-color: var(--json-view-button-background);
+    color: var(--json-view-button-text);
     font: inherit;
     cursor: pointer;
   }
@@ -83,15 +85,15 @@
     padding: 1rem;
     overflow-x: auto;
     border-radius: 0.75rem;
-    background-color: #0f172a;
-    color: #e2e8f0;
+    background-color: var(--json-view-output-background);
+    color: var(--json-view-output-text);
     font-size: 0.875rem;
     line-height: 1.5;
   }
 
   .workspace-json-data-view__hint {
     margin: 0;
-    color: #4b5563;
+    color: var(--json-view-hint-text);
   }
 
   @media (max-width: 640px) {

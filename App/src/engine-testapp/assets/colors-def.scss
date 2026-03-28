@@ -1,8 +1,58 @@
 @use 'vuetify/settings' as v;
 
 :root {
-    --app-nav-background: rgb(var(--v-theme-primary));
-    --app-nav-active-menu-item: rgb(var(--v-theme-on-primary));
-    --app-nav-active-menu-item-selected: rgb(var(--v-theme-on-primary));
-    --app-nav-inactive-menu-item: rgb(var(--v-theme-on-primary-variant), var(--v-medium-emphasis-opacity));
+  --app-nav-background: rgb(var(--v-theme-primary));
+  --app-nav-active-menu-item: rgb(var(--v-theme-on-primary));
+  --app-nav-active-menu-item-selected: rgb(var(--v-theme-on-primary));
+  --app-nav-inactive-menu-item: rgb(
+    var(--v-theme-on-primary-variant),
+    var(--v-medium-emphasis-opacity)
+  );
+
+  /* Workspace menu colors */
+  --workspace-menu-background: rgb(var(--v-theme-surface));
+  --workspace-menu-border: rgb(var(--v-theme-primary), var(--v-low-emphasis-opacity));
+  --workspace-menu-item-background: rgb(var(--v-theme-surface));
+  --workspace-menu-item-border: rgb(var(--v-theme-primary), var(--v-low-emphasis-opacity));
+  --workspace-menu-item-text: rgb(var(--v-theme-on-surface));
+  --workspace-menu-item-active-background: rgb(
+    var(--v-theme-primary),
+    var(--v-medium-emphasis-opacity)
+  );
+  --workspace-menu-item-active-border: rgb(var(--v-theme-primary));
+  --workspace-menu-item-active-text: rgb(var(--v-theme-on-primary));
+
+  /* CSV Selection colors */
+  --csv-selection-button-background: rgb(var(--v-theme-primary));
+  --csv-selection-button-text: rgb(var(--v-theme-on-primary));
+  --csv-selection-secondary-button-background: rgb(var(--v-theme-surface));
+  --csv-selection-secondary-button-border: rgb(var(--v-theme-outline));
+  --csv-selection-secondary-button-text: rgb(var(--v-theme-on-surface));
+  --csv-selection-error-text: rgb(var(--v-theme-error));
+  --csv-selection-status-selected-background: rgb(
+    var(--v-theme-success),
+    var(--v-low-emphasis-opacity)
+  );
+  --csv-selection-status-selected-border: rgb(
+    var(--v-theme-success),
+    var(--v-medium-emphasis-opacity)
+  );
+  --csv-selection-status-selected-text: rgb(var(--v-theme-success));
+  --csv-selection-status-empty-background: rgb(var(--v-theme-surface));
+  --csv-selection-status-empty-border: rgb(var(--v-theme-outline));
+  --csv-selection-status-empty-text: rgb(var(--v-theme-on-surface));
+
+  /* Column Mapping colors */
+  --column-mapping-success-background: rgb(var(--v-theme-success), var(--v-low-emphasis-opacity));
+  --column-mapping-success-border: rgb(var(--v-theme-success), var(--v-medium-emphasis-opacity));
+  --column-mapping-success-text: rgb(var(--v-theme-on-success));
+  --column-mapping-hint-text: rgb(var(--v-theme-on-surface-variant));
+
+  /* JSON Data View colors */
+  --json-view-button-background: rgb(var(--v-theme-surface));
+  --json-view-button-border: rgb(var(--v-theme-outline));
+  --json-view-button-text: rgb(var(--v-theme-on-surface));
+  --json-view-output-background: rgb(var(--v-theme-on-surface-variant));
+  --json-view-output-text: rgb(var(--v-theme-surface));
+  --json-view-hint-text: rgb(var(--v-theme-on-surface-variant));
 }

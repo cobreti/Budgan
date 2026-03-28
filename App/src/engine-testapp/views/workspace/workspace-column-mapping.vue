@@ -23,6 +23,8 @@
 </script>
 
 <style scoped>
+  @use 'colors-def';
+
   .workspace-column-mapping-page {
     display: grid;
     gap: 0.75rem;
@@ -31,15 +33,15 @@
   .workspace-column-mapping-page__success {
     margin: 0;
     padding: 0.625rem 0.75rem;
-    border: 1px solid #99f6e4;
+    border: 1px solid var(--column-mapping-success-border);
     border-radius: 0.625rem;
-    background-color: #f0fdfa;
-    color: #134e4a;
+    background-color: var(--column-mapping-success-background);
+    color: var(--column-mapping-success-text);
     font-weight: 600;
   }
 
   .workspace-column-mapping-page__hint {
     margin: 0;
-    color: #4b5563;
+    color: var(--column-mapping-hint-text);
   }
 </style>
