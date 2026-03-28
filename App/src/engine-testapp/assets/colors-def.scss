@@ -22,6 +22,10 @@
   --workspace-menu-item-active-border: rgb(var(--v-theme-primary));
   --workspace-menu-item-active-text: rgb(var(--v-theme-on-primary));
 
+  /* Workspace panel colors */
+  --workspace-panel-background: rgb(var(--v-theme-surface));
+  --workspace-panel-border: rgb(var(--v-theme-outline));
+
   /* CSV Selection colors */
   --csv-selection-button-background: rgb(var(--v-theme-primary));
   --csv-selection-button-text: rgb(var(--v-theme-on-primary));
@@ -37,7 +41,7 @@
     var(--v-theme-success),
     var(--v-medium-emphasis-opacity)
   );
-  --csv-selection-status-selected-text: rgb(var(--v-theme-success));
+  --csv-selection-status-selected-text: rgb(var(--v-theme-on-surface));
   --csv-selection-status-empty-background: rgb(var(--v-theme-surface));
   --csv-selection-status-empty-border: rgb(var(--v-theme-outline));
   --csv-selection-status-empty-text: rgb(var(--v-theme-on-surface));
@@ -51,7 +55,7 @@
     var(--v-theme-success),
     var(--v-medium-emphasis-opacity)
   );
-  --column-mapping-status-applied-text: rgb(var(--v-theme-success));
+  --column-mapping-status-applied-text: rgb(var(--v-theme-on-surface));
   --column-mapping-status-empty-background: rgb(var(--v-theme-surface));
   --column-mapping-status-empty-border: rgb(var(--v-theme-outline));
   --column-mapping-status-empty-text: rgb(var(--v-theme-on-surface));
@@ -65,4 +69,24 @@
   --json-view-button-text: rgb(var(--v-theme-on-surface));
   --json-view-output-background: rgb(var(--v-theme-on-surface-variant));
   --json-view-output-text: rgb(var(--v-theme-on-surface));
+
+  /* Column Mapping controls colors */
+  --column-mapping-border: rgb(var(--v-theme-outline));
+  --column-mapping-select-background: rgb(var(--v-theme-surface));
+  --column-mapping-select-border: rgb(var(--v-theme-outline));
+  --column-mapping-select-text: rgb(var(--v-theme-on-surface));
+  --column-mapping-button-background: rgb(var(--v-theme-surface));
+  --column-mapping-button-border: rgb(var(--v-theme-outline));
+  --column-mapping-button-text: rgb(var(--v-theme-on-surface));
+  --column-mapping-requirement-required-background: rgb(
+    var(--v-theme-error),
+    var(--v-low-emphasis-opacity)
+  );
+  --column-mapping-requirement-required-text: rgb(var(--v-theme-error));
+  --column-mapping-requirement-optional-background: rgb(
+    var(--v-theme-outline),
+    var(--v-low-emphasis-opacity)
+  );
+  --column-mapping-requirement-optional-text: rgb(var(--v-theme-on-surface));
+  --column-mapping-error-text: rgb(var(--v-theme-error));
 }

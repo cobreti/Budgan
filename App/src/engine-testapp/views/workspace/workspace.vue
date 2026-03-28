@@ -128,9 +128,9 @@
     display: grid;
     gap: 1rem;
     padding: 1.5rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--workspace-panel-border);
     border-radius: 1rem;
-    background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%);
+    background-color: var(--workspace-panel-background);
     box-shadow: 0 16px 40px -28px rgba(15, 23, 42, 0.45);
   }
 

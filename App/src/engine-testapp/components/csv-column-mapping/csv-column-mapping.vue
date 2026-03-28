@@ -170,11 +170,13 @@
 </script>
 
 <style scoped>
+  @use 'colors-def';
+
   .csv-column-mapping {
     display: grid;
     gap: 0.75rem;
     padding-top: 0.5rem;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--column-mapping-border);
   }
 
   .csv-column-mapping h3,
@@ -210,28 +212,28 @@
   }
 
   .csv-column-mapping__requirement--required {
-    color: #9f1239;
-    background-color: #ffe4e6;
+    color: var(--column-mapping-requirement-required-text);
+    background-color: var(--column-mapping-requirement-required-background);
   }
 
   .csv-column-mapping__requirement--optional {
-    color: #334155;
-    background-color: #e2e8f0;
+    color: var(--column-mapping-requirement-optional-text);
+    background-color: var(--column-mapping-requirement-optional-background);
   }
 
   .csv-column-mapping__select {
     min-height: 2.5rem;
     padding: 0.5rem 0.75rem;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--column-mapping-select-border);
     border-radius: 0.6rem;
     font: inherit;
-    color: #0f172a;
-    background-color: #ffffff;
+    color: var(--column-mapping-select-text);
+    background-color: var(--column-mapping-select-background);
   }
 
   .csv-column-mapping__error {
     margin: 0;
-    color: #b91c1c;
+    color: var(--column-mapping-error-text);
   }
 
   .csv-column-mapping__button {
@@ -240,10 +242,10 @@
     justify-content: center;
     min-height: 2.75rem;
     padding: 0.75rem 1.2rem;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--column-mapping-button-border);
     border-radius: 999px;
-    background-color: #ffffff;
-    color: #0f172a;
+    background-color: var(--column-mapping-button-background);
+    color: var(--column-mapping-button-text);
     font: inherit;
     cursor: pointer;
   }
