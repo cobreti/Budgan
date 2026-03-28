@@ -104,6 +104,7 @@
     padding: 1rem;
     overflow-x: auto;
     border-radius: 0.75rem;
+    border: 1px solid var(--json-view-output-border);
     background-color: var(--json-view-output-background);
     color: var(--json-view-output-text);
     font-size: 0.875rem;
