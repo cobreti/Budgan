@@ -134,12 +134,38 @@
     return mapping
   })
 
-  watch(
-    () => workspaceStore.parsedJson,
-    () => {
+  function syncSelectedColumnsFromAppliedMapping(): void {
+    const headers = csvHeaders.value
+    const applied = workspaceStore.appliedMapping
+
+    if (!headers.length || !applied) {
       selectedColumns.value = {}
-      workspaceStore.setAppliedMapping(null)
+      return
     }
+
+    const mappedSelections: Partial<Record<CsvColumnId, string>> = {}
+
+    for (const column of mappingColumns) {
+      const headerIndex = applied[column.key]
+      if (headerIndex === undefined) {
+        continue
+      }
+
+      const headerName = headers[headerIndex]
+      if (headerName !== undefined) {
+        mappedSelections[column.key] = headerName
+      }
+    }
+
+    selectedColumns.value = mappedSelections
+  }
+
+  watch(
+    [() => workspaceStore.parsedJson, () => workspaceStore.appliedMapping],
+    () => {
+      syncSelectedColumnsFromAppliedMapping()
+    },
+    { immediate: true }
   )
 
   function onMappingChange(column: CsvColumnId, event: Event): void {
