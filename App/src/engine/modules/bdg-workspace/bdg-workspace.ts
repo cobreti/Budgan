@@ -4,6 +4,7 @@ import type { Result } from '@/engine/types/result-pattern'
 
 export interface BdgWorkspace {
   id: string
+  name: string
   createAccount(): BdgAccount
   getAccount(accountId: string): BdgAccount | undefined
 }
@@ -12,6 +13,7 @@ export class BdgWorkspaceImpl implements BdgWorkspace {
   private _idGenerator: IdGenerator
   private _id: string
   private _accounts: Map<string, BdgAccount> = new Map()
+  private _name: string = ''
 
   constructor(idGenerrator: IdGenerator, id: string) {
     this._id = id
@@ -20,6 +22,14 @@ export class BdgWorkspaceImpl implements BdgWorkspace {
 
   get id(): string {
     return this._id
+  }
+
+  get name(): string {
+    return this._name
+  }
+
+  set name(value: string) {
+    this._name = value
   }
 
   createAccount(): BdgAccount {

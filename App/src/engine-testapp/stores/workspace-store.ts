@@ -3,6 +3,11 @@ import { ref } from 'vue'
 import { type CsvColumnMapping } from '../../engine/modules/csv-import/csv-column-content'
 import { type CsvContentExtractionResult } from '../../engine/modules/csv-import/csv-content-extractor'
 
+type StoredWorkspace = {
+  id: string
+  name: string
+}
+
 export const useWorkspaceStore = defineStore(
   'workspace',
   () => {
@@ -11,6 +16,15 @@ export const useWorkspaceStore = defineStore(
     const selectedFileName = ref<string | null>(null)
     const selectedFileSize = ref<number | null>(null)
     const isJsonVisible = ref(false)
+    const currentWorkspace = ref<StoredWorkspace | null>(null)
+
+    function resetWorkspaceData(): void {
+      parsedJson.value = null
+      appliedMapping.value = null
+      selectedFileName.value = null
+      selectedFileSize.value = null
+      isJsonVisible.value = false
+    }
 
     function setParsedJson(content: CsvContentExtractionResult | null): void {
       parsedJson.value = content
@@ -37,16 +51,23 @@ export const useWorkspaceStore = defineStore(
       isJsonVisible.value = !isJsonVisible.value
     }
 
+    function setCurrentWorkspace(workspace: StoredWorkspace | null): void {
+      currentWorkspace.value = workspace
+      resetWorkspaceData()
+    }
+
     return {
       parsedJson,
       appliedMapping,
       selectedFileName,
       selectedFileSize,
       isJsonVisible,
+      currentWorkspace,
       setParsedJson,
       setAppliedMapping,
       setSelectedFile,
-      toggleJsonVisibility
+      toggleJsonVisibility,
+      setCurrentWorkspace
     }
   },
   {

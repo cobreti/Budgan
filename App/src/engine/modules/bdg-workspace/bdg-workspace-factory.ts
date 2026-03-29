@@ -5,6 +5,8 @@ import { IdGenerator } from '@/engine/services/IdGenerator'
 
 export abstract class BdgWorkspaceFactory {
   static readonly bindingTypeId: string = InversifyUtils.createBindingId('WorkspaceFactory')
+
+  abstract createWorkspace(): BdgWorkspace
 }
 
 export class BdgWorkspaceFactoryImpl extends BdgWorkspaceFactory {

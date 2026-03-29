@@ -33,6 +33,11 @@ export const router = createRouter({
               }
             },
             {
+              path: 'create',
+              name: 'workspace-create',
+              component: () => import('@engineTestAppViews/workspace/workspace-create.vue')
+            },
+            {
               path: 'csv-selection',
               name: 'workspace-csv-selection',
               component: () => import('@engineTestAppViews/workspace/workspace-csv-selection.vue')

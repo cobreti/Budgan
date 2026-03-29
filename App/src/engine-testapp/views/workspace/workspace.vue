@@ -9,6 +9,17 @@
         <ul class="workspace-view__menu-list">
           <li>
             <RouterLink
+              :to="{ name: 'workspace-create', params: { locale: localeParam } }"
+              class="workspace-view__menu-item"
+              :class="{
+                'workspace-view__menu-item--active': route.name === 'workspace-create'
+              }"
+            >
+              {{ t('workspace.menu.createWorkspace') }}
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink
               :to="{ name: 'workspace-csv-selection', params: { locale: localeParam } }"
               class="workspace-view__menu-item"
               :class="{
