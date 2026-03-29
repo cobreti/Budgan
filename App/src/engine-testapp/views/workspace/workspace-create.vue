@@ -12,6 +12,15 @@
       <p v-else class="workspace-create__current-empty">
         {{ t('workspace.create.currentWorkspaceEmpty') }}
       </p>
+      <button
+        v-if="workspaceStore.currentWorkspace"
+        class="workspace-create__remove-button"
+        type="button"
+        data-testid="workspace-create-remove-current"
+        @click="removeCurrentWorkspace"
+      >
+        {{ t('workspace.create.removeCurrent') }}
+      </button>
     </div>
 
     <form class="workspace-create__form" @submit.prevent="createWorkspace">
@@ -84,6 +93,13 @@
       createdWorkspaceId.value = null
       errorMessage.value = t('workspace.create.error')
     }
+  }
+
+  function removeCurrentWorkspace(): void {
+    workspaceStore.setCurrentWorkspace(null)
+    createdWorkspaceId.value = null
+    workspaceName.value = ''
+    errorMessage.value = t('workspace.create.removed')
   }
 </script>
 
@@ -170,6 +186,21 @@
     cursor: pointer;
   }
 
+  .workspace-create__remove-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+    padding: 0.55rem 1rem;
+    border: 1px solid rgb(var(--v-theme-error));
+    border-radius: 999px;
+    background-color: rgb(var(--v-theme-error), var(--v-low-emphasis-opacity));
+    color: rgb(var(--v-theme-error));
+    font: inherit;
+    cursor: pointer;
+    justify-self: start;
+  }
+
   .workspace-create__error,
   .workspace-create__success {
     margin: 0;
@@ -184,7 +215,8 @@
   }
 
   @media (max-width: 640px) {
-    .workspace-create__button {
+    .workspace-create__button,
+    .workspace-create__remove-button {
       width: 100%;
     }
   }

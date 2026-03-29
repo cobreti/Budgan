@@ -20,6 +20,7 @@
           </li>
           <li>
             <RouterLink
+              v-if="hasCurrentWorkspace"
               :to="{ name: 'workspace-csv-selection', params: { locale: localeParam } }"
               class="workspace-view__menu-item"
               :class="{
@@ -28,9 +29,17 @@
             >
               {{ t('workspace.menu.csvSelection') }}
             </RouterLink>
+            <span
+              v-else
+              class="workspace-view__menu-item workspace-view__menu-item--disabled"
+              aria-disabled="true"
+            >
+              {{ t('workspace.menu.csvSelection') }}
+            </span>
           </li>
           <li>
             <RouterLink
+              v-if="hasCurrentWorkspace"
               :to="{ name: 'workspace-column-mapping', params: { locale: localeParam } }"
               class="workspace-view__menu-item"
               :class="{
@@ -39,9 +48,17 @@
             >
               {{ t('workspace.menu.columnMapping') }}
             </RouterLink>
+            <span
+              v-else
+              class="workspace-view__menu-item workspace-view__menu-item--disabled"
+              aria-disabled="true"
+            >
+              {{ t('workspace.menu.columnMapping') }}
+            </span>
           </li>
           <li>
             <RouterLink
+              v-if="hasCurrentWorkspace"
               :to="{ name: 'workspace-json-data-view', params: { locale: localeParam } }"
               class="workspace-view__menu-item"
               :class="{
@@ -50,6 +67,13 @@
             >
               {{ t('workspace.menu.jsonDataView') }}
             </RouterLink>
+            <span
+              v-else
+              class="workspace-view__menu-item workspace-view__menu-item--disabled"
+              aria-disabled="true"
+            >
+              {{ t('workspace.menu.jsonDataView') }}
+            </span>
           </li>
         </ul>
       </aside>
@@ -65,9 +89,13 @@
   import { computed } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
+  import { useWorkspaceStore } from '../../stores/workspace-store'
 
   const { t } = useI18n()
   const route = useRoute()
+  const workspaceStore = useWorkspaceStore()
+
+  const hasCurrentWorkspace = computed(() => workspaceStore.currentWorkspace !== null)
 
   const localeParam = computed(() => {
     const locale = route.params.locale
@@ -133,6 +161,11 @@
     border-color: var(--workspace-menu-item-active-border);
     background-color: var(--workspace-menu-item-active-background);
     color: var(--workspace-menu-item-active-text);
+  }
+
+  .workspace-view__menu-item--disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
   }
 
   .workspace-view__panel {
