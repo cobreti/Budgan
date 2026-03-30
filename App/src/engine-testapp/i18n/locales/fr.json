@@ -5,6 +5,7 @@
   "workspace.title": "Test de l'espace de travail",
   "workspace.description": "Choisissez un fichier CSV sur le disque pour le charger dans l'espace de travail.",
   "workspace.menu.createWorkspace": "Creer un espace de travail",
+  "workspace.menu.addAccount": "Ajouter un compte",
   "workspace.menu.csvSelection": "Sélection de CSV",
   "workspace.menu.columnMapping": "Mappage des colonnes",
   "workspace.menu.jsonDataView": "Vue des données JSON",

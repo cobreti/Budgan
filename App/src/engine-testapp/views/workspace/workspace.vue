@@ -20,6 +20,17 @@
           </li>
           <li>
             <RouterLink
+              :to="{ name: 'workspace-account-add', params: { locale: localeParam } }"
+              class="workspace-view__menu-item"
+              :class="{
+                'workspace-view__menu-item--active': route.name === 'workspace-account-add'
+              }"
+            >
+              {{ t('workspace.menu.addAccount') }}
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink
               v-if="hasCurrentWorkspace"
               :to="{ name: 'workspace-csv-selection', params: { locale: localeParam } }"
               class="workspace-view__menu-item"

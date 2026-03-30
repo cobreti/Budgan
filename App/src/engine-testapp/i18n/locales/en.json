@@ -5,6 +5,7 @@
   "workspace.title": "Workspace Test",
   "workspace.description": "Choose a CSV file from disk to load it into the workspace.",
   "workspace.menu.createWorkspace": "Create Workspace",
+  "workspace.menu.addAccount": "Add Account",
   "workspace.menu.csvSelection": "CSV Selection",
   "workspace.menu.columnMapping": "Column Mapping",
   "workspace.menu.jsonDataView": "JSON Data View",
