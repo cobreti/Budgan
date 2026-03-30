@@ -20,6 +20,7 @@
           </li>
           <li>
             <RouterLink
+              v-if="hasCurrentWorkspace"
               :to="{ name: 'workspace-account-add', params: { locale: localeParam } }"
               class="workspace-view__menu-item"
               :class="{
@@ -28,6 +29,13 @@
             >
               {{ t('workspace.menu.addAccount') }}
             </RouterLink>
+            <span
+              v-else
+              class="workspace-view__menu-item workspace-view__menu-item--disabled"
+              aria-disabled="true"
+            >
+              {{ t('workspace.menu.addAccount') }}
+            </span>
           </li>
           <li>
             <RouterLink

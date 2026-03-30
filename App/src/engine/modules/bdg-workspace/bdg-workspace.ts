@@ -5,19 +5,19 @@ import type { Result } from '@/engine/types/result-pattern'
 export interface BdgWorkspace {
   id: string
   name: string
-  createAccount(): BdgAccount
+  createAccount(name: string): BdgAccount
   getAccount(accountId: string): BdgAccount | undefined
 }
 
 export class BdgWorkspaceImpl implements BdgWorkspace {
   private _idGenerator: IdGenerator
-  private _id: string
+  private readonly _id: string
   private _accounts: Map<string, BdgAccount> = new Map()
   private _name: string = ''
 
-  constructor(idGenerrator: IdGenerator, id: string) {
+  constructor(idGenerator: IdGenerator, id: string) {
     this._id = id
-    this._idGenerator = idGenerrator
+    this._idGenerator = idGenerator
   }
 
   get id(): string {
@@ -32,9 +32,9 @@ export class BdgWorkspaceImpl implements BdgWorkspace {
     this._name = value
   }
 
-  createAccount(): BdgAccount {
+  createAccount(name: string): BdgAccount {
     const accountId = this._idGenerator.generateId()
-    const account = new BdgAccountImpl(accountId)
+    const account = new BdgAccountImpl(accountId, name)
     this._accounts.set(accountId, account)
     return account
   }
