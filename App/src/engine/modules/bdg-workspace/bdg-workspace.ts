@@ -5,6 +5,7 @@ import type { Result } from '@/engine/types/result-pattern'
 export interface BdgWorkspace {
   id: string
   name: string
+  accounts: BdgAccount[]
   createAccount(name: string): BdgAccount
   getAccount(accountId: string): BdgAccount | undefined
 }
@@ -26,6 +27,10 @@ export class BdgWorkspaceImpl implements BdgWorkspace {
 
   get name(): string {
     return this._name
+  }
+
+  get accounts(): BdgAccount[] {
+    return Array.from(this._accounts.values())
   }
 
   set name(value: string) {
