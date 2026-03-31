@@ -81,10 +81,7 @@
       const workspaceFactory = container.get<BdgWorkspaceFactory>(BdgWorkspaceFactory.bindingTypeId)
       const workspace = workspaceFactory.createWorkspace()
       workspace.name = trimmedWorkspaceName
-      workspaceStore.setCurrentWorkspace({
-        id: workspace.id,
-        name: workspace.name
-      })
+      workspaceStore.setCurrentWorkspace(workspace)
 
       createdWorkspaceId.value = workspace.id
       errorMessage.value = ''

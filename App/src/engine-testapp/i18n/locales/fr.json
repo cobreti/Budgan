@@ -30,6 +30,8 @@
   "workspace.account.accounts.success": "Compte cree : {accountName} ({accountId})",
   "workspace.account.accounts.error": "Impossible de creer le compte.",
   "workspace.account.accounts.nameRequired": "Le nom du compte est requis.",
+  "workspace.account.accounts.listTitle": "Comptes existants",
+  "workspace.account.accounts.noAccounts": "Aucun compte créé pour le moment.",
   "workspace.empty": "Aucun fichier CSV selectionne",
   "workspace.selected": "Fichier CSV selectionne : {fileName}",
   "workspace.select": "Choisir un fichier CSV",

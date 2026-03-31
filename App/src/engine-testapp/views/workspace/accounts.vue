@@ -31,16 +31,29 @@
         {{ t('workspace.account.accounts.submit') }}
       </button>
     </form>
+
+    <hr class="accounts__separator" />
+
+    <div class="accounts__list-section">
+      <h4 class="accounts__list-title">{{ t('workspace.account.accounts.listTitle') }}</h4>
+      <ul v-if="accounts.length > 0" class="accounts__list">
+        <li v-for="account in accounts" :key="account.id" class="accounts__list-item">
+          <span class="accounts__list-item-name">{{ account.name }}</span>
+          <span class="accounts__list-item-id">({{ account.id }})</span>
+        </li>
+      </ul>
+      <p v-else class="accounts__list-empty">
+        {{ t('workspace.account.accounts.noAccounts') }}
+      </p>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, onMounted } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useWorkspaceStore } from '../../stores/workspace-store'
-  import container from '../../../inversify/setup-inversify'
-  import { IdGenerator } from '../../../engine/services/IdGenerator'
-  import { BdgWorkspaceImpl } from '../../../engine/modules/bdg-workspace/bdg-workspace'
+  import type { BdgAccount } from '../../../engine/modules/bdg-workspace/bdg-account'
 
   const { t } = useI18n()
   const workspaceStore = useWorkspaceStore()
@@ -48,6 +61,21 @@
   const accountName = ref('')
   const createdAccount = ref<{ id: string; name: string } | null>(null)
   const errorMessage = ref('')
+  const accounts = ref<BdgAccount[]>([])
+
+  function loadAccounts(): void {
+    const currentWorkspace = workspaceStore.currentWorkspace
+    if (!currentWorkspace) {
+      accounts.value = []
+      return
+    }
+
+    accounts.value = currentWorkspace.accounts
+  }
+
+  onMounted(() => {
+    loadAccounts()
+  })
 
   function createAccount(): void {
     const trimmedAccountName = accountName.value.trim()
@@ -66,18 +94,15 @@
     }
 
     try {
-      const idGenerator = container.get<IdGenerator>(IdGenerator.bindingTypeId)
-      const workspace = new BdgWorkspaceImpl(idGenerator, currentWorkspace.id)
-      workspace.name = currentWorkspace.name
-      
-      const account = workspace.createAccount(trimmedAccountName)
-      
+      const account = currentWorkspace.createAccount(trimmedAccountName)
+
       createdAccount.value = {
         id: account.id,
         name: account.name
       }
       errorMessage.value = ''
       accountName.value = ''
+      loadAccounts()
     } catch {
       createdAccount.value = null
       errorMessage.value = t('workspace.account.accounts.error')
@@ -145,6 +170,55 @@
 
   .accounts__success {
     color: rgb(var(--v-theme-success));
+  }
+
+  .accounts__separator {
+    margin: 1.5rem 0;
+    border: 0;
+    border-top: 1px solid rgb(var(--v-theme-outline));
+    opacity: 0.2;
+  }
+
+  .accounts__list-section {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .accounts__list-title {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .accounts__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .accounts__list-item {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid rgb(var(--v-theme-outline));
+    border-radius: 0.625rem;
+    background-color: rgb(var(--v-theme-surface-variant), 0.05);
+  }
+
+  .accounts__list-item-name {
+    font-weight: 600;
+  }
+
+  .accounts__list-item-id {
+    color: rgb(var(--v-theme-on-surface-variant));
+    font-size: 0.875rem;
+  }
+
+  .accounts__list-empty {
+    margin: 0;
+    color: rgb(var(--v-theme-on-surface-variant));
+    font-style: italic;
   }
 
   @media (max-width: 640px) {

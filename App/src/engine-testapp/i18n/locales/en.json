@@ -30,6 +30,8 @@
   "workspace.account.accounts.success": "Account created: {accountName} ({accountId})",
   "workspace.account.accounts.error": "Unable to create account.",
   "workspace.account.accounts.nameRequired": "Account name is required.",
+  "workspace.account.accounts.listTitle": "Existing Accounts",
+  "workspace.account.accounts.noAccounts": "No accounts created yet.",
   "workspace.empty": "No CSV file selected",
   "workspace.selected": "Selected CSV file: {fileName}",
   "workspace.select": "Select CSV File",

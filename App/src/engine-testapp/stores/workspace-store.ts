@@ -2,11 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { type CsvColumnMapping } from '../../engine/modules/csv-import/csv-column-content'
 import { type CsvContentExtractionResult } from '../../engine/modules/csv-import/csv-content-extractor'
-
-type StoredWorkspace = {
-  id: string
-  name: string
-}
+import type { BdgWorkspace } from '../../engine/modules/bdg-workspace/bdg-workspace'
 
 export const useWorkspaceStore = defineStore(
   'workspace',
@@ -16,7 +12,7 @@ export const useWorkspaceStore = defineStore(
     const selectedFileName = ref<string | null>(null)
     const selectedFileSize = ref<number | null>(null)
     const isJsonVisible = ref(false)
-    const currentWorkspace = ref<StoredWorkspace | null>(null)
+    const currentWorkspace = ref<BdgWorkspace | null>(null)
 
     function resetWorkspaceData(): void {
       parsedJson.value = null
@@ -51,7 +47,7 @@ export const useWorkspaceStore = defineStore(
       isJsonVisible.value = !isJsonVisible.value
     }
 
-    function setCurrentWorkspace(workspace: StoredWorkspace | null): void {
+    function setCurrentWorkspace(workspace: BdgWorkspace | null): void {
       currentWorkspace.value = workspace
       resetWorkspaceData()
     }
