@@ -1,34 +1,34 @@
 <template>
-  <section class="account-add" data-testid="account-add-view">
-    <h3 class="account-add__title">{{ t('workspace.account.add.title') }}</h3>
-    <p class="account-add__description">{{ t('workspace.account.add.description') }}</p>
+  <section class="accounts" data-testid="accounts-view">
+    <h3 class="accounts__title">{{ t('workspace.account.accounts.title') }}</h3>
+    <p class="accounts__description">{{ t('workspace.account.accounts.description') }}</p>
 
-    <form class="account-add__form" @submit.prevent="createAccount">
-      <label class="account-add__label" for="account-name">
-        {{ t('workspace.account.add.nameLabel') }}
+    <form class="accounts__form" @submit.prevent="createAccount">
+      <label class="accounts__label" for="account-name">
+        {{ t('workspace.account.accounts.nameLabel') }}
       </label>
       <input
         id="account-name"
         v-model="accountName"
-        class="account-add__input"
-        data-testid="account-add-name"
+        class="accounts__input"
+        data-testid="accounts-name"
         type="text"
-        :placeholder="t('workspace.account.add.namePlaceholder')"
+        :placeholder="t('workspace.account.accounts.namePlaceholder')"
       />
 
-      <p v-if="errorMessage" class="account-add__error" data-testid="account-add-error">
+      <p v-if="errorMessage" class="accounts__error" data-testid="accounts-error">
         {{ errorMessage }}
       </p>
       <p
         v-if="createdAccount"
-        class="account-add__success"
-        data-testid="account-add-success"
+        class="accounts__success"
+        data-testid="accounts-success"
       >
-        {{ t('workspace.account.add.success', { accountName: createdAccount.name, accountId: createdAccount.id }) }}
+        {{ t('workspace.account.accounts.success', { accountName: createdAccount.name, accountId: createdAccount.id }) }}
       </p>
 
-      <button class="account-add__button" type="submit" data-testid="account-add-submit">
-        {{ t('workspace.account.add.submit') }}
+      <button class="accounts__button" type="submit" data-testid="accounts-submit">
+        {{ t('workspace.account.accounts.submit') }}
       </button>
     </form>
   </section>
@@ -54,14 +54,14 @@
 
     if (!trimmedAccountName) {
       createdAccount.value = null
-      errorMessage.value = t('workspace.account.add.nameRequired')
+      errorMessage.value = t('workspace.account.accounts.nameRequired')
       return
     }
 
     const currentWorkspace = workspaceStore.currentWorkspace
     if (!currentWorkspace) {
       createdAccount.value = null
-      errorMessage.value = t('workspace.account.add.error')
+      errorMessage.value = t('workspace.account.accounts.error')
       return
     }
 
@@ -80,37 +80,37 @@
       accountName.value = ''
     } catch {
       createdAccount.value = null
-      errorMessage.value = t('workspace.account.add.error')
+      errorMessage.value = t('workspace.account.accounts.error')
     }
   }
 </script>
 
 <style scoped>
-  .account-add {
+  .accounts {
     display: grid;
     gap: 0.75rem;
   }
 
-  .account-add__title,
-  .account-add__description {
+  .accounts__title,
+  .accounts__description {
     margin: 0;
   }
 
-  .account-add__description {
+  .accounts__description {
     color: rgb(var(--v-theme-on-surface-variant));
   }
 
-  .account-add__form {
+  .accounts__form {
     display: grid;
     gap: 0.75rem;
   }
 
-  .account-add__label {
+  .accounts__label {
     font-weight: 600;
     color: rgb(var(--v-theme-on-surface));
   }
 
-  .account-add__input {
+  .accounts__input {
     min-height: 2.75rem;
     padding: 0.65rem 0.75rem;
     border: 1px solid rgb(var(--v-theme-outline));
@@ -120,7 +120,7 @@
     font: inherit;
   }
 
-  .account-add__button {
+  .accounts__button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -134,21 +134,21 @@
     cursor: pointer;
   }
 
-  .account-add__error,
-  .account-add__success {
+  .accounts__error,
+  .accounts__success {
     margin: 0;
   }
 
-  .account-add__error {
+  .accounts__error {
     color: rgb(var(--v-theme-error));
   }
 
-  .account-add__success {
+  .accounts__success {
     color: rgb(var(--v-theme-success));
   }
 
   @media (max-width: 640px) {
-    .account-add__button {
+    .accounts__button {
       width: 100%;
     }
   }

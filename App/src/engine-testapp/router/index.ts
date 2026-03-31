@@ -38,9 +38,9 @@ export const router = createRouter({
               component: () => import('@engineTestAppViews/workspace/workspace-create.vue')
             },
             {
-              path: 'add-account',
-              name: 'workspace-account-add',
-              component: () => import('@engineTestAppViews/workspace/account-add.vue')
+              path: 'accounts',
+              name: 'workspace-accounts',
+              component: () => import('@engineTestAppViews/workspace/accounts.vue')
             },
             {
               path: 'csv-selection',

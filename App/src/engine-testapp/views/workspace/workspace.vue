@@ -21,20 +21,20 @@
           <li>
             <RouterLink
               v-if="hasCurrentWorkspace"
-              :to="{ name: 'workspace-account-add', params: { locale: localeParam } }"
+              :to="{ name: 'workspace-accounts', params: { locale: localeParam } }"
               class="workspace-view__menu-item"
               :class="{
-                'workspace-view__menu-item--active': route.name === 'workspace-account-add'
+                'workspace-view__menu-item--active': route.name === 'workspace-accounts'
               }"
             >
-              {{ t('workspace.menu.addAccount') }}
+              {{ t('workspace.menu.accounts') }}
             </RouterLink>
             <span
               v-else
               class="workspace-view__menu-item workspace-view__menu-item--disabled"
               aria-disabled="true"
             >
-              {{ t('workspace.menu.addAccount') }}
+              {{ t('workspace.menu.accounts') }}
             </span>
           </li>
           <li>
