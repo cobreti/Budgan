@@ -1,4 +1,7 @@
-export interface BdgAccount {}
+export interface BdgAccount {
+  id: string
+  name: string
+}
 
 export class BdgAccountImpl implements BdgAccount {
   private readonly _id: string
