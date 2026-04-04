@@ -19,11 +19,16 @@ export const useSettingsStore = defineStore(
       settings.value.addColumnMapping(mapping)
     }
 
+    function removeMapping(id: string): void {
+      settings.value.removeColumnMapping(id)
+    }
+
     return {
       settings,
       columnMappings,
       updateMapping,
-      insertMapping
+      insertMapping,
+      removeMapping
     }
   },
   {

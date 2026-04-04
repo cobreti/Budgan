@@ -33,4 +33,16 @@ describe('BdgSettingsImpl', () => {
     settings.updateColumnMapping(updatedMapping)
     expect(settings.columnMappings.find(m => m.id === '1')?.name).toBe('Updated')
   })
+
+  it('should correctly remove a mapping when it exists', () => {
+    const settings = new BdgSettingsImpl()
+    settings.addColumnMapping(mapping1)
+    settings.removeColumnMapping('1')
+    expect(settings.columnMappings).not.toContain(mapping1)
+  })
+
+  it('should throw an error when removing a mapping that does not exist', () => {
+    const settings = new BdgSettingsImpl()
+    expect(() => settings.removeColumnMapping('non-existent')).toThrow()
+  })
 })
