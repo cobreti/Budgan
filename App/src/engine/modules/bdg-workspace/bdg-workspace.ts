@@ -7,7 +7,7 @@ export interface BdgWorkspace {
   name: string
   accounts: BdgAccount[]
   createAccount(name: string): BdgAccount
-  getAccount(accountId: string): BdgAccount | undefined
+  getAccount(accountId: string): Result<BdgAccount> | undefined
 }
 
 export class BdgWorkspaceImpl implements BdgWorkspace {
