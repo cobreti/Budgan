@@ -5,6 +5,7 @@ import {
   BdgWorkspaceFactory,
   BdgWorkspaceFactoryImpl
 } from './modules/bdg-workspace/bdg-workspace-factory'
+import { BdgSettings, BdgSettingsImpl } from '@engine/modules/bdg-settings/bdg-settings.ts'
 
 export const engineModule = new ContainerModule((options: ContainerModuleLoadOptions) => {
   options.bind<ReaderFactory>(ReaderFactory.bindingTypeId).to(FileReaderFactoryImpl)
@@ -12,5 +13,9 @@ export const engineModule = new ContainerModule((options: ContainerModuleLoadOpt
   options
     .bind<BdgWorkspaceFactory>(BdgWorkspaceFactory.bindingTypeId)
     .to(BdgWorkspaceFactoryImpl)
+    .inSingletonScope()
+  options
+    .bind<BdgSettings>(BdgSettings.bindingTypeId)
+    .to(BdgSettingsImpl)
     .inSingletonScope()
 })
