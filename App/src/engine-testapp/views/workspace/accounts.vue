@@ -122,7 +122,7 @@
   }
 
   .accounts__description {
-    color: rgb(var(--v-theme-on-surface-variant));
+    color: var(--workspace-on-surface-variant);
   }
 
   .accounts__form {
@@ -132,16 +132,16 @@
 
   .accounts__label {
     font-weight: 600;
-    color: rgb(var(--v-theme-on-surface));
+    color: var(--workspace-on-surface);
   }
 
   .accounts__input {
     min-height: 2.75rem;
     padding: 0.65rem 0.75rem;
-    border: 1px solid rgb(var(--v-theme-outline));
+    border: 1px solid var(--workspace-outline);
     border-radius: 0.625rem;
-    background-color: rgb(var(--v-theme-surface));
-    color: rgb(var(--v-theme-on-surface));
+    background-color: var(--workspace-surface);
+    color: var(--workspace-on-surface);
     font: inherit;
   }
 
@@ -151,10 +151,10 @@
     justify-content: center;
     min-height: 2.75rem;
     padding: 0.75rem 1.2rem;
-    border: 1px solid rgb(var(--v-theme-outline));
+    border: 1px solid var(--workspace-outline);
     border-radius: 999px;
-    background-color: rgb(var(--v-theme-surface));
-    color: rgb(var(--v-theme-on-surface));
+    background-color: var(--workspace-surface);
+    color: var(--workspace-on-surface);
     font: inherit;
     cursor: pointer;
   }
@@ -165,17 +165,17 @@
   }
 
   .accounts__error {
-    color: rgb(var(--v-theme-error));
+    color: var(--workspace-error);
   }
 
   .accounts__success {
-    color: rgb(var(--v-theme-success));
+    color: var(--workspace-success);
   }
 
   .accounts__separator {
     margin: 1.5rem 0;
     border: 0;
-    border-top: 1px solid rgb(var(--v-theme-outline));
+    border-top: 1px solid var(--workspace-outline);
     opacity: 0.2;
   }
 
@@ -201,9 +201,9 @@
     display: flex;
     gap: 0.5rem;
     padding: 0.75rem;
-    border: 1px solid rgb(var(--v-theme-outline));
+    border: 1px solid var(--workspace-outline);
     border-radius: 0.625rem;
-    background-color: rgb(var(--v-theme-surface-variant), 0.05);
+    background-color: var(--workspace-surface-variant-alpha-05);
   }
 
   .accounts__list-item-name {
@@ -211,13 +211,13 @@
   }
 
   .accounts__list-item-id {
-    color: rgb(var(--v-theme-on-surface-variant));
+    color: var(--workspace-on-surface-variant);
     font-size: 0.875rem;
   }
 
   .accounts__list-empty {
     margin: 0;
-    color: rgb(var(--v-theme-on-surface-variant));
+    color: var(--workspace-on-surface-variant);
     font-style: italic;
   }
 

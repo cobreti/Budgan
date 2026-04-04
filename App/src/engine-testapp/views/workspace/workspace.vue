@@ -138,7 +138,7 @@
 
   .workspace-view__header p {
     margin: 0;
-    color: rgb(var(--v-theme-on-surface-variant));
+    color: var(--workspace-header-text);
   }
 
   .workspace-view__layout {
