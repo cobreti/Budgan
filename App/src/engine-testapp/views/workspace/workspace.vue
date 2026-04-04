@@ -15,7 +15,7 @@
                 'workspace-view__menu-item--active': route.name === 'workspace-create'
               }"
             >
-              {{ t('workspace.menu.createWorkspace') }}
+              {{ t('workspace.menu.currentWorkspace') }}
             </RouterLink>
           </li>
           <li>
