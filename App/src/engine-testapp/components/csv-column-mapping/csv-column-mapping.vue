@@ -3,6 +3,66 @@
     <h3>{{ t('workspace.mapping.title') }}</h3>
     <p>{{ t('workspace.mapping.description') }}</p>
 
+    <div class="csv-column-mapping__management">
+      <div class="csv-column-mapping__row">
+        <label for="saved-mappings" class="csv-column-mapping__label">
+          {{ t('workspace.mapping.savedMappings') }}
+        </label>
+        <select
+          id="saved-mappings"
+          class="csv-column-mapping__select"
+          :value="selectedMappingId"
+          @change="onMappingSelect"
+        >
+          <option value="">{{ t('workspace.mapping.newMapping') }}</option>
+          <option v-for="mapping in savedMappings" :key="mapping.id" :value="mapping.id">
+            {{ mapping.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="csv-column-mapping__row">
+        <label for="mapping-name" class="csv-column-mapping__label">
+          {{ t('workspace.mapping.mappingName') }}
+        </label>
+        <input
+          id="mapping-name"
+          v-model="mappingName"
+          type="text"
+          class="csv-column-mapping__input"
+          :placeholder="t('workspace.mapping.mappingName')"
+        />
+      </div>
+
+      <div class="csv-column-mapping__actions">
+        <button
+          class="csv-column-mapping__button"
+          type="button"
+          :disabled="!canSave"
+          @click="saveNewMapping"
+        >
+          {{ t('workspace.mapping.saveNew') }}
+        </button>
+        <button
+          v-if="selectedMappingId"
+          class="csv-column-mapping__button"
+          type="button"
+          :disabled="!canSave"
+          @click="updateExistingMapping"
+        >
+          {{ t('workspace.mapping.update') }}
+        </button>
+        <button
+          v-if="selectedMappingId"
+          class="csv-column-mapping__button csv-column-mapping__button--danger"
+          type="button"
+          @click="deleteMapping"
+        >
+          {{ t('workspace.mapping.delete') }}
+        </button>
+      </div>
+    </div>
+
     <div class="csv-column-mapping__grid">
       <div v-for="column in mappingColumns" :key="column.key" class="csv-column-mapping__row">
         <label :for="`mapping-${column.key}`" class="csv-column-mapping__label">
@@ -59,11 +119,15 @@
   import { computed, ref, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useWorkspaceStore } from '../../stores/workspace-store'
+  import { useSettingsStore } from '../../stores/settings-store'
+  import { IdGenerator } from '../../../engine/services/IdGenerator'
+  import container from '../../../inversify/setup-inversify'
   import {
     CsvColumns,
     type CsvColumnMapping,
     type CsvColumns as CsvColumnId
   } from '../../../engine/modules/csv-import/csv-column-content'
+  import type { BdgColumnMapping } from '../../../engine/modules/bdg-settings/bdg-column-mapping'
 
   type CsvMappingColumnDefinition = {
     key: CsvColumnId
@@ -101,8 +165,15 @@
 
   const { t } = useI18n()
   const workspaceStore = useWorkspaceStore()
+  const settingsStore = useSettingsStore()
+  const idGenerator = container.get<IdGenerator>(IdGenerator.bindingTypeId)
+
   const selectedColumns = ref<Partial<Record<CsvColumnId, string>>>({})
+  const mappingName = ref('')
+  const selectedMappingId = ref('')
+
   const csvHeaders = computed(() => workspaceStore.parsedJson?.header ?? [])
+  const savedMappings = computed(() => settingsStore.columnMappings)
 
   const missingRequiredColumns = computed(() => {
     return mappingColumns.filter((column) => column.required && !selectedColumns.value[column.key])
@@ -114,6 +185,10 @@
 
   const canApplyMapping = computed(() => {
     return missingRequiredColumns.value.length === 0
+  })
+
+  const canSave = computed(() => {
+    return mappingName.value.trim() !== '' && canApplyMapping.value
   })
 
   const currentMapping = computed<CsvColumnMapping>(() => {
@@ -193,6 +268,76 @@
 
     workspaceStore.setAppliedMapping({ ...currentMapping.value })
   }
+
+  function onMappingSelect(event: Event): void {
+    const id = (event.target as HTMLSelectElement).value
+    selectedMappingId.value = id
+
+    if (!id) {
+      mappingName.value = ''
+      selectedColumns.value = {}
+      return
+    }
+
+    const mapping = savedMappings.value.find((m) => m.id === id)
+    if (mapping) {
+      mappingName.value = mapping.name
+      loadMapping(mapping.columnMapping)
+    }
+  }
+
+  function loadMapping(mapping: CsvColumnMapping): void {
+    const headers = csvHeaders.value
+    const mappedSelections: Partial<Record<CsvColumnId, string>> = {}
+
+    for (const column of mappingColumns) {
+      const headerIndex = mapping[column.key]
+      if (headerIndex === undefined) {
+        continue
+      }
+
+      const headerName = headers[headerIndex]
+      if (headerName !== undefined) {
+        mappedSelections[column.key] = headerName
+      }
+    }
+
+    selectedColumns.value = mappedSelections
+  }
+
+  function saveNewMapping(): void {
+    if (!canSave.value) return
+
+    const newMapping: BdgColumnMapping = {
+      id: idGenerator.generateId(),
+      name: mappingName.value,
+      columnMapping: { ...currentMapping.value }
+    }
+
+    settingsStore.insertMapping(newMapping)
+    selectedMappingId.value = newMapping.id
+  }
+
+  function updateExistingMapping(): void {
+    if (!selectedMappingId.value || !canSave.value) return
+
+    const updatedMapping: BdgColumnMapping = {
+      id: selectedMappingId.value,
+      name: mappingName.value,
+      columnMapping: { ...currentMapping.value }
+    }
+
+    settingsStore.updateMapping(updatedMapping)
+  }
+
+  function deleteMapping(): void {
+    if (!selectedMappingId.value) return
+
+    settingsStore.removeMapping(selectedMappingId.value)
+    selectedMappingId.value = ''
+    mappingName.value = ''
+    selectedColumns.value = {}
+  }
 </script>
 
 <style scoped>
@@ -212,6 +357,23 @@
 
   .csv-column-mapping__grid {
     display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .csv-column-mapping__management {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: var(--column-mapping-select-background);
+    border: 1px solid var(--column-mapping-select-border);
+    border-radius: 0.8rem;
+  }
+
+  .csv-column-mapping__actions {
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.75rem;
   }
 
@@ -257,6 +419,16 @@
     background-color: var(--column-mapping-select-background);
   }
 
+  .csv-column-mapping__input {
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--column-mapping-select-border);
+    border-radius: 0.6rem;
+    font: inherit;
+    color: var(--column-mapping-select-text);
+    background-color: var(--column-mapping-select-background);
+  }
+
   .csv-column-mapping__error {
     margin: 0;
     color: var(--column-mapping-error-text);
@@ -274,6 +446,17 @@
     color: var(--column-mapping-button-text);
     font: inherit;
     cursor: pointer;
+  }
+
+  .csv-column-mapping__button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .csv-column-mapping__button--danger {
+    background-color: var(--column-mapping-error-text);
+    color: white;
+    border-color: var(--column-mapping-error-text);
   }
 
   @media (max-width: 640px) {

@@ -55,5 +55,11 @@
   "workspace.mapping.optional": "Optionnel",
   "workspace.mapping.unmapped": "Non associe",
   "workspace.mapping.missingRequired": "Les colonnes obligatoires doivent etre associees : {columns}",
-  "workspace.mapping.apply": "Appliquer l'association"
-}
+  "workspace.mapping.apply": "Appliquer l'association",
+    "workspace.mapping.savedMappings": "Associations enregistrées",
+    "workspace.mapping.newMapping": "Nouvelle association",
+    "workspace.mapping.mappingName": "Nom de l'association",
+    "workspace.mapping.saveNew": "Enregistrer sous",
+    "workspace.mapping.update": "Mettre à jour l'existante",
+    "workspace.mapping.delete": "Supprimer l'association"
+  }

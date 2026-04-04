@@ -55,5 +55,11 @@
   "workspace.mapping.optional": "Optional",
   "workspace.mapping.unmapped": "Not mapped",
   "workspace.mapping.missingRequired": "Mandatory columns must be mapped: {columns}",
-  "workspace.mapping.apply": "Apply Mapping"
-}
+  "workspace.mapping.apply": "Apply Mapping",
+    "workspace.mapping.savedMappings": "Saved Mappings",
+    "workspace.mapping.newMapping": "New Mapping",
+    "workspace.mapping.mappingName": "Mapping Name",
+    "workspace.mapping.saveNew": "Save as New",
+    "workspace.mapping.update": "Update Existing",
+    "workspace.mapping.delete": "Delete Mapping"
+  }
