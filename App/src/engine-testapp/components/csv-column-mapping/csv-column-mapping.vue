@@ -102,32 +102,28 @@
     >
       {{ t('workspace.mapping.missingRequired', { columns: missingRequiredColumnsText }) }}
     </p>
-
-    <button
-      class="csv-column-mapping__button"
-      type="button"
-      data-testid="workspace-apply-mapping"
-      :disabled="!canApplyMapping"
-      @click="applyMapping"
-    >
-      {{ t('workspace.mapping.apply') }}
-    </button>
   </section>
 </template>
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { useWorkspaceStore } from '../../stores/workspace-store'
-  import { useSettingsStore } from '../../stores/settings-store'
-  import { IdGenerator } from '../../../engine/services/IdGenerator'
-  import container from '../../../inversify/setup-inversify'
+  import { useWorkspaceStore } from '@engineTestApp/stores/workspace-store'
+  import { useSettingsStore } from '@engineTestApp/stores/settings-store'
+  import { IdGenerator } from '@engine/services/IdGenerator'
+  import container from '@inversify/setup-inversify'
   import {
     CsvColumns,
     type CsvColumnMapping,
     type CsvColumns as CsvColumnId
-  } from '../../../engine/modules/csv-import/csv-column-content'
-  import type { BdgColumnMapping } from '../../../engine/modules/bdg-settings/bdg-column-mapping'
+  } from '@engine/modules/csv-import/csv-column-content'
+  import type { BdgColumnMapping } from '@engine/modules/bdg-settings/bdg-column-mapping'
+  import type { CsvContentExtractionResult } from '@engine/modules/csv-import/csv-content-extractor'
+
+  const props = withDefaults(
+    defineProps<{ parsedJson?: CsvContentExtractionResult | null }>(),
+    { parsedJson: undefined }
+  )
 
   type CsvMappingColumnDefinition = {
     key: CsvColumnId
@@ -172,7 +168,7 @@
   const mappingName = ref('')
   const selectedMappingId = ref('')
 
-  const csvHeaders = computed(() => workspaceStore.parsedJson?.header ?? [])
+  const csvHeaders = computed(() => (props.parsedJson ?? workspaceStore.parsedJson)?.header ?? [])
   const savedMappings = computed(() => settingsStore.columnMappings)
 
   const missingRequiredColumns = computed(() => {
@@ -183,12 +179,8 @@
     return missingRequiredColumns.value.map((column) => t(column.labelKey)).join(', ')
   })
 
-  const canApplyMapping = computed(() => {
-    return missingRequiredColumns.value.length === 0
-  })
-
   const canSave = computed(() => {
-    return mappingName.value.trim() !== '' && canApplyMapping.value
+    return mappingName.value.trim() !== '' && missingRequiredColumns.value.length === 0
   })
 
   const currentMapping = computed<CsvColumnMapping>(() => {
@@ -236,7 +228,7 @@
   }
 
   watch(
-    [() => workspaceStore.parsedJson, () => workspaceStore.appliedMapping],
+    [() => props.parsedJson, () => workspaceStore.parsedJson, () => workspaceStore.appliedMapping],
     () => {
       syncSelectedColumnsFromAppliedMapping()
     },
@@ -250,7 +242,6 @@
       const updatedMapping = { ...selectedColumns.value }
       delete updatedMapping[column]
       selectedColumns.value = updatedMapping
-      workspaceStore.setAppliedMapping(null)
       return
     }
 
@@ -258,15 +249,6 @@
       ...selectedColumns.value,
       [column]: selectedHeader
     }
-    workspaceStore.setAppliedMapping(null)
-  }
-
-  function applyMapping(): void {
-    if (!canApplyMapping.value) {
-      return
-    }
-
-    workspaceStore.setAppliedMapping({ ...currentMapping.value })
   }
 
   function onMappingSelect(event: Event): void {
@@ -279,7 +261,7 @@
       return
     }
 
-    const mapping = savedMappings.value.find((m) => m.id === id)
+    const mapping = savedMappings.value.find((m: BdgColumnMapping) => m.id === id)
     if (mapping) {
       mappingName.value = mapping.name
       loadMapping(mapping.columnMapping)

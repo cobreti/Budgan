@@ -70,5 +70,11 @@
   "settings.columnMappings.description": "Gérez les configurations de correspondance de colonnes CSV réutilisables.",
   "settings.columnMappings.statusApplied": "Correspondance appliquée au CSV actuel.",
   "settings.columnMappings.statusEmpty": "Chargez un CSV dans l'espace de travail pour configurer une correspondance.",
-  "settings.columnMappings.noCsv": "Aucun CSV chargé. Allez dans Espace de travail → Sélection CSV pour charger un fichier."
+  "settings.columnMappings.noCsv": "Aucun CSV chargé. Ouvrez un fichier CSV local.",
+  "settings.columnMappings.localCsv.label": "Aperçu CSV",
+  "settings.columnMappings.localCsv.hint": "Ouvrez un CSV local pour voir ses colonnes lors de la configuration des correspondances.",
+  "settings.columnMappings.localCsv.select": "Ouvrir un fichier CSV",
+  "settings.columnMappings.localCsv.selected": "Fichier local utilisé : {fileName}",
+  "settings.columnMappings.localCsv.clear": "Effacer",
+  "settings.columnMappings.localCsv.parseError": "Impossible d'analyser le fichier CSV sélectionné."
   }

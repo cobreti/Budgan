@@ -62,6 +62,7 @@ export default defineConfig({
             // '@filters': fileURLToPath(new URL('../../src/core/models/filters', import.meta.url)),
             // '@views': fileURLToPath(new URL('../../src/views', import.meta.url)),
             '@engine': fileURLToPath(new URL('../../src/engine', import.meta.url)),
+            '@inversify': fileURLToPath(new URL('../../src/inversify', import.meta.url)),
 
             //
             // app relative paths

@@ -70,5 +70,11 @@
   "settings.columnMappings.description": "Manage reusable CSV column mapping configurations.",
   "settings.columnMappings.statusApplied": "Mapping applied to current CSV.",
   "settings.columnMappings.statusEmpty": "Load a CSV in the Workspace to configure a mapping.",
-  "settings.columnMappings.noCsv": "No CSV loaded. Go to Workspace → CSV Selection to load a file."
+  "settings.columnMappings.noCsv": "No CSV loaded. Open a local CSV file.",
+  "settings.columnMappings.localCsv.label": "Preview CSV",
+  "settings.columnMappings.localCsv.hint": "Open a local CSV to preview its columns while configuring mappings.",
+  "settings.columnMappings.localCsv.select": "Open CSV File",
+  "settings.columnMappings.localCsv.selected": "Using local file: {fileName}",
+  "settings.columnMappings.localCsv.clear": "Clear",
+  "settings.columnMappings.localCsv.parseError": "Unable to parse the selected CSV file."
   }
