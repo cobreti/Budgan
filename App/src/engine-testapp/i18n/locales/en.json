@@ -2,6 +2,7 @@
   "navbar.home": "Home",
   "navbar.zipfile": "Zip File",
   "navbar.workspace": "Workspace",
+  "navbar.settings": "Settings",
   "navbar.language": "Language",
   "navbar.en": "English",
   "navbar.fr": "Français",
@@ -61,5 +62,7 @@
     "workspace.mapping.mappingName": "Mapping Name",
     "workspace.mapping.saveNew": "Save as New",
     "workspace.mapping.update": "Update Existing",
-    "workspace.mapping.delete": "Delete Mapping"
+    "workspace.mapping.delete": "Delete Mapping",
+  "settings.title": "Settings",
+  "settings.description": "Application settings and preferences."
   }

@@ -4,6 +4,7 @@
       <a :href="`/${locale}/`">{{ t('navbar.home') }}</a>
       <a :href="`/${locale}/zip-file`">{{ t('navbar.zipfile') }}</a>
       <a :href="`/${locale}/workspace`">{{ t('navbar.workspace') }}</a>
+      <a :href="`/${locale}/settings`">{{ t('navbar.settings') }}</a>
     </div>
 
     <div class="menu__language-switcher">

@@ -22,6 +22,11 @@ export const router = createRouter({
           component: () => import('@engineTestAppViews/zip-file/zip-file.vue')
         },
         {
+          path: 'settings',
+          name: 'settings',
+          component: () => import('@engineTestAppViews/settings/settings.vue')
+        },
+        {
           path: 'workspace',
           name: 'workspace',
           component: () => import('@engineTestAppViews/workspace/workspace.vue'),

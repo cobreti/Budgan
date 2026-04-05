@@ -2,6 +2,7 @@
   "navbar.home": "Accueil",
   "navbar.zipfile": "Fichier zip",
   "navbar.workspace": "Espace de travail",
+  "navbar.settings": "Paramètres",
   "navbar.language": "Langue",
   "navbar.en": "English",
   "navbar.fr": "Français",
@@ -61,5 +62,7 @@
     "workspace.mapping.mappingName": "Nom de l'association",
     "workspace.mapping.saveNew": "Enregistrer sous",
     "workspace.mapping.update": "Mettre à jour l'existante",
-    "workspace.mapping.delete": "Supprimer l'association"
+    "workspace.mapping.delete": "Supprimer l'association",
+  "settings.title": "Paramètres",
+  "settings.description": "Paramètres et préférences de l'application."
   }
