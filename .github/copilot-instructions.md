@@ -20,6 +20,34 @@ Apply everything described in that document when generating code, including:
 - Locale-prefixed routing (`/:locale(en|fr)/...`)
 - `data-testid` attributes on all interactive/testable elements
 - Pinia stores as the bridge between the engine layer and the Vue UI
-- Path aliases (`@engine/`, `@engineTestApp/`, etc.) instead of long relative imports
+- **Always use path aliases for imports — never use relative paths with `../` or `../../`**
 - ID generation via the `IdGenerator` service from the DI container
+
+## Import alias rules (strictly enforced)
+
+**Never write relative imports that cross directories.** Always use the correct alias:
+
+| What you are importing | Alias to use |
+|---|---|
+| Anything from `src/engine/` | `@engine/` |
+| Anything from `src/inversify/` | `@inversify/` |
+| Anything inside `src/engine-testapp/` | `@engineTestApp/` |
+| Views inside `src/engine-testapp/views/` | `@engineTestAppViews/` |
+| Router files inside `src/engine-testapp/router/` | `@engineTestAppRouter/` |
+
+**Examples:**
+```ts
+// ✅ Correct
+import { IdGenerator } from '@engine/services/IdGenerator'
+import container from '@inversify/setup-inversify'
+import { useWorkspaceStore } from '@engineTestApp/stores/workspace-store'
+import { CsvContentExtractor } from '@engine/modules/csv-import/csv-content-extractor'
+
+// ❌ Wrong — never use ../ paths
+import { IdGenerator } from '../../../engine/services/IdGenerator'
+import container from '../../inversify/setup-inversify'
+import { useWorkspaceStore } from '../../stores/workspace-store'
+```
+
+The only allowed relative imports are **same-directory** imports (e.g. `'./types'` inside the same component folder).
 

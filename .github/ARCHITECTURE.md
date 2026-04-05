@@ -45,7 +45,35 @@ App/
 | `@/` (engine-testapp) | `src/engine-testapp/` |
 | `@/` (budgan) | `src/budgan/` |
 
-**Always use aliases. Never use deep relative paths (`../../..`).**
+### ❌ Never use `../` relative imports across directories
+
+```ts
+// ❌ Wrong
+import { IdGenerator } from '../../../engine/services/IdGenerator'
+import container from '../../inversify/setup-inversify'
+import { useWorkspaceStore } from '../../stores/workspace-store'
+
+// ✅ Correct
+import { IdGenerator } from '@engine/services/IdGenerator'
+import container from '@inversify/setup-inversify'
+import { useWorkspaceStore } from '@engineTestApp/stores/workspace-store'
+```
+
+The **only** allowed relative imports are same-folder imports (e.g. `'./types'`).
+
+### Alias availability per tsconfig context
+
+`tsconfig.engine-testapp.json` defines all aliases below — they all work in engine-testapp Vue files and TypeScript files:
+
+| Alias | Defined in |
+|---|---|
+| `@engine/*` | `tsconfig.engine-testapp.json` + `tsconfig.app.json` |
+| `@inversify/*` | `tsconfig.engine-testapp.json` + `tsconfig.app.json` |
+| `@engineTestApp/*` | `tsconfig.engine-testapp.json` |
+| `@engineTestAppViews/*` | `tsconfig.engine-testapp.json` |
+| `@engineTestAppRouter/*` | `tsconfig.engine-testapp.json` |
+
+> **Note:** TypeScript `paths` in a child tsconfig **completely replaces** (does not merge) the parent's `paths`. All required aliases must be explicitly listed in `tsconfig.engine-testapp.json`.
 
 ---
 
