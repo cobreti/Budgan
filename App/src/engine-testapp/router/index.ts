@@ -64,11 +64,6 @@ export const router = createRouter({
               component: () => import('@engineTestAppViews/workspace/workspace-csv-selection.vue')
             },
             {
-              path: 'column-mapping',
-              name: 'workspace-column-mapping',
-              component: () => import('@engineTestAppViews/workspace/workspace-column-mapping.vue')
-            },
-            {
               path: 'json-data-view',
               name: 'workspace-json-data-view',
               component: () => import('@engineTestAppViews/workspace/workspace-json-data-view.vue')

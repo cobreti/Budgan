@@ -67,5 +67,8 @@
   "settings.description": "Paramètres et préférences de l'application.",
   "settings.menu.columnMappings": "Correspondances de colonnes",
   "settings.columnMappings.title": "Correspondances de colonnes",
-  "settings.columnMappings.description": "Gérez les configurations de correspondance de colonnes CSV réutilisables."
+  "settings.columnMappings.description": "Gérez les configurations de correspondance de colonnes CSV réutilisables.",
+  "settings.columnMappings.statusApplied": "Correspondance appliquée au CSV actuel.",
+  "settings.columnMappings.statusEmpty": "Chargez un CSV dans l'espace de travail pour configurer une correspondance.",
+  "settings.columnMappings.noCsv": "Aucun CSV chargé. Allez dans Espace de travail → Sélection CSV pour charger un fichier."
   }

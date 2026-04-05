@@ -67,5 +67,8 @@
   "settings.description": "Application settings and preferences.",
   "settings.menu.columnMappings": "Column Mappings",
   "settings.columnMappings.title": "Column Mappings",
-  "settings.columnMappings.description": "Manage reusable CSV column mapping configurations."
+  "settings.columnMappings.description": "Manage reusable CSV column mapping configurations.",
+  "settings.columnMappings.statusApplied": "Mapping applied to current CSV.",
+  "settings.columnMappings.statusEmpty": "Load a CSV in the Workspace to configure a mapping.",
+  "settings.columnMappings.noCsv": "No CSV loaded. Go to Workspace → CSV Selection to load a file."
   }
