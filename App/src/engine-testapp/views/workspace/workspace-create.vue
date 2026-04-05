@@ -57,9 +57,9 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { useWorkspaceStore } from '../../stores/workspace-store'
-  import container from '../../../inversify/setup-inversify'
-  import { BdgWorkspaceFactory } from '../../../engine/modules/bdg-workspace/bdg-workspace-factory'
+  import { useWorkspaceStore } from '@engineTestApp/stores/workspace-store'
+  import container from '@inversify/setup-inversify'
+  import { BdgWorkspaceFactory } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
 
   const { t } = useI18n()
   const workspaceStore = useWorkspaceStore()

@@ -1,6 +1,6 @@
-import type { IdGenerator } from '@/engine/services/IdGenerator'
+import type { IdGenerator } from '@engine/services/IdGenerator'
 import { BdgAccountImpl, type BdgAccount } from './bdg-account'
-import type { Result } from '@/engine/types/result-pattern'
+import type { Result } from '@engine/types/result-pattern'
 
 export interface BdgWorkspace {
   id: string
@@ -8,6 +8,7 @@ export interface BdgWorkspace {
   accounts: BdgAccount[]
   createAccount(name: string, columnMappingId: string): BdgAccount
   getAccount(accountId: string): Result<BdgAccount> | undefined
+  loadAccount(account: BdgAccount): void
 }
 
 export class BdgWorkspaceImpl implements BdgWorkspace {
@@ -47,5 +48,9 @@ export class BdgWorkspaceImpl implements BdgWorkspace {
   getAccount(accountId: string): Result<BdgAccount> {
     const account = this._accounts.get(accountId)
     return account ? { success: true, value: account } : { success: false }
+  }
+
+  loadAccount(account: BdgAccount): void {
+    this._accounts.set(account.id, account)
   }
 }

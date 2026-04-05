@@ -131,15 +131,14 @@
       return
     }
 
-    const currentWorkspace = workspaceStore.currentWorkspace
-    if (!currentWorkspace) {
+    if (!workspaceStore.currentWorkspace) {
       createdAccount.value = null
       errorMessage.value = t('workspace.account.accounts.error')
       return
     }
 
     try {
-      const account = currentWorkspace.createAccount(trimmedAccountName, selectedMappingId.value)
+      const account = workspaceStore.createAccountInCurrentWorkspace(trimmedAccountName, selectedMappingId.value)
 
       createdAccount.value = {
         id: account.id,
