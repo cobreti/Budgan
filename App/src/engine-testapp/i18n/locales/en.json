@@ -64,5 +64,8 @@
     "workspace.mapping.update": "Update Existing",
     "workspace.mapping.delete": "Delete Mapping",
   "settings.title": "Settings",
-  "settings.description": "Application settings and preferences."
+  "settings.description": "Application settings and preferences.",
+  "settings.menu.columnMappings": "Column Mappings",
+  "settings.columnMappings.title": "Column Mappings",
+  "settings.columnMappings.description": "Manage reusable CSV column mapping configurations."
   }

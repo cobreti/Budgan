@@ -24,7 +24,18 @@ export const router = createRouter({
         {
           path: 'settings',
           name: 'settings',
-          component: () => import('@engineTestAppViews/settings/settings.vue')
+          component: () => import('@engineTestAppViews/settings/settings.vue'),
+          children: [
+            {
+              path: '',
+              redirect: { name: 'settings-column-mappings' }
+            },
+            {
+              path: 'column-mappings',
+              name: 'settings-column-mappings',
+              component: () => import('@engineTestAppViews/settings/settings-column-mappings.vue')
+            }
+          ]
         },
         {
           path: 'workspace',

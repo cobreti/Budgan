@@ -64,5 +64,8 @@
     "workspace.mapping.update": "Mettre à jour l'existante",
     "workspace.mapping.delete": "Supprimer l'association",
   "settings.title": "Paramètres",
-  "settings.description": "Paramètres et préférences de l'application."
+  "settings.description": "Paramètres et préférences de l'application.",
+  "settings.menu.columnMappings": "Correspondances de colonnes",
+  "settings.columnMappings.title": "Correspondances de colonnes",
+  "settings.columnMappings.description": "Gérez les configurations de correspondance de colonnes CSV réutilisables."
   }
