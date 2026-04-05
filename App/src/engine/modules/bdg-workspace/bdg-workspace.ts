@@ -6,7 +6,7 @@ export interface BdgWorkspace {
   id: string
   name: string
   accounts: BdgAccount[]
-  createAccount(name: string): BdgAccount
+  createAccount(name: string, columnMappingId: string): BdgAccount
   getAccount(accountId: string): Result<BdgAccount> | undefined
 }
 
@@ -37,9 +37,9 @@ export class BdgWorkspaceImpl implements BdgWorkspace {
     this._name = value
   }
 
-  createAccount(name: string): BdgAccount {
+  createAccount(name: string, columnMappingId: string): BdgAccount {
     const accountId = this._idGenerator.generateId()
-    const account = new BdgAccountImpl(accountId, name)
+    const account = new BdgAccountImpl(accountId, name, columnMappingId)
     this._accounts.set(accountId, account)
     return account
   }
