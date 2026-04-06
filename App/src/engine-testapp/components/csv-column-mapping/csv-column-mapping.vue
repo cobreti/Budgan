@@ -125,6 +125,10 @@
     { parsedJson: undefined }
   )
 
+  const emit = defineEmits<{
+    'update:complete': [isComplete: boolean]
+  }>()
+
   type CsvMappingColumnDefinition = {
     key: CsvColumnId
     labelKey: string
@@ -231,6 +235,14 @@
     [() => props.parsedJson, () => workspaceStore.parsedJson, () => workspaceStore.appliedMapping],
     () => {
       syncSelectedColumnsFromAppliedMapping()
+    },
+    { immediate: true }
+  )
+
+  watch(
+    missingRequiredColumns,
+    (missing) => {
+      emit('update:complete', missing.length === 0)
     },
     { immediate: true }
   )

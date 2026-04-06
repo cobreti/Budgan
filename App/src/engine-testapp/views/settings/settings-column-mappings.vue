@@ -66,6 +66,7 @@
     <CsvColumnMapping
       v-if="localParsedJson"
       :parsed-json="localParsedJson"
+      @update:complete="localMappingComplete = $event"
     />
 
     <p
@@ -75,11 +76,36 @@
     >
       {{ t('settings.columnMappings.noCsv') }}
     </p>
+
+    <!-- JSON data preview — shown once all required columns are mapped -->
+    <template v-if="localMappingComplete && localParsedJson">
+      <hr class="settings-column-mappings__separator" />
+      <div class="settings-column-mappings__json-preview" data-testid="settings-json-preview">
+        <h4 class="settings-column-mappings__json-preview-title">
+          {{ t('settings.columnMappings.jsonData.title') }}
+        </h4>
+        <div class="settings-column-mappings__json-controls">
+          <button
+            class="settings-column-mappings__button"
+            type="button"
+            data-testid="settings-json-toggle"
+            @click="isJsonVisible = !isJsonVisible"
+          >
+            {{ isJsonVisible ? t('workspace.hideJson') : t('workspace.showJson') }}
+          </button>
+        </div>
+        <pre
+          v-if="isJsonVisible"
+          class="settings-column-mappings__json-output"
+          data-testid="settings-json-output"
+        ><code>{{ formattedJson }}</code></pre>
+      </div>
+    </template>
   </section>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { computed, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import CsvColumnMapping from '@engineTestApp/components/csv-column-mapping/csv-column-mapping.vue'
   import { CsvContentExtractor } from '@engine/modules/csv-import/csv-content-extractor'
@@ -92,6 +118,13 @@
   const localParsedJson = ref<CsvContentExtractionResult | null>(null)
   const localFileName = ref<string | null>(null)
   const parseError = ref('')
+  const localMappingComplete = ref(false)
+  const isJsonVisible = ref(false)
+
+  const formattedJson = computed(() => {
+    if (!localParsedJson.value) return ''
+    return JSON.stringify(localParsedJson.value, null, 2)
+  })
 
 
   async function onFileSelected(event: Event): Promise<void> {
@@ -127,6 +160,8 @@
     localParsedJson.value = null
     localFileName.value = null
     parseError.value = ''
+    localMappingComplete.value = false
+    isJsonVisible.value = false
   }
 </script>
 
@@ -232,6 +267,40 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+  }
+
+  .settings-column-mappings__separator {
+    margin: 0.5rem 0;
+    border: 0;
+    border-top: 1px solid var(--workspace-outline);
+    opacity: 0.2;
+  }
+
+  .settings-column-mappings__json-preview {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .settings-column-mappings__json-preview-title {
+    margin: 0;
+    font-weight: 600;
+    color: var(--workspace-on-surface);
+  }
+
+  .settings-column-mappings__json-controls {
+    display: flex;
+  }
+
+  .settings-column-mappings__json-output {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    border-radius: 0.75rem;
+    border: 1px solid var(--json-view-output-border);
+    background-color: var(--json-view-output-background);
+    color: var(--json-view-output-text);
+    font-size: 0.875rem;
+    line-height: 1.5;
   }
 
   @media (max-width: 640px) {

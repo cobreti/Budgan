@@ -80,5 +80,6 @@
   "settings.columnMappings.localCsv.select": "Open CSV File",
   "settings.columnMappings.localCsv.selected": "Using local file: {fileName}",
   "settings.columnMappings.localCsv.clear": "Clear",
-  "settings.columnMappings.localCsv.parseError": "Unable to parse the selected CSV file."
+  "settings.columnMappings.localCsv.parseError": "Unable to parse the selected CSV file.",
+  "settings.columnMappings.jsonData.title": "CSV Data Preview"
   }

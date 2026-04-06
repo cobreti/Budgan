@@ -80,5 +80,6 @@
   "settings.columnMappings.localCsv.select": "Ouvrir un fichier CSV",
   "settings.columnMappings.localCsv.selected": "Fichier local utilisé : {fileName}",
   "settings.columnMappings.localCsv.clear": "Effacer",
-  "settings.columnMappings.localCsv.parseError": "Impossible d'analyser le fichier CSV sélectionné."
+  "settings.columnMappings.localCsv.parseError": "Impossible d'analyser le fichier CSV slectionn.",
+  "settings.columnMappings.jsonData.title": "Aperçu des données CSV"
   }

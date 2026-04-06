@@ -62,11 +62,6 @@ export const router = createRouter({
               path: 'csv-selection',
               name: 'workspace-csv-selection',
               component: () => import('@engineTestAppViews/workspace/workspace-csv-selection.vue')
-            },
-            {
-              path: 'json-data-view',
-              name: 'workspace-json-data-view',
-              component: () => import('@engineTestAppViews/workspace/workspace-json-data-view.vue')
             }
           ]
         }

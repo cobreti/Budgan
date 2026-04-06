@@ -56,25 +56,6 @@
               {{ t('workspace.menu.csvSelection') }}
             </span>
           </li>
-          <li>
-            <RouterLink
-              v-if="hasCurrentWorkspace"
-              :to="{ name: 'workspace-json-data-view', params: { locale: localeParam } }"
-              class="workspace-view__menu-item"
-              :class="{
-                'workspace-view__menu-item--active': route.name === 'workspace-json-data-view'
-              }"
-            >
-              {{ t('workspace.menu.jsonDataView') }}
-            </RouterLink>
-            <span
-              v-else
-              class="workspace-view__menu-item workspace-view__menu-item--disabled"
-              aria-disabled="true"
-            >
-              {{ t('workspace.menu.jsonDataView') }}
-            </span>
-          </li>
         </ul>
       </aside>
 
