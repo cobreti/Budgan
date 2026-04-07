@@ -37,25 +37,6 @@
               {{ t('workspace.menu.accounts') }}
             </span>
           </li>
-          <li>
-            <RouterLink
-              v-if="hasCurrentWorkspace"
-              :to="{ name: 'workspace-csv-selection', params: { locale: localeParam } }"
-              class="workspace-view__menu-item"
-              :class="{
-                'workspace-view__menu-item--active': route.name === 'workspace-csv-selection'
-              }"
-            >
-              {{ t('workspace.menu.csvSelection') }}
-            </RouterLink>
-            <span
-              v-else
-              class="workspace-view__menu-item workspace-view__menu-item--disabled"
-              aria-disabled="true"
-            >
-              {{ t('workspace.menu.csvSelection') }}
-            </span>
-          </li>
         </ul>
       </aside>
 

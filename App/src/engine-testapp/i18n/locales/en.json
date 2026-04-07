@@ -10,7 +10,6 @@
   "workspace.description": "Choose a CSV file from disk to load it into the workspace.",
   "workspace.menu.currentWorkspace": "Current Workspace",
   "workspace.menu.accounts": "Accounts",
-  "workspace.menu.csvSelection": "CSV Selection",
   "workspace.menu.columnMapping": "Column Mapping",
   "workspace.menu.jsonDataView": "JSON Data View",
   "workspace.create.title": "Create Workspace",

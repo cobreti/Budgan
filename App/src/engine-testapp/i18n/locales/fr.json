@@ -10,7 +10,6 @@
   "workspace.description": "Choisissez un fichier CSV sur le disque pour le charger dans l'espace de travail.",
   "workspace.menu.currentWorkspace": "Espace de travail actuel",
   "workspace.menu.accounts": "Comptes",
-  "workspace.menu.csvSelection": "Sélection de CSV",
   "workspace.menu.columnMapping": "Mappage des colonnes",
   "workspace.menu.jsonDataView": "Vue des données JSON",
   "workspace.create.title": "Creer un espace de travail",

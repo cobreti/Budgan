@@ -44,7 +44,7 @@ export const router = createRouter({
             {
               path: '',
               redirect: {
-                name: 'workspace-csv-selection'
+                name: 'workspace-create'
               }
             },
             {
@@ -56,11 +56,6 @@ export const router = createRouter({
               path: 'accounts',
               name: 'workspace-accounts',
               component: () => import('@engineTestAppViews/workspace/accounts.vue')
-            },
-            {
-              path: 'csv-selection',
-              name: 'workspace-csv-selection',
-              component: () => import('@engineTestAppViews/workspace/workspace-csv-selection.vue')
             }
           ]
         }
