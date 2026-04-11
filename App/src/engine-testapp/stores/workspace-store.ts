@@ -24,6 +24,7 @@ export const useWorkspaceStore = defineStore(
     const isJsonVisible = ref(false)
     const currentWorkspace = ref<BdgWorkspace | null>(null)
     const workspaceSnapshot = ref<WorkspaceSnapshot | null>(null)
+    const selectedAccountId = ref<string | null>(null)
 
     function _syncWorkspaceSnapshot(): void {
       if (!currentWorkspace.value) {
@@ -91,6 +92,7 @@ export const useWorkspaceStore = defineStore(
 
     function setCurrentWorkspace(workspace: BdgWorkspace | null): void {
       currentWorkspace.value = workspace
+      selectedAccountId.value = null
       _syncWorkspaceSnapshot()
       resetWorkspaceData()
     }
@@ -109,7 +111,18 @@ export const useWorkspaceStore = defineStore(
         throw new Error('No current workspace')
       }
       currentWorkspace.value.removeAccount(accountId)
+      if (selectedAccountId.value === accountId) {
+        selectedAccountId.value = null
+      }
       _syncWorkspaceSnapshot()
+    }
+
+    function setSelectedAccount(accountId: string): void {
+      selectedAccountId.value = accountId
+    }
+
+    function clearSelectedAccount(): void {
+      selectedAccountId.value = null
     }
 
     return {
@@ -120,6 +133,7 @@ export const useWorkspaceStore = defineStore(
       isJsonVisible,
       currentWorkspace,
       workspaceSnapshot,
+      selectedAccountId,
       setParsedJson,
       setAppliedMapping,
       setSelectedFile,
@@ -128,6 +142,8 @@ export const useWorkspaceStore = defineStore(
       rebuildWorkspaceFromSnapshot,
       createAccountInCurrentWorkspace,
       removeAccountFromCurrentWorkspace,
+      setSelectedAccount,
+      clearSelectedAccount,
     }
   },
   {

@@ -59,26 +59,52 @@
     <div class="accounts__list-section">
       <h4 class="accounts__list-title">{{ t('workspace.account.accounts.listTitle') }}</h4>
       <ul v-if="accounts.length > 0" class="accounts__list">
-        <li v-for="account in accounts" :key="account.id" class="accounts__list-item">
-          <div class="accounts__list-item-main">
-            <span class="accounts__list-item-name">{{ account.name }}</span>
-            <span class="accounts__list-item-id">({{ account.id }})</span>
-          </div>
-          <div class="accounts__list-item-footer">
+        <li
+          v-for="account in accounts"
+          :key="account.id"
+          class="accounts__list-item"
+          :class="{ 'accounts__list-item--selected': selectedAccountId === account.id }"
+          :data-testid="`accounts-item-${account.id}`"
+        >
+          <button
+            class="accounts__check"
+            type="button"
+            :aria-label="selectedAccountId === account.id
+              ? t('workspace.account.accounts.unselect')
+              : t('workspace.account.accounts.select')"
+            :aria-pressed="selectedAccountId === account.id"
+            :data-testid="`accounts-select-${account.id}`"
+            @click="toggleSelectAccount(account.id)"
+          >
             <span
-              class="accounts__list-item-mapping"
-              data-testid="accounts-item-mapping"
-            >
-              {{ t('workspace.account.accounts.columnMappingLabel') }}: {{ mappingNameById(account.columnMappingId) }}
-            </span>
-            <button
-              class="accounts__remove-button"
-              type="button"
-              :data-testid="`accounts-remove-${account.id}`"
-              @click="removeAccount(account.id)"
-            >
-              {{ t('workspace.account.accounts.remove') }}
-            </button>
+              class="mdi accounts__check-icon"
+              :class="selectedAccountId === account.id
+                ? 'mdi-check-circle accounts__check-icon--selected'
+                : 'mdi-check-circle-outline'"
+            />
+          </button>
+
+          <div class="accounts__list-item-body">
+            <div class="accounts__list-item-main">
+              <span class="accounts__list-item-name">{{ account.name }}</span>
+              <span class="accounts__list-item-id">({{ account.id }})</span>
+            </div>
+            <div class="accounts__list-item-footer">
+              <span
+                class="accounts__list-item-mapping"
+                data-testid="accounts-item-mapping"
+              >
+                {{ t('workspace.account.accounts.columnMappingLabel') }}: {{ mappingNameById(account.columnMappingId) }}
+              </span>
+              <button
+                class="accounts__remove-button"
+                type="button"
+                :data-testid="`accounts-remove-${account.id}`"
+                @click="removeAccount(account.id)"
+              >
+                {{ t('workspace.account.accounts.remove') }}
+              </button>
+            </div>
           </div>
         </li>
       </ul>
@@ -90,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, onMounted } from 'vue'
+  import { ref, computed } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useWorkspaceStore } from '@engineTestApp/stores/workspace-store'
   import { useSettingsStore } from '@engineTestApp/stores/settings-store'
@@ -104,31 +130,25 @@
   const selectedMappingId = ref('')
   const createdAccount = ref<{ id: string; name: string } | null>(null)
   const errorMessage = ref('')
-  const accounts = ref<BdgAccount[]>([])
 
+  const accounts = computed<BdgAccount[]>(() => workspaceStore.currentWorkspace?.accounts ?? [])
+  const selectedAccountId = computed(() => workspaceStore.selectedAccountId)
   const columnMappings = computed(() => settingsStore.columnMappings)
 
   function mappingNameById(id: string): string {
     return columnMappings.value.find((m) => m.id === id)?.name ?? id
   }
 
-  function loadAccounts(): void {
-    const currentWorkspace = workspaceStore.currentWorkspace
-    if (!currentWorkspace) {
-      accounts.value = []
-      return
+  function toggleSelectAccount(accountId: string): void {
+    if (workspaceStore.selectedAccountId === accountId) {
+      workspaceStore.clearSelectedAccount()
+    } else {
+      workspaceStore.setSelectedAccount(accountId)
     }
-
-    accounts.value = currentWorkspace.accounts
   }
-
-  onMounted(() => {
-    loadAccounts()
-  })
 
   function removeAccount(accountId: string): void {
     workspaceStore.removeAccountFromCurrentWorkspace(accountId)
-    loadAccounts()
   }
 
   function createAccount(): void {
@@ -162,7 +182,6 @@
       errorMessage.value = ''
       accountName.value = ''
       selectedMappingId.value = ''
-      loadAccounts()
     } catch {
       createdAccount.value = null
       errorMessage.value = t('workspace.account.accounts.error')
@@ -273,12 +292,50 @@
   }
 
   .accounts__list-item {
-    display: grid;
+    display: flex;
+    align-items: center;
     gap: 0.25rem;
-    padding: 0.75rem;
+    padding: 0.5rem 0.75rem 0.5rem 0.25rem;
     border: 1px solid var(--workspace-outline);
     border-radius: 0.625rem;
     background-color: var(--workspace-surface-variant-alpha-05);
+    transition: border-color 0.15s, background-color 0.15s;
+  }
+
+  .accounts__list-item--selected {
+    border-color: var(--workspace-account-select-border);
+    background-color: var(--workspace-account-select-background);
+  }
+
+  .accounts__check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+
+  .accounts__check-icon {
+    font-size: 1.375rem;
+    color: var(--workspace-account-check-unselected);
+    transition: color 0.15s;
+  }
+
+  .accounts__check-icon--selected {
+    color: var(--workspace-account-check-selected);
+  }
+
+  .accounts__list-item-body {
+    display: grid;
+    gap: 0.25rem;
+    flex: 1;
+    min-width: 0;
   }
 
   .accounts__list-item-main {
@@ -307,6 +364,7 @@
     font-size: 0.875rem;
     color: var(--workspace-on-surface-variant);
   }
+
 
   .accounts__remove-button {
     display: inline-flex;

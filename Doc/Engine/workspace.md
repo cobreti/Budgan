@@ -8,7 +8,7 @@ classDiagram
         +CsvMappingName
     }
     class BdgAccountSegment
-    class CsvContent
+    class CsvContentSegment
     
     BdgWorkspace <-- BdgWorkspaceImpl
     BdgWorkspaceImpl "1" *-- "0..*" BdgAccount

@@ -35,6 +35,12 @@
   --workspace-surface-variant-alpha-05: rgba(var(--v-theme-surface-variant), 0.05);
   --workspace-error-low-emphasis: rgb(var(--v-theme-error), var(--v-low-emphasis-opacity));
 
+  /* Workspace account selection colors */
+  --workspace-account-select-border: rgb(var(--v-theme-primary));
+  --workspace-account-select-background: rgb(var(--v-theme-primary), var(--v-low-emphasis-opacity));
+  --workspace-account-check-unselected: rgb(var(--v-theme-on-surface-variant), var(--v-medium-emphasis-opacity));
+  --workspace-account-check-selected: rgb(var(--v-theme-success));
+
   /* CSV Selection colors */
   --csv-selection-button-background: rgb(var(--v-theme-primary));
   --csv-selection-button-text: rgb(var(--v-theme-on-primary));
