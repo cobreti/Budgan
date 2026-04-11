@@ -13,5 +13,5 @@ classDiagram
     BdgWorkspace <-- BdgWorkspaceImpl
     BdgWorkspaceImpl "1" *-- "0..*" BdgAccount
     BdgAccount "1" *-- "0..*" BdgAccountSegment
-    BdgAccount "1" *-- "0..*" CsvContent
+    BdgAccount "1" *-- "0..*" CsvContentSegment
 ```
