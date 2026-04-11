@@ -56,6 +56,11 @@ export const router = createRouter({
               path: 'accounts',
               name: 'workspace-accounts',
               component: () => import('@engineTestAppViews/workspace/accounts.vue')
+            },
+            {
+              path: 'segments',
+              name: 'workspace-segments',
+              component: () => import('@engineTestAppViews/workspace/segments.vue')
             }
           ]
         }

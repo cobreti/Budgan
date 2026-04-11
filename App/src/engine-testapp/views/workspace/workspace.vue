@@ -37,6 +37,27 @@
               {{ t('workspace.menu.accounts') }}
             </span>
           </li>
+          <li>
+            <RouterLink
+              v-if="hasSelectedAccount"
+              :to="{ name: 'workspace-segments', params: { locale: localeParam } }"
+              class="workspace-view__menu-item"
+              :class="{
+                'workspace-view__menu-item--active': route.name === 'workspace-segments'
+              }"
+              data-testid="workspace-menu-segments"
+            >
+              {{ t('workspace.menu.segments') }}
+            </RouterLink>
+            <span
+              v-else
+              class="workspace-view__menu-item workspace-view__menu-item--disabled"
+              aria-disabled="true"
+              data-testid="workspace-menu-segments-disabled"
+            >
+              {{ t('workspace.menu.segments') }}
+            </span>
+          </li>
         </ul>
       </aside>
 
@@ -58,6 +79,7 @@
   const workspaceStore = useWorkspaceStore()
 
   const hasCurrentWorkspace = computed(() => workspaceStore.currentWorkspace !== null)
+  const hasSelectedAccount = computed(() => workspaceStore.selectedAccountId !== null)
 
   const localeParam = computed(() => {
     const locale = route.params.locale
