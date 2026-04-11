@@ -39,6 +39,7 @@
   "workspace.account.accounts.nameRequired": "Account name is required.",
   "workspace.account.accounts.listTitle": "Existing Accounts",
   "workspace.account.accounts.noAccounts": "No accounts created yet.",
+  "workspace.account.accounts.remove": "Remove",
   "workspace.empty": "No CSV file selected",
   "workspace.selected": "Selected CSV file: {fileName}",
   "workspace.select": "Select CSV File",

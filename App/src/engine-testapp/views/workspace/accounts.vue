@@ -64,12 +64,22 @@
             <span class="accounts__list-item-name">{{ account.name }}</span>
             <span class="accounts__list-item-id">({{ account.id }})</span>
           </div>
-          <span
-            class="accounts__list-item-mapping"
-            data-testid="accounts-item-mapping"
-          >
-            {{ t('workspace.account.accounts.columnMappingLabel') }}: {{ mappingNameById(account.columnMappingId) }}
-          </span>
+          <div class="accounts__list-item-footer">
+            <span
+              class="accounts__list-item-mapping"
+              data-testid="accounts-item-mapping"
+            >
+              {{ t('workspace.account.accounts.columnMappingLabel') }}: {{ mappingNameById(account.columnMappingId) }}
+            </span>
+            <button
+              class="accounts__remove-button"
+              type="button"
+              :data-testid="`accounts-remove-${account.id}`"
+              @click="removeAccount(account.id)"
+            >
+              {{ t('workspace.account.accounts.remove') }}
+            </button>
+          </div>
         </li>
       </ul>
       <p v-else class="accounts__list-empty">
@@ -115,6 +125,11 @@
   onMounted(() => {
     loadAccounts()
   })
+
+  function removeAccount(accountId: string): void {
+    workspaceStore.removeAccountFromCurrentWorkspace(accountId)
+    loadAccounts()
+  }
 
   function createAccount(): void {
     const trimmedAccountName = accountName.value.trim()
@@ -272,6 +287,13 @@
     align-items: baseline;
   }
 
+  .accounts__list-item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
   .accounts__list-item-name {
     font-weight: 600;
   }
@@ -284,6 +306,21 @@
   .accounts__list-item-mapping {
     font-size: 0.875rem;
     color: var(--workspace-on-surface-variant);
+  }
+
+  .accounts__remove-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid var(--workspace-error);
+    border-radius: 999px;
+    background-color: var(--workspace-error-low-emphasis);
+    color: var(--workspace-error);
+    font: inherit;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    white-space: nowrap;
   }
 
   .accounts__list-empty {

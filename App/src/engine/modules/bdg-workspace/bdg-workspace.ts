@@ -9,6 +9,7 @@ export interface BdgWorkspace {
   createAccount(name: string, columnMappingId: string): BdgAccount
   getAccount(accountId: string): Result<BdgAccount> | undefined
   loadAccount(account: BdgAccount): void
+  removeAccount(accountId: string): void
 }
 
 export class BdgWorkspaceImpl implements BdgWorkspace {
@@ -52,5 +53,9 @@ export class BdgWorkspaceImpl implements BdgWorkspace {
 
   loadAccount(account: BdgAccount): void {
     this._accounts.set(account.id, account)
+  }
+
+  removeAccount(accountId: string): void {
+    this._accounts.delete(accountId)
   }
 }

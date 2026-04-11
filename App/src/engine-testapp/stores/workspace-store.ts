@@ -104,6 +104,14 @@ export const useWorkspaceStore = defineStore(
       return account
     }
 
+    function removeAccountFromCurrentWorkspace(accountId: string): void {
+      if (!currentWorkspace.value) {
+        throw new Error('No current workspace')
+      }
+      currentWorkspace.value.removeAccount(accountId)
+      _syncWorkspaceSnapshot()
+    }
+
     return {
       parsedJson,
       appliedMapping,
@@ -119,6 +127,7 @@ export const useWorkspaceStore = defineStore(
       setCurrentWorkspace,
       rebuildWorkspaceFromSnapshot,
       createAccountInCurrentWorkspace,
+      removeAccountFromCurrentWorkspace,
     }
   },
   {
