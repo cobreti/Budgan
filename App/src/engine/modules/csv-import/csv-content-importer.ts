@@ -5,6 +5,7 @@ import { CsvContentExtractor } from '@engine/modules/csv-import/csv-content-extr
 import { CsvColumns, type CsvColumnMapping } from '@engine/modules/csv-import/csv-column-content'
 import { BdgAccountSegment, type BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
 import { ReaderFactory } from '@engine/services/FileReaderFactory'
+import { IdGenerator } from '@engine/services/IdGenerator'
 import type { ResultWithError } from '@engine/types/result-pattern'
 
 export abstract class CsvContentImporter {
@@ -20,6 +21,7 @@ export abstract class CsvContentImporter {
 export class CsvContentImporterImpl extends CsvContentImporter {
   constructor(
     @inject(ReaderFactory.bindingTypeId) private readonly readerFactory: ReaderFactory,
+    @inject(IdGenerator.bindingTypeId) private readonly idGenerator: IdGenerator,
   ) {
     super()
   }
@@ -72,7 +74,7 @@ export class CsvContentImporterImpl extends CsvContentImporter {
           })
 
           const segmentName = file.name.replace(/\.[^/.]+$/, '')
-          const segment = new BdgAccountSegment(segmentName, rows)
+          const segment = new BdgAccountSegment(this.idGenerator.generateId(), segmentName, rows)
 
           resolve({ success: true, value: segment })
         } catch (err) {

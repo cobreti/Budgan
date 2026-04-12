@@ -48,7 +48,7 @@
       <ul v-if="segments.length > 0" class="segments__list">
         <li
           v-for="segment in segments"
-          :key="segment.name"
+          :key="segment.id"
           class="segments__list-item"
           :data-testid="`segments-item-${segment.name}`"
         >

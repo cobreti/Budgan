@@ -16,6 +16,7 @@ export interface BdgAccountSegmentRow {
 }
 
 export class BdgAccountSegment {
+  private readonly _id: string
   private readonly _name: string
   private readonly _dateStartAsString: string
   private readonly _dateEndAsString: string
@@ -23,11 +24,12 @@ export class BdgAccountSegment {
   private readonly _dateEnd: Date
   private readonly _rows: BdgAccountSegmentRow[]
 
-  constructor(name: string, rows: BdgAccountSegmentRow[]) {
+  constructor(id: string, name: string, rows: BdgAccountSegmentRow[]) {
     if (rows.length === 0) {
       throw new Error('BdgAccountSegment: rows cannot be empty')
     }
 
+    this._id = id
     this._name = name
     this._rows = rows
 
@@ -58,6 +60,10 @@ export class BdgAccountSegment {
     // Set dateStart / dateEnd by parsing the resolved strings
     this._dateStart = parseLocalDate(this._dateStartAsString) ?? new Date(minTime)
     this._dateEnd = parseLocalDate(this._dateEndAsString) ?? new Date(maxTime)
+  }
+
+  get id(): string {
+    return this._id
   }
 
   get name(): string {

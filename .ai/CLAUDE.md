@@ -222,7 +222,7 @@ Never hardcode colors — always use `var(--token-name)`. Mobile breakpoint: `@m
 // Workspace
 BdgWorkspace      { id, name, accounts: BdgAccount[], createAccount(name), getAccount(id) }
 BdgAccount        { id, name, columnMappingId, segments: BdgAccountSegment[], addSegment(segment) }
-BdgAccountSegment { name, dateStart, dateEnd, dateStartAsString, dateEndAsString, rows: BdgAccountSegmentRow[] }
+BdgAccountSegment { id, name, dateStart, dateEnd, dateStartAsString, dateEndAsString, rows: BdgAccountSegmentRow[] }
 BdgAccountSegmentRow { cardNumber, description, dateTransactionAsString, dateInscriptionAsString?,
                        dateTransaction?, dateInscription?, amount }
 
