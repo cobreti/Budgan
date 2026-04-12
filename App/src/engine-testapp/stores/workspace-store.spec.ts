@@ -165,7 +165,7 @@ describe('useWorkspaceStore — segment persistence', () => {
       columnMappings: [{ id: 'mapping-1', columnMapping: {} }],
     } as unknown as InstanceType<typeof BdgSettings>
 
-    vi.mocked(container.get).mockImplementation((bindingTypeId: string) => {
+    vi.mocked(container.get as (id: string) => unknown).mockImplementation((bindingTypeId: string) => {
       if (bindingTypeId === BdgSettings.bindingTypeId) return mockSettings
       if (bindingTypeId === CsvContentImporter.bindingTypeId) return mockImporter
       if (bindingTypeId === BdgWorkspaceFactory.bindingTypeId) return factory
