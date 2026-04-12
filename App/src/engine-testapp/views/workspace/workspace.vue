@@ -21,6 +21,27 @@
           <li>
             <RouterLink
               v-if="hasCurrentWorkspace"
+              :to="{ name: 'workspace-export', params: { locale: localeParam } }"
+              class="workspace-view__menu-item"
+              :class="{
+                'workspace-view__menu-item--active': route.name === 'workspace-export'
+              }"
+              data-testid="workspace-menu-export"
+            >
+              {{ t('workspace.menu.export') }}
+            </RouterLink>
+            <span
+              v-else
+              class="workspace-view__menu-item workspace-view__menu-item--disabled"
+              aria-disabled="true"
+              data-testid="workspace-menu-export-disabled"
+            >
+              {{ t('workspace.menu.export') }}
+            </span>
+          </li>
+          <li>
+            <RouterLink
+              v-if="hasCurrentWorkspace"
               :to="{ name: 'workspace-accounts', params: { locale: localeParam } }"
               class="workspace-view__menu-item"
               :class="{
