@@ -85,6 +85,7 @@ options.bind<MyService>(MyService.bindingTypeId).to(MyServiceImpl).inSingletonSc
 | `ReaderFactory` | `FileReaderFactoryImpl` | transient |
 | `BdgWorkspaceFactory` | `BdgWorkspaceFactoryImpl` | singleton |
 | `BdgSettings` | `BdgSettingsImpl` | singleton |
+| `CsvContentImporter` | `CsvContentImporterImpl` | transient |
 
 ### Result pattern (no throwing for expected errors)
 
@@ -166,7 +167,21 @@ Same-directory relative imports (`./types`) are allowed. Note: TypeScript `paths
 
 ### Routing
 
-All routes are locale-prefixed: `/:locale(en|fr)/...`. Construct links in templates as:
+All routes are locale-prefixed: `/:locale(en|fr)/...`. Current route tree:
+
+```
+/:locale
+  /                       home
+  /zip-file               zip-file (stub)
+  /settings
+    /column-mappings      settings-column-mappings
+  /workspace              workspace layout (sidebar nav)
+    /create               workspace-create
+    /accounts             workspace-accounts
+    /segments             workspace-segments (menu item disabled when no account selected)
+```
+
+Construct links in templates as:
 
 ```vue
 <RouterLink :to="{ name: 'workspace-accounts', params: { locale: localeParam } }">
@@ -205,8 +220,11 @@ Never hardcode colors — always use `var(--token-name)`. Mobile breakpoint: `@m
 
 ```typescript
 // Workspace
-BdgWorkspace  { id, name, accounts: BdgAccount[], createAccount(name), getAccount(id) }
-BdgAccount    { id, name, columnMappingId }
+BdgWorkspace      { id, name, accounts: BdgAccount[], createAccount(name), getAccount(id) }
+BdgAccount        { id, name, columnMappingId, segments: BdgAccountSegment[], addSegment(segment) }
+BdgAccountSegment { name, dateStart, dateEnd, dateStartAsString, dateEndAsString, rows: BdgAccountSegmentRow[] }
+BdgAccountSegmentRow { cardNumber, description, dateTransactionAsString, dateInscriptionAsString?,
+                       dateTransaction?, dateInscription?, amount }
 
 // Settings
 BdgSettings         { columnMappings: BdgColumnMapping[], add/update/removeColumnMapping() }
@@ -216,7 +234,10 @@ BdgColumnMapping    { id, name, columnMapping: CsvColumnMapping }
 CsvContentExtractionResult  { delimiter, headerRowIndex, header: string[], rows: CsvJsonRecord[] }
 CsvColumnMapping            { 'card-number'?: number, 'date-transaction'?: number, 'amount'?: number,
                               'description'?: number, 'date-inscription'?: number }
+CsvContentImporter          import(file, columnMapping): Promise<ResultWithError<BdgAccountSegment, string>>
 ```
+
+> **Date parsing:** `BdgAccountSegment` uses `moment` (production dependency) to parse date strings in **local time**. Never use `new Date("YYYY-MM-DD")` directly — it parses as UTC and causes an off-by-one day in timezones west of UTC.
 
 **Note:** `src/engine/models/` contains legacy types (`BankAccount`, `Statement`, etc.) — for engine-testapp new code, use the `csv-import/` types above instead.
 

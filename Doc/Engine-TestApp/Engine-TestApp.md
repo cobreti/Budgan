@@ -58,11 +58,13 @@ graph LR
     ROOT --> WRK
     WRK --> WRK_CREATE
     WRK --> WRK_ACC
+    WRK --> WRK_SEG["segments → Segments\n(requires selectedAccountId)"]
     ROOT --> SET
     SET --> SET_MAP
 
     style WRK_CREATE fill:#e8f4fd
     style WRK_ACC fill:#e8f4fd
+    style WRK_SEG fill:#e8f4fd
     style SET_MAP fill:#fef9e7
 ```
 
@@ -90,8 +92,28 @@ classDiagram
         +id: string
         +name: string
         +columnMappingId: string
+        +segments: BdgAccountSegment[]
+        +addSegment(segment) void
     }
     class BdgAccountImpl
+    class BdgAccountSegment {
+        +name: string
+        +dateStart: Date
+        +dateEnd: Date
+        +dateStartAsString: string
+        +dateEndAsString: string
+        +rows: BdgAccountSegmentRow[]
+    }
+    class BdgAccountSegmentRow {
+        <<type>>
+        +cardNumber: string
+        +description: string
+        +dateTransactionAsString: string
+        +dateInscriptionAsString?: string
+        +dateTransaction?: Date
+        +dateInscription?: Date
+        +amount: number
+    }
     class BdgWorkspaceFactory {
         <<abstract>>
         +bindingTypeId: string
@@ -136,10 +158,20 @@ classDiagram
         +header: string[]
         +rows: CsvJsonRecord[]
     }
+    class CsvContentImporter {
+        <<abstract>>
+        +bindingTypeId: string
+        +import(file, columnMapping) Promise~ResultWithError~
+    }
+    class CsvContentImporterImpl {
+        -readerFactory: ReaderFactory
+    }
 
     BdgWorkspace <|.. BdgWorkspaceImpl
     BdgWorkspaceImpl "1" o-- "0..*" BdgAccount
     BdgAccount <|.. BdgAccountImpl
+    BdgAccountImpl "1" o-- "0..*" BdgAccountSegment
+    BdgAccountSegment "1" o-- "0..*" BdgAccountSegmentRow
     BdgWorkspaceFactory <|-- BdgWorkspaceFactoryImpl
     BdgWorkspaceFactory ..> BdgWorkspace : creates
 
@@ -148,6 +180,9 @@ classDiagram
     BdgColumnMapping *-- CsvColumnMapping
 
     CsvContentExtractor ..> CsvContentExtractionResult : produces
+    CsvContentImporter <|-- CsvContentImporterImpl
+    CsvContentImporterImpl ..> CsvContentExtractor : uses
+    CsvContentImporterImpl ..> BdgAccountSegment : produces
 ```
 
 ---
@@ -164,14 +199,19 @@ classDiagram
         +isJsonVisible: boolean
         +currentWorkspace: BdgWorkspace | null
         +workspaceSnapshot: WorkspaceSnapshot | null
+        +selectedAccountId: string | null
         +setParsedJson(content) void
         +setAppliedMapping(mapping) void
         +setSelectedFile(file) void
         +setCurrentWorkspace(workspace) void
         +createAccountInCurrentWorkspace(name, mappingId) BdgAccount
+        +removeAccountFromCurrentWorkspace(accountId) void
+        +setSelectedAccount(accountId) void
+        +clearSelectedAccount() void
+        +importSegmentToSelectedAccount(file) Promise~ResultWithError~
         +rebuildWorkspaceFromSnapshot() void
     }
-    note for WorkspaceStore "Persisted: workspaceSnapshot → localStorage\ncurrentWorkspace excluded (rebuilt via factory)"
+    note for WorkspaceStore "Persisted: workspaceSnapshot → localStorage\ncurrentWorkspace excluded (rebuilt via factory)\nSegments are in-memory only (not persisted)"
 
     class SettingsStore {
         +settings: BdgSettings
@@ -191,6 +231,8 @@ classDiagram
     }
 
     WorkspaceStore ..> BdgWorkspaceFactory : container.get
+    WorkspaceStore ..> BdgSettings : container.get
+    WorkspaceStore ..> CsvContentImporter : container.get
     WorkspaceStore *-- WorkspaceSnapshot
     SettingsStore ..> BdgSettings : container.get
 ```
@@ -209,6 +251,7 @@ graph TD
     WRK[Workspace]
     WRK_C[WorkspaceCreate]
     WRK_A[Accounts]
+    WRK_S[Segments]
     SET[Settings]
     SET_CM[SettingsColumnMappings]
     CM[CsvColumnMapping component]
@@ -220,6 +263,7 @@ graph TD
     LAYOUT --> WRK
     WRK --> WRK_C
     WRK --> WRK_A
+    WRK --> WRK_S
     LAYOUT --> SET
     SET --> SET_CM
     SET_CM --> CM
@@ -227,6 +271,7 @@ graph TD
     style CM fill:#d5f5e3
     style SET_CM fill:#fef9e7
     style WRK_A fill:#e8f4fd
+    style WRK_S fill:#e8f4fd
 ```
 
 ---
@@ -255,7 +300,40 @@ sequenceDiagram
 
 ---
 
-## 7. Workspace Creation Flow
+## 7. Segment Import Flow
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant SV as Segments view
+    participant WS as WorkspaceStore
+    participant BDS as BdgSettings (domain)
+    participant CI as CsvContentImporter
+    participant RF as ReaderFactory
+    participant CE as CsvContentExtractor
+    participant ACC as BdgAccount
+
+    User->>SV: Selects CSV file
+    SV->>WS: importSegmentToSelectedAccount(file)
+    WS->>WS: getAccount(selectedAccountId)
+    WS->>BDS: find BdgColumnMapping by columnMappingId
+    BDS-->>WS: CsvColumnMapping
+    WS->>CI: import(file, columnMapping)
+    CI->>RF: createReader()
+    RF-->>CI: FileReader
+    CI->>CI: reader.readAsText(file)
+    CI->>CE: extract(csvText)
+    CE-->>CI: CsvContentExtractionResult
+    CI->>CI: map rows → BdgAccountSegmentRow[]
+    CI-->>WS: ResultWithError~BdgAccountSegment~
+    WS->>ACC: addSegment(segment)
+    WS-->>SV: ResultWithError~BdgAccountSegment~
+    SV->>User: Show success / error message
+```
+
+---
+
+## 8. Workspace Creation Flow
 
 ```mermaid
 sequenceDiagram
@@ -281,7 +359,7 @@ sequenceDiagram
 
 ---
 
-## 8. Persistence & Hydration
+## 9. Persistence & Hydration
 
 ```mermaid
 graph LR
@@ -304,19 +382,21 @@ graph LR
 
 ---
 
-## 9. DI Container Bindings
+## 10. DI Container Bindings
 
 | Abstract Class (token) | Concrete Class | Scope |
 |---|---|---|
 | `BdgWorkspaceFactory` | `BdgWorkspaceFactoryImpl` | Singleton |
 | `BdgSettings` | `BdgSettingsImpl` | Singleton |
-| `IdGenerator` | `IdGeneratorImpl` | Singleton |
+| `IdGenerator` | `IdGeneratorImpl` | Transient |
+| `ReaderFactory` | `FileReaderFactoryImpl` | Transient |
+| `CsvContentImporter` | `CsvContentImporterImpl` | Transient |
 
 All bindings are declared in `engine/setup-inversify.module.ts` and loaded into the shared Inversify container at `inversify/setup-inversify.ts`.
 
 ---
 
-## 10. Key Conventions
+## 11. Key Conventions
 
 | Rule | Description |
 |---|---|

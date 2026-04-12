@@ -14,9 +14,9 @@ App/
     ├── engine/               # ★ Pure TypeScript — zero Vue/Pinia imports ever
     │   ├── models/           # Legacy type-only definitions (BankAccount, CSV)
     │   ├── modules/
-    │   │   ├── bdg-workspace/   # BdgWorkspace, BdgAccount, BdgWorkspaceFactory
+    │   │   ├── bdg-workspace/   # BdgWorkspace, BdgAccount, BdgAccountSegment, BdgWorkspaceFactory
     │   │   ├── bdg-settings/    # BdgSettings (column mapping CRUD)
-    │   │   └── csv-import/      # CsvContentExtractor, CsvColumns, CsvColumnMapping
+    │   │   └── csv-import/      # CsvContentExtractor, CsvContentImporter, CsvColumns, CsvColumnMapping
     │   ├── services/            # IdGenerator, ReaderFactory
     │   ├── types/               # Result<T>, ResultWithError<T,E>
     │   └── setup-inversify.module.ts  # All engine DI bindings
@@ -206,6 +206,7 @@ const newId = idGenerator.generateId()
 | `ReaderFactory` | `FileReaderFactoryImpl` | transient |
 | `BdgWorkspaceFactory` | `BdgWorkspaceFactoryImpl` | singleton |
 | `BdgSettings` | `BdgSettingsImpl` | singleton |
+| `CsvContentImporter` | `CsvContentImporterImpl` | transient |
 
 ---
 
@@ -215,8 +216,11 @@ const newId = idGenerator.generateId()
 
 ```typescript
 // Workspace
-BdgWorkspace  { id, name, accounts: BdgAccount[], createAccount(name), getAccount(id) }
-BdgAccount    { id, name }
+BdgWorkspace      { id, name, accounts: BdgAccount[], createAccount(name), getAccount(id) }
+BdgAccount        { id, name, columnMappingId, segments: BdgAccountSegment[], addSegment(segment) }
+BdgAccountSegment { name, dateStart, dateEnd, dateStartAsString, dateEndAsString, rows: BdgAccountSegmentRow[] }
+BdgAccountSegmentRow { cardNumber, description, dateTransactionAsString, dateInscriptionAsString?,
+                       dateTransaction?, dateInscription?, amount }
 
 // Settings
 BdgSettings         { columnMappings: BdgColumnMapping[], add/update/removeColumnMapping() }
@@ -227,7 +231,10 @@ CsvContentExtractionResult  { delimiter, headerRowIndex, header: string[], rows:
 CsvColumnMapping            { 'card-number'?: number, 'date-transaction'?: number, 'amount'?: number,
                               'description'?: number, 'date-inscription'?: number }
 CsvColumns (const)          'card-number' | 'date-inscription' | 'date-transaction' | 'amount' | 'description'
+CsvContentImporter          import(file: File, columnMapping: CsvColumnMapping): Promise<ResultWithError<BdgAccountSegment, string>>
 ```
+
+> **Date parsing:** `BdgAccountSegment` uses `moment` (production dependency) to parse date strings in **local time**. Never use `new Date("YYYY-MM-DD")` directly — it parses as UTC and shifts by one day in timezones west of UTC.
 
 ### Legacy models (`src/engine/models/`) — use for Budgan app only
 `BankAccount`, `BankAccountTransaction`, `BankAccountTransactionsGroup`, `Statement`, `CSVSettings`  
@@ -243,12 +250,12 @@ All routes are locale-prefixed. Pattern: `/:locale(en|fr)/...`
 /:locale
   /                       home
   /zip-file               zip-file (stub)
+  /settings
+    /column-mappings      settings-column-mappings
   /workspace              workspace layout (sidebar nav)
-    /create               create/manage workspace
-    /accounts             manage accounts
-    /csv-selection        pick CSV file
-    /column-mapping       map CSV columns
-    /json-data-view       view parsed data
+    /create               workspace-create
+    /accounts             workspace-accounts
+    /segments             workspace-segments (requires selectedAccountId)
 ```
 
 **Constructing links in templates:**
