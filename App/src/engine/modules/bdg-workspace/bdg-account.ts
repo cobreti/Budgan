@@ -1,4 +1,4 @@
-import { BdgAccountSegment } from './bdg-account-segment'
+import type { BdgAccountSegment } from './bdg-account-segment'
 
 export interface BdgAccount {
   id: string

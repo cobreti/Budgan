@@ -15,7 +15,7 @@ export interface BdgWorkspace {
 export class BdgWorkspaceImpl implements BdgWorkspace {
   private _idGenerator: IdGenerator
   private readonly _id: string
-  private _accounts: Map<string, BdgAccount> = new Map()
+  private _accounts: { [key: string]: BdgAccount } = {}
   private _name: string = ''
 
   constructor(idGenerator: IdGenerator, id: string) {
@@ -32,7 +32,7 @@ export class BdgWorkspaceImpl implements BdgWorkspace {
   }
 
   get accounts(): BdgAccount[] {
-    return Array.from(this._accounts.values())
+    return Object.values(this._accounts)
   }
 
   set name(value: string) {
@@ -42,20 +42,20 @@ export class BdgWorkspaceImpl implements BdgWorkspace {
   createAccount(name: string, columnMappingId: string): BdgAccount {
     const accountId = this._idGenerator.generateId()
     const account = new BdgAccountImpl(accountId, name, columnMappingId)
-    this._accounts.set(accountId, account)
+    this._accounts[accountId] = account
     return account
   }
 
   getAccount(accountId: string): Result<BdgAccount> {
-    const account = this._accounts.get(accountId)
+    const account = this._accounts[accountId]
     return account ? { success: true, value: account } : { success: false }
   }
 
   loadAccount(account: BdgAccount): void {
-    this._accounts.set(account.id, account)
+    this._accounts[account.id] = account
   }
 
   removeAccount(accountId: string): void {
-    this._accounts.delete(accountId)
+    delete this._accounts[accountId]
   }
 }

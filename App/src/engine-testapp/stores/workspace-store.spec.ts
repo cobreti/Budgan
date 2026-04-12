@@ -5,7 +5,7 @@ import { BdgWorkspaceFactory, BdgWorkspaceFactoryImpl } from '@engine/modules/bd
 import { IdGeneratorImpl } from '@engine/services/IdGenerator'
 import { BdgSettings } from '@engine/modules/bdg-settings/bdg-settings'
 import { CsvContentImporter } from '@engine/modules/csv-import/csv-content-importer'
-import { BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment'
+import { BdgAccountSegmentImpl } from '@engine/modules/bdg-workspace/bdg-account-segment'
 
 vi.mock('@inversify/setup-inversify', () => ({
   default: { get: vi.fn() },
@@ -132,7 +132,7 @@ describe('useWorkspaceStore — segment persistence', () => {
     workspace.name = 'My Workspace'
     const account = workspace.createAccount('My Account', 'mapping-1')
     account.addSegment(
-      new BdgAccountSegment('seg-1', 'March', [
+      new BdgAccountSegmentImpl('seg-1', 'March', [
         { cardNumber: '1234', description: 'Coffee', dateTransactionAsString: '2024-03-15', amount: -4.2 },
       ]),
     )
@@ -155,7 +155,7 @@ describe('useWorkspaceStore — segment persistence', () => {
     workspace.name = 'My Workspace'
     const account = workspace.createAccount('My Account', 'mapping-1')
 
-    const mockSegment = new BdgAccountSegment('seg-imported', 'march', [
+    const mockSegment = new BdgAccountSegmentImpl('seg-imported', 'march', [
       { cardNumber: '9999', description: 'Salary', dateTransactionAsString: '2024-03-01', amount: 1200 },
     ])
     const mockImporter = {

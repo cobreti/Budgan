@@ -6,6 +6,7 @@ import {
   BdgWorkspaceFactoryImpl
 } from './modules/bdg-workspace/bdg-workspace-factory'
 import { BdgSettings, BdgSettingsImpl } from '@engine/modules/bdg-settings/bdg-settings.ts'
+import { FileSaveService, FileSaveServiceImpl } from '@engine/services/FileSaveService'
 import {
   CsvContentImporter,
   CsvContentImporterImpl,
@@ -23,4 +24,5 @@ export const engineModule = new ContainerModule((options: ContainerModuleLoadOpt
     .to(BdgSettingsImpl)
     .inSingletonScope()
   options.bind<CsvContentImporter>(CsvContentImporter.bindingTypeId).to(CsvContentImporterImpl)
+  options.bind<FileSaveService>(FileSaveService.bindingTypeId).to(FileSaveServiceImpl)
 })

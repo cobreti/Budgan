@@ -35,6 +35,7 @@
   "workspace.create.singleWorkspaceNotice": "Only one workspace can be active at a time. Creating a new one replaces the current workspace.",
   "workspace.create.currentWorkspace": "Current Workspace",
   "workspace.create.currentWorkspaceEmpty": "No workspace created yet.",
+  "workspace.create.save": "Save Workspace",
   "workspace.create.removeCurrent": "Remove Current Workspace",
   "workspace.create.nameLabel": "Workspace Name",
   "workspace.create.namePlaceholder": "Enter workspace name",

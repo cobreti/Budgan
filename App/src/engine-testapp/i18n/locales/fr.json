@@ -35,6 +35,7 @@
   "workspace.create.singleWorkspaceNotice": "Un seul espace de travail peut etre actif a la fois. Creer un nouvel espace remplace l'actuel.",
   "workspace.create.currentWorkspace": "Espace de travail actuel",
   "workspace.create.currentWorkspaceEmpty": "Aucun espace de travail cree pour le moment.",
+  "workspace.create.save": "Enregistrer l'espace de travail",
   "workspace.create.removeCurrent": "Supprimer l'espace de travail actuel",
   "workspace.create.nameLabel": "Nom de l'espace de travail",
   "workspace.create.namePlaceholder": "Saisissez le nom de l'espace de travail",

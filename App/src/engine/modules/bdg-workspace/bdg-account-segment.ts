@@ -15,7 +15,17 @@ export interface BdgAccountSegmentRow {
   amount: number
 }
 
-export class BdgAccountSegment {
+export interface BdgAccountSegment {
+  id: string
+  name: string
+  dateStartAsString: string
+  dateEndAsString: string
+  dateStart: Date
+  dateEnd: Date
+  rows: BdgAccountSegmentRow[]
+}
+
+export class BdgAccountSegmentImpl implements BdgAccountSegment {
   private readonly _id: string
   private readonly _name: string
   private readonly _dateStartAsString: string

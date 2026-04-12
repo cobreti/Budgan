@@ -3,7 +3,7 @@ import { injectable, inject } from 'inversify'
 import { InversifyUtils } from '@inversify/inversify-utils.ts'
 import { CsvContentExtractor } from '@engine/modules/csv-import/csv-content-extractor'
 import { CsvColumns, type CsvColumnMapping } from '@engine/modules/csv-import/csv-column-content'
-import { BdgAccountSegment, type BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
+import { BdgAccountSegmentImpl, type BdgAccountSegment, type BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
 import { ReaderFactory } from '@engine/services/FileReaderFactory'
 import { IdGenerator } from '@engine/services/IdGenerator'
 import type { ResultWithError } from '@engine/types/result-pattern'
@@ -74,7 +74,7 @@ export class CsvContentImporterImpl extends CsvContentImporter {
           })
 
           const segmentName = file.name.replace(/\.[^/.]+$/, '')
-          const segment = new BdgAccountSegment(this.idGenerator.generateId(), segmentName, rows)
+          const segment = new BdgAccountSegmentImpl(this.idGenerator.generateId(), segmentName, rows)
 
           resolve({ success: true, value: segment })
         } catch (err) {

@@ -5,13 +5,24 @@
     <p class="workspace-create__note">{{ t('workspace.create.singleWorkspaceNotice') }}</p>
 
     <div class="workspace-create__current" data-testid="workspace-create-current">
-      <p class="workspace-create__current-title">{{ t('workspace.create.currentWorkspace') }}</p>
-      <p v-if="workspaceStore.currentWorkspace" class="workspace-create__current-value">
-        {{ workspaceStore.currentWorkspace.name }} ({{ workspaceStore.currentWorkspace.id }})
-      </p>
-      <p v-else class="workspace-create__current-empty">
-        {{ t('workspace.create.currentWorkspaceEmpty') }}
-      </p>
+      <div class="workspace-create__current-info">
+        <p class="workspace-create__current-title">{{ t('workspace.create.currentWorkspace') }}</p>
+        <p v-if="workspaceStore.currentWorkspace" class="workspace-create__current-value">
+          {{ workspaceStore.currentWorkspace.name }} ({{ workspaceStore.currentWorkspace.id }})
+        </p>
+        <p v-else class="workspace-create__current-empty">
+          {{ t('workspace.create.currentWorkspaceEmpty') }}
+        </p>
+        <button
+          v-if="workspaceStore.currentWorkspace"
+          class="workspace-create__save-button"
+          type="button"
+          data-testid="workspace-create-save"
+          @click="saveWorkspace"
+        >
+          {{ t('workspace.create.save') }}
+        </button>
+      </div>
       <button
         v-if="workspaceStore.currentWorkspace"
         class="workspace-create__remove-button"
@@ -58,11 +69,16 @@
   import { ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useWorkspaceStore } from '@engineTestApp/stores/workspace-store'
+  import { useSettingsStore } from '@engineTestApp/stores/settings-store'
   import container from '@inversify/setup-inversify'
   import { BdgWorkspaceFactory } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
+  import { FileSaveService } from '@engine/services/FileSaveService'
+  import { BdgWorkspaceExporter } from '@engine/modules/bdg-workspace/bdg-workspace-exporter'
+  import { BdgSettingsExporter } from '@engine/modules/bdg-settings/bdg-settings-exporter'
 
   const { t } = useI18n()
   const workspaceStore = useWorkspaceStore()
+  const settingsStore = useSettingsStore()
 
   const workspaceName = ref('')
   const createdWorkspaceId = ref<string | null>(null)
@@ -89,6 +105,36 @@
     } catch {
       createdWorkspaceId.value = null
       errorMessage.value = t('workspace.create.error')
+    }
+  }
+
+  async function saveWorkspace(): Promise<void> {
+    const workspace = workspaceStore.currentWorkspace
+    if (!workspace) return
+
+    const filename = `${workspace.name}.json`
+    const content = {
+      settings: new BdgSettingsExporter().export(settingsStore.settings),
+      workspace: new BdgWorkspaceExporter().export(workspace),
+    }
+
+    if ('showSaveFilePicker' in window) {
+      const fileHandle = await (window as Window & typeof globalThis & {
+        showSaveFilePicker(options?: unknown): Promise<FileSystemFileHandle>
+      }).showSaveFilePicker({
+        suggestedName: filename,
+        types: [{ description: 'JSON file', accept: { 'application/json': ['.json'] } }],
+      })
+      await container.get<FileSaveService>(FileSaveService.bindingTypeId).saveJson(fileHandle, content)
+    } else {
+      const json = JSON.stringify(content, null, 2)
+      const blob = new Blob([json], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const anchor = document.createElement('a')
+      anchor.href = url
+      anchor.download = filename
+      anchor.click()
+      URL.revokeObjectURL(url)
     }
   }
 
@@ -121,13 +167,20 @@
   }
 
   .workspace-create__current {
-    display: grid;
-    gap: 0.35rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
     margin: 0;
     padding: 0.75rem;
     border: 1px solid var(--workspace-outline);
     border-radius: 0.625rem;
     background-color: var(--workspace-surface);
+  }
+
+  .workspace-create__current-info {
+    flex: 1;
+    display: grid;
+    gap: 0.35rem;
   }
 
   .workspace-create__current-title,
@@ -175,6 +228,20 @@
     justify-content: center;
     min-height: 2.75rem;
     padding: 0.75rem 1.2rem;
+    border: 1px solid var(--workspace-outline);
+    border-radius: 999px;
+    background-color: var(--workspace-surface);
+    color: var(--workspace-on-surface);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .workspace-create__save-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    padding: 0.55rem 1rem;
     border: 1px solid var(--workspace-outline);
     border-radius: 999px;
     background-color: var(--workspace-surface);

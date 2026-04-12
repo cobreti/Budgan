@@ -8,7 +8,7 @@ import { BdgAccountImpl } from '@engine/modules/bdg-workspace/bdg-account'
 import { BdgWorkspaceFactory } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
 import { BdgSettings } from '@engine/modules/bdg-settings/bdg-settings'
 import { CsvContentImporter } from '@engine/modules/csv-import/csv-content-importer'
-import { BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment'
+import { BdgAccountSegmentImpl, type BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment'
 import type { BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
 import type { ResultWithError } from '@engine/types/result-pattern'
 import container from '@inversify/setup-inversify'
@@ -89,7 +89,7 @@ export const useWorkspaceStore = defineStore(
         const account = new BdgAccountImpl(a.id, a.name, a.columnMappingId)
         for (const s of a.segments) {
           const rows: BdgAccountSegmentRow[] = s.rows.map((r) => ({ ...r }))
-          account.addSegment(new BdgAccountSegment(s.id, s.name, rows))
+          account.addSegment(new BdgAccountSegmentImpl(s.id, s.name, rows))
         }
         return account
       })
