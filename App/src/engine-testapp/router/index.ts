@@ -33,6 +33,11 @@ export const router = createRouter({
               path: 'column-mappings',
               name: 'settings-column-mappings',
               component: () => import('@engineTestAppViews/settings/settings-column-mappings.vue')
+            },
+            {
+              path: 'export',
+              name: 'settings-export',
+              component: () => import('@engineTestAppViews/settings/settings-export.vue')
             }
           ]
         },

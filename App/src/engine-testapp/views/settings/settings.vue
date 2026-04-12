@@ -17,6 +17,16 @@
               {{ t('settings.menu.columnMappings') }}
             </RouterLink>
           </li>
+          <li>
+            <RouterLink
+              :to="{ name: 'settings-export', params: { locale: localeParam } }"
+              class="settings-view__menu-item"
+              :class="{ 'settings-view__menu-item--active': route.name === 'settings-export' }"
+              data-testid="settings-menu-export"
+            >
+              {{ t('settings.menu.export') }}
+            </RouterLink>
+          </li>
         </ul>
       </aside>
 
