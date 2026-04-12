@@ -8,14 +8,34 @@ import { BdgAccountImpl } from '@engine/modules/bdg-workspace/bdg-account'
 import { BdgWorkspaceFactory } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
 import { BdgSettings } from '@engine/modules/bdg-settings/bdg-settings'
 import { CsvContentImporter } from '@engine/modules/csv-import/csv-content-importer'
-import type { BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment'
+import { BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment'
+import type { BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
 import type { ResultWithError } from '@engine/types/result-pattern'
 import container from '@inversify/setup-inversify'
+
+type SegmentRowSnapshot = {
+  cardNumber: string
+  description: string
+  dateTransactionAsString: string
+  dateInscriptionAsString?: string
+  amount: number
+}
+
+type SegmentSnapshot = {
+  id: string
+  name: string
+  rows: SegmentRowSnapshot[]
+}
 
 type WorkspaceSnapshot = {
   id: string
   name: string
-  accounts: Array<{ id: string; name: string; columnMappingId: string }>
+  accounts: Array<{
+    id: string
+    name: string
+    columnMappingId: string
+    segments: SegmentSnapshot[]
+  }>
 }
 
 export const useWorkspaceStore = defineStore(
@@ -42,6 +62,19 @@ export const useWorkspaceStore = defineStore(
           id: a.id,
           name: a.name,
           columnMappingId: a.columnMappingId,
+          segments: a.segments.map((s) => ({
+            id: s.id,
+            name: s.name,
+            rows: s.rows.map((r) => ({
+              cardNumber: r.cardNumber,
+              description: r.description,
+              dateTransactionAsString: r.dateTransactionAsString,
+              ...(r.dateInscriptionAsString !== undefined
+                ? { dateInscriptionAsString: r.dateInscriptionAsString }
+                : {}),
+              amount: r.amount,
+            })),
+          })),
         })),
       }
     }
@@ -52,9 +85,14 @@ export const useWorkspaceStore = defineStore(
         return
       }
       const factory = container.get<BdgWorkspaceFactory>(BdgWorkspaceFactory.bindingTypeId)
-      const accounts = workspaceSnapshot.value.accounts.map(
-        (a) => new BdgAccountImpl(a.id, a.name, a.columnMappingId),
-      )
+      const accounts = workspaceSnapshot.value.accounts.map((a) => {
+        const account = new BdgAccountImpl(a.id, a.name, a.columnMappingId)
+        for (const s of a.segments) {
+          const rows: BdgAccountSegmentRow[] = s.rows.map((r) => ({ ...r }))
+          account.addSegment(new BdgAccountSegment(s.id, s.name, rows))
+        }
+        return account
+      })
       currentWorkspace.value = factory.reconstructWorkspace(
         workspaceSnapshot.value.id,
         workspaceSnapshot.value.name,
@@ -154,6 +192,7 @@ export const useWorkspaceStore = defineStore(
 
       if (result.success) {
         account.addSegment(result.value)
+        _syncWorkspaceSnapshot()
       }
 
       return result
