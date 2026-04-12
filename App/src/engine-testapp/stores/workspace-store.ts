@@ -6,6 +6,10 @@ import type { BdgWorkspace } from '@engine/modules/bdg-workspace/bdg-workspace'
 import type { BdgAccount } from '@engine/modules/bdg-workspace/bdg-account'
 import { BdgAccountImpl } from '@engine/modules/bdg-workspace/bdg-account'
 import { BdgWorkspaceFactory } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
+import { BdgSettings } from '@engine/modules/bdg-settings/bdg-settings'
+import { CsvContentImporter } from '@engine/modules/csv-import/csv-content-importer'
+import type { BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment'
+import type { ResultWithError } from '@engine/types/result-pattern'
 import container from '@inversify/setup-inversify'
 
 type WorkspaceSnapshot = {
@@ -125,6 +129,36 @@ export const useWorkspaceStore = defineStore(
       selectedAccountId.value = null
     }
 
+    async function importSegmentToSelectedAccount(
+      file: File,
+    ): Promise<ResultWithError<BdgAccountSegment, string>> {
+      if (!currentWorkspace.value || !selectedAccountId.value) {
+        return { success: false, error: 'No account selected' }
+      }
+
+      const accountResult = currentWorkspace.value.getAccount(selectedAccountId.value)
+      if (!accountResult?.success) {
+        return { success: false, error: 'Account not found' }
+      }
+
+      const account = accountResult.value
+      const bdgSettings = container.get<BdgSettings>(BdgSettings.bindingTypeId)
+      const bdgMapping = bdgSettings.columnMappings.find((m) => m.id === account.columnMappingId)
+
+      if (!bdgMapping) {
+        return { success: false, error: 'Column mapping not found for this account' }
+      }
+
+      const importer = container.get<CsvContentImporter>(CsvContentImporter.bindingTypeId)
+      const result = await importer.import(file, bdgMapping.columnMapping)
+
+      if (result.success) {
+        account.addSegment(result.value)
+      }
+
+      return result
+    }
+
     return {
       parsedJson,
       appliedMapping,
@@ -144,6 +178,7 @@ export const useWorkspaceStore = defineStore(
       removeAccountFromCurrentWorkspace,
       setSelectedAccount,
       clearSelectedAccount,
+      importSegmentToSelectedAccount,
     }
   },
   {

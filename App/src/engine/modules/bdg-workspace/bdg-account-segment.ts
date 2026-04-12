@@ -1,3 +1,16 @@
+// new Date("YYYY-MM-DD") parses as UTC midnight, which shifts to the previous day in timezones
+// west of UTC. This helper parses date-only strings as local time to avoid that off-by-one.
+function parseLocalDate(value: string): Date | undefined {
+  const isoDateOnly = /^(\d{4})-(\d{2})-(\d{2})$/
+  const match = value.match(isoDateOnly)
+  if (match) {
+    const [, year, month, day] = match
+    return new Date(Number(year), Number(month) - 1, Number(day))
+  }
+  const parsed = new Date(value)
+  return isNaN(parsed.getTime()) ? undefined : parsed
+}
+
 export interface BdgAccountSegmentRow {
   cardNumber: string
   description: string
@@ -27,8 +40,8 @@ export class BdgAccountSegment {
     // Prepopulate dateTransaction on each row from dateTransactionAsString before finding min/max
     for (const row of this._rows) {
       if (!row.dateTransaction) {
-        const parsed = new Date(row.dateTransactionAsString)
-        if (!isNaN(parsed.getTime())) {
+        const parsed = parseLocalDate(row.dateTransactionAsString)
+        if (parsed !== undefined) {
           row.dateTransaction = parsed
         }
       }
@@ -49,8 +62,8 @@ export class BdgAccountSegment {
     this._dateEndAsString = maxRow?.dateTransactionAsString ?? new Date(maxTime).toISOString()
 
     // Set dateStart / dateEnd by parsing the resolved strings
-    this._dateStart = new Date(this._dateStartAsString)
-    this._dateEnd = new Date(this._dateEndAsString)
+    this._dateStart = parseLocalDate(this._dateStartAsString) ?? new Date(minTime)
+    this._dateEnd = parseLocalDate(this._dateEndAsString) ?? new Date(maxTime)
   }
 
   get name(): string {
