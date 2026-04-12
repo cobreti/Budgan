@@ -1,14 +1,8 @@
-// new Date("YYYY-MM-DD") parses as UTC midnight, which shifts to the previous day in timezones
-// west of UTC. This helper parses date-only strings as local time to avoid that off-by-one.
+import moment from 'moment'
+
 function parseLocalDate(value: string): Date | undefined {
-  const isoDateOnly = /^(\d{4})-(\d{2})-(\d{2})$/
-  const match = value.match(isoDateOnly)
-  if (match) {
-    const [, year, month, day] = match
-    return new Date(Number(year), Number(month) - 1, Number(day))
-  }
-  const parsed = new Date(value)
-  return isNaN(parsed.getTime()) ? undefined : parsed
+  const m = moment(value)
+  return m.isValid() ? m.toDate() : undefined
 }
 
 export interface BdgAccountSegmentRow {
