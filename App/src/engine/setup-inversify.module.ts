@@ -6,6 +6,10 @@ import {
   BdgWorkspaceFactoryImpl
 } from './modules/bdg-workspace/bdg-workspace-factory'
 import { BdgSettings, BdgSettingsImpl } from '@engine/modules/bdg-settings/bdg-settings.ts'
+import {
+  CsvContentImporter,
+  CsvContentImporterImpl,
+} from '@engine/modules/csv-import/csv-content-importer'
 
 export const engineModule = new ContainerModule((options: ContainerModuleLoadOptions) => {
   options.bind<ReaderFactory>(ReaderFactory.bindingTypeId).to(FileReaderFactoryImpl)
@@ -18,4 +22,5 @@ export const engineModule = new ContainerModule((options: ContainerModuleLoadOpt
     .bind<BdgSettings>(BdgSettings.bindingTypeId)
     .to(BdgSettingsImpl)
     .inSingletonScope()
+  options.bind<CsvContentImporter>(CsvContentImporter.bindingTypeId).to(CsvContentImporterImpl)
 })
