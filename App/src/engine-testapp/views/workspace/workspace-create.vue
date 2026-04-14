@@ -72,7 +72,8 @@
   import { useSettingsStore } from '@engineTestApp/stores/settings-store'
   import container from '@inversify/setup-inversify'
   import { BdgWorkspaceFactory } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
-  import { FileSaveService } from '@engine/services/FileSaveService'
+  import { FileSaveService, ZipEntry } from '@engine/services/FileSaveService'
+  import { zipSync } from 'fflate'
   import { BdgWorkspaceExporter } from '@engine/modules/bdg-workspace/bdg-workspace-exporter'
   import { BdgSettingsExporter } from '@engine/modules/bdg-settings/bdg-settings-exporter'
 
@@ -112,7 +113,7 @@
     const workspace = workspaceStore.currentWorkspace
     if (!workspace) return
 
-    const filename = `${workspace.name}.json`
+    const filename = `${workspace.name}.zip`
     const content = {
       settings: new BdgSettingsExporter().export(settingsStore.settings),
       workspace: new BdgWorkspaceExporter().export(workspace),
@@ -123,12 +124,13 @@
         showSaveFilePicker(options?: unknown): Promise<FileSystemFileHandle>
       }).showSaveFilePicker({
         suggestedName: filename,
-        types: [{ description: 'JSON file', accept: { 'application/json': ['.json'] } }],
+        types: [{ description: 'Workspace file', accept: { 'application/zip': ['.zip'] } }],
       })
-      await container.get<FileSaveService>(FileSaveService.bindingTypeId).saveJson(fileHandle, content)
+      await container.get<FileSaveService>(FileSaveService.bindingTypeId).saveWorkspace(fileHandle, content)
     } else {
-      const json = JSON.stringify(content, null, 2)
-      const blob = new Blob([json], { type: 'application/json' })
+      const entry = new TextEncoder().encode(JSON.stringify(content, null, 2))
+      const zip = zipSync({ [ZipEntry.Workspace]: entry })
+      const blob = new Blob([zip.buffer as ArrayBuffer], { type: 'application/zip' })
       const url = URL.createObjectURL(blob)
       const anchor = document.createElement('a')
       anchor.href = url
