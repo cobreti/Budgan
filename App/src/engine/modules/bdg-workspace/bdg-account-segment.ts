@@ -6,6 +6,7 @@ function parseLocalDate(value: string): Date | undefined {
 }
 
 export interface BdgAccountSegmentRow {
+  key: string
   cardNumber: string
   description: string
   dateTransactionAsString: string
@@ -13,6 +14,10 @@ export interface BdgAccountSegmentRow {
   dateTransaction?: Date
   dateInscription?: Date
   amount: number
+}
+
+export function computeRowKey(row: Omit<BdgAccountSegmentRow, 'key'>): string {
+  return `${row.cardNumber}|${row.dateTransactionAsString}|${row.amount}|${row.description}`
 }
 
 export interface BdgAccountSegment {

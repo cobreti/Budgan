@@ -51,7 +51,8 @@ export class BdgWorkspaceExporter {
           name: segment.name,
           dateStartAsString: segment.dateStartAsString,
           dateEndAsString: segment.dateEndAsString,
-          rows: segment.rows.map(({ cardNumber, description, dateTransactionAsString, dateInscriptionAsString, amount }) => ({
+          rows: segment.rows.map(({ key, cardNumber, description, dateTransactionAsString, dateInscriptionAsString, amount }) => ({
+            key,
             cardNumber,
             description,
             dateTransactionAsString,

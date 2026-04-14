@@ -14,6 +14,7 @@ import type { ResultWithError } from '@engine/types/result-pattern'
 import container from '@inversify/setup-inversify'
 
 type SegmentRowSnapshot = {
+  key: string
   cardNumber: string
   description: string
   dateTransactionAsString: string
@@ -66,6 +67,7 @@ export const useWorkspaceStore = defineStore(
             id: s.id,
             name: s.name,
             rows: s.rows.map((r) => ({
+              key: r.key,
               cardNumber: r.cardNumber,
               description: r.description,
               dateTransactionAsString: r.dateTransactionAsString,

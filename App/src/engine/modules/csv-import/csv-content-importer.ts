@@ -3,7 +3,7 @@ import { injectable, inject } from 'inversify'
 import { InversifyUtils } from '@inversify/inversify-utils.ts'
 import { CsvContentExtractor } from '@engine/modules/csv-import/csv-content-extractor'
 import { CsvColumns, type CsvColumnMapping } from '@engine/modules/csv-import/csv-column-content'
-import { BdgAccountSegmentImpl, type BdgAccountSegment, type BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
+import { BdgAccountSegmentImpl, computeRowKey, type BdgAccountSegment, type BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
 import { ReaderFactory } from '@engine/services/FileReaderFactory'
 import { IdGenerator } from '@engine/services/IdGenerator'
 import type { ResultWithError } from '@engine/types/result-pattern'
@@ -58,11 +58,16 @@ export class CsvContentImporterImpl extends CsvContentImporter {
             const amountRaw = getValue(CsvColumns.amount)
             const amount = parseFloat(amountRaw.replace(',', '.')) || 0
 
-            const segmentRow: BdgAccountSegmentRow = {
+            const partial = {
               cardNumber: getValue(CsvColumns.cardNumber),
               description: getValue(CsvColumns.description),
               dateTransactionAsString: getValue(CsvColumns.dateTransaction),
               amount,
+            }
+
+            const segmentRow: BdgAccountSegmentRow = {
+              ...partial,
+              key: computeRowKey(partial),
             }
 
             const dateInscription = getValue(CsvColumns.dateInscription)

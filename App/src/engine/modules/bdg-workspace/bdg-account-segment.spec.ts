@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest'
 import { BdgAccountSegmentImpl, type BdgAccountSegmentRow } from './bdg-account-segment'
 
 const baseRow: BdgAccountSegmentRow = {
+  key: '1234|2024-03-15|-4.2|Coffee',
   cardNumber: '1234',
   description: 'Coffee',
   dateTransactionAsString: '2024-03-15',
@@ -30,6 +31,7 @@ describe('BdgAccountSegment', () => {
     // assigning dateTransaction, so spreading baseRow after another test has run would
     // carry over the stale dateTransaction value, causing all rows to compare equal.
     const makeRow = (date: string, amount: number): BdgAccountSegmentRow => ({
+      key: `1234|${date}|${amount}|Coffee`,
       cardNumber: '1234',
       description: 'Coffee',
       dateTransactionAsString: date,
