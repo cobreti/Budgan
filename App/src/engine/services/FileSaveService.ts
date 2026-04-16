@@ -5,13 +5,14 @@ import { unzip, zip } from 'fflate'
 
 export enum ZipEntry {
   Workspace = 'Workspace.json',
+  Settings = 'Settings.json',
 }
 
 export abstract class FileSaveService {
   static readonly bindingTypeId: string = InversifyUtils.createBindingId('file-save-service')
 
   abstract saveJson(handle: FileSystemFileHandle, content: unknown): Promise<void>
-  abstract saveWorkspace(handle: FileSystemFileHandle, content: unknown): Promise<void>
+  abstract saveWorkspace(handle: FileSystemFileHandle, workspaceContent: unknown, settingsContent: unknown): Promise<void>
 }
 
 @injectable()
@@ -23,9 +24,11 @@ export class FileSaveServiceImpl extends FileSaveService {
     await writable.close()
   }
 
-  async saveWorkspace(handle: FileSystemFileHandle, content: unknown): Promise<void> {
+  async saveWorkspace(handle: FileSystemFileHandle, workspaceContent: unknown, settingsContent: unknown): Promise<void> {
     const entries = await this._readExistingZipEntries(handle)
-    entries[ZipEntry.Workspace] = new TextEncoder().encode(JSON.stringify(content, null, 2))
+    const encoder = new TextEncoder()
+    entries[ZipEntry.Workspace] = encoder.encode(JSON.stringify(workspaceContent, null, 2))
+    entries[ZipEntry.Settings] = encoder.encode(JSON.stringify(settingsContent, null, 2))
     const result = await this._zipEntries(entries)
     const writable = await handle.createWritable()
     await writable.write(result.buffer as ArrayBuffer)

@@ -77,6 +77,8 @@
   import { BdgWorkspaceExporter } from '@engine/modules/bdg-workspace/bdg-workspace-exporter'
   import { BdgSettingsExporter } from '@engine/modules/bdg-settings/bdg-settings-exporter'
 
+  const fileSaveService = container.get<FileSaveService>(FileSaveService.bindingTypeId)
+
   const { t } = useI18n()
   const workspaceStore = useWorkspaceStore()
   const settingsStore = useSettingsStore()
@@ -114,10 +116,8 @@
     if (!workspace) return
 
     const filename = `${workspace.name}.zip`
-    const content = {
-      settings: new BdgSettingsExporter().export(settingsStore.settings),
-      workspace: new BdgWorkspaceExporter().export(workspace),
-    }
+    const workspaceExport = new BdgWorkspaceExporter().export(workspace)
+    const settingsExport = new BdgSettingsExporter().export(settingsStore.settings)
 
     if ('showSaveFilePicker' in window) {
       const fileHandle = await (window as Window & typeof globalThis & {
@@ -126,10 +126,13 @@
         suggestedName: filename,
         types: [{ description: 'Workspace file', accept: { 'application/zip': ['.zip'] } }],
       })
-      await container.get<FileSaveService>(FileSaveService.bindingTypeId).saveWorkspace(fileHandle, content)
+      await fileSaveService.saveWorkspace(fileHandle, workspaceExport, settingsExport)
     } else {
-      const entry = new TextEncoder().encode(JSON.stringify(content, null, 2))
-      const zip = zipSync({ [ZipEntry.Workspace]: entry })
+      const encoder = new TextEncoder()
+      const zip = zipSync({
+        [ZipEntry.Workspace]: encoder.encode(JSON.stringify(workspaceExport, null, 2)),
+        [ZipEntry.Settings]: encoder.encode(JSON.stringify(settingsExport, null, 2)),
+      })
       const blob = new Blob([zip.buffer as ArrayBuffer], { type: 'application/zip' })
       const url = URL.createObjectURL(blob)
       const anchor = document.createElement('a')
