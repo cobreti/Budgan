@@ -2,11 +2,14 @@ import type { BdgWorkspace } from '@engine/modules/bdg-workspace/bdg-workspace'
 import type { BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
 
 export type BdgWorkspaceExportWorkspaceEntry = {
+  type: 'Workspace'
   id: string
   name: string
 }
 
 export type BdgWorkspaceExportAccountEntry = {
+  type: 'Account'
+  parentId: string
   id: string
   name: string
   columnMappingId: string
@@ -15,6 +18,8 @@ export type BdgWorkspaceExportAccountEntry = {
 export type BdgWorkspaceExportSegmentRow = Omit<BdgAccountSegmentRow, 'dateTransaction' | 'dateInscription'>
 
 export type BdgWorkspaceExportSegmentEntry = {
+  type: 'Segment'
+  parentId: string
   id: string
   name: string
   dateStartAsString: string
@@ -34,11 +39,13 @@ export class BdgWorkspaceExporter {
     const result: BdgWorkspaceExport = {}
 
     const workspaceKey = `Workspace:${workspace.id}`
-    result[workspaceKey] = { id: workspace.id, name: workspace.name }
+    result[workspaceKey] = { type: 'Workspace', id: workspace.id, name: workspace.name }
 
     for (const account of workspace.accounts) {
       const accountKey = `${workspaceKey}:Account:${account.id}`
       result[accountKey] = {
+        type: 'Account',
+        parentId: workspace.id,
         id: account.id,
         name: account.name,
         columnMappingId: account.columnMappingId,
@@ -47,6 +54,8 @@ export class BdgWorkspaceExporter {
       for (const segment of account.segments) {
         const segmentKey = `${accountKey}:Segment:${segment.id}`
         result[segmentKey] = {
+          type: 'Segment',
+          parentId: account.id,
           id: segment.id,
           name: segment.name,
           dateStartAsString: segment.dateStartAsString,
