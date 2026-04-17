@@ -38,12 +38,10 @@ export class BdgWorkspaceExporter {
   export(workspace: BdgWorkspace): BdgWorkspaceExport {
     const result: BdgWorkspaceExport = {}
 
-    const workspaceKey = `Workspace:${workspace.id}`
-    result[workspaceKey] = { type: 'Workspace', id: workspace.id, name: workspace.name }
+    result[workspace.id] = { type: 'Workspace', id: workspace.id, name: workspace.name }
 
     for (const account of workspace.accounts) {
-      const accountKey = `${workspaceKey}:Account:${account.id}`
-      result[accountKey] = {
+      result[account.id] = {
         type: 'Account',
         parentId: workspace.id,
         id: account.id,
@@ -52,8 +50,7 @@ export class BdgWorkspaceExporter {
       }
 
       for (const segment of account.segments) {
-        const segmentKey = `${accountKey}:Segment:${segment.id}`
-        result[segmentKey] = {
+        result[segment.id] = {
           type: 'Segment',
           parentId: account.id,
           id: segment.id,

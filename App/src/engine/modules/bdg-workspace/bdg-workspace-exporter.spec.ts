@@ -35,7 +35,7 @@ describe('BdgWorkspaceExporter', () => {
   test('workspace entry has type "Workspace" and no parentId', () => {
     const workspace = buildWorkspace()
     const result = exporter.export(workspace)
-    const entry = result['Workspace:workspace-id-1']
+    const entry = result['workspace-id-1']
 
     expect(entry.type).toBe('Workspace')
     expect('parentId' in entry).toBe(false)
@@ -44,7 +44,7 @@ describe('BdgWorkspaceExporter', () => {
   test('account entry has type "Account" and parentId equal to workspace id', () => {
     const workspace = buildWorkspace()
     const result = exporter.export(workspace)
-    const entry = result['Workspace:workspace-id-1:Account:account-id-1']
+    const entry = result['account-id-1']
 
     expect(entry.type).toBe('Account')
     expect(entry.parentId).toBe('workspace-id-1')
@@ -53,7 +53,7 @@ describe('BdgWorkspaceExporter', () => {
   test('segment entry has type "Segment" and parentId equal to account id', () => {
     const workspace = buildWorkspace()
     const result = exporter.export(workspace)
-    const entry = result['Workspace:workspace-id-1:Account:account-id-1:Segment:segment-id-1']
+    const entry = result['segment-id-1']
 
     expect(entry.type).toBe('Segment')
     expect(entry.parentId).toBe('account-id-1')
