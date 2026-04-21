@@ -76,7 +76,7 @@ describe('CsvContentImporterImpl', () => {
     const reader = {
       onload: null,
       onerror: null as (() => void) | null,
-      readAsText() {
+      readAsText(this: { onerror: (() => void) | null }) {
         if (this.onerror) this.onerror()
       },
     } as unknown as FileReader
