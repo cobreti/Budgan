@@ -160,7 +160,10 @@ describe('useWorkspaceStore — segment persistence', () => {
       { key: '9999|2024-03-01|1200|Salary', cardNumber: '9999', description: 'Salary', dateTransactionAsString: '2024-03-01', amount: 1200 },
     ])
     const mockImporter = {
-      import: vi.fn().mockResolvedValue({ success: true, value: mockSegment }),
+      import: vi.fn().mockResolvedValue({
+        success: true,
+        value: { segment: mockSegment, csvSource: { filename: 'march.csv', content: '' } },
+      }),
     } as unknown as CsvContentImporter
     const mockSettings = {
       columnMappings: [{ id: 'mapping-1', columnMapping: {} }],

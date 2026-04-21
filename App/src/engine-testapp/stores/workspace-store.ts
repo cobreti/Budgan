@@ -25,6 +25,7 @@ type SegmentRowSnapshot = {
 type SegmentSnapshot = {
   id: string
   name: string
+  csvSourceFilename?: string
   rows: SegmentRowSnapshot[]
 }
 
@@ -63,20 +64,24 @@ export const useWorkspaceStore = defineStore(
           id: a.id,
           name: a.name,
           columnMappingId: a.columnMappingId,
-          segments: a.segments.map((s) => ({
-            id: s.id,
-            name: s.name,
-            rows: s.rows.map((r) => ({
-              key: r.key,
-              cardNumber: r.cardNumber,
-              description: r.description,
-              dateTransactionAsString: r.dateTransactionAsString,
-              ...(r.dateInscriptionAsString !== undefined
-                ? { dateInscriptionAsString: r.dateInscriptionAsString }
-                : {}),
-              amount: r.amount,
-            })),
-          })),
+          segments: a.segments.map((s) => {
+            const csvSource = a.getCsvContentSegment(s.id)
+            return {
+              id: s.id,
+              name: s.name,
+              ...(csvSource ? { csvSourceFilename: csvSource.filename } : {}),
+              rows: s.rows.map((r) => ({
+                key: r.key,
+                cardNumber: r.cardNumber,
+                description: r.description,
+                dateTransactionAsString: r.dateTransactionAsString,
+                ...(r.dateInscriptionAsString !== undefined
+                  ? { dateInscriptionAsString: r.dateInscriptionAsString }
+                  : {}),
+                amount: r.amount,
+              })),
+            }
+          }),
         })),
       }
     }
@@ -92,6 +97,9 @@ export const useWorkspaceStore = defineStore(
         for (const s of a.segments) {
           const rows: BdgAccountSegmentRow[] = s.rows.map((r) => ({ ...r }))
           account.addSegment(new BdgAccountSegmentImpl(s.id, s.name, rows))
+          if (s.csvSourceFilename) {
+            account.addCsvContentSegment({ segmentId: s.id, filename: s.csvSourceFilename, content: '' })
+          }
         }
         return account
       })
@@ -193,11 +201,18 @@ export const useWorkspaceStore = defineStore(
       const result = await importer.import(file, bdgMapping.columnMapping)
 
       if (result.success) {
-        account.addSegment(result.value)
+        account.addSegment(result.value.segment)
+        account.addCsvContentSegment({
+          segmentId: result.value.segment.id,
+          filename: result.value.csvSource.filename,
+          content: result.value.csvSource.content,
+        })
         _syncWorkspaceSnapshot()
       }
 
-      return result
+      return result.success
+        ? { success: true, value: result.value.segment }
+        : result
     }
 
     return {

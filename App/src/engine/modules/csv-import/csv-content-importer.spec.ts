@@ -54,7 +54,7 @@ describe('CsvContentImporterImpl', () => {
 
     expect(result.success).toBe(true)
     if (result.success) {
-      expect(result.value.id).toBe('generated-id-123')
+      expect(result.value.segment.id).toBe('generated-id-123')
     }
   })
 
@@ -68,7 +68,7 @@ describe('CsvContentImporterImpl', () => {
 
     expect(result.success).toBe(true)
     if (result.success) {
-      expect(result.value.name).toBe('march-2024')
+      expect(result.value.segment.name).toBe('march-2024')
     }
   })
 

@@ -8,13 +8,18 @@ import { ReaderFactory } from '@engine/services/FileReaderFactory'
 import { IdGenerator } from '@engine/services/IdGenerator'
 import type { ResultWithError } from '@engine/types/result-pattern'
 
+export type CsvImportSuccess = {
+  segment: BdgAccountSegment
+  csvSource: { filename: string; content: string }
+}
+
 export abstract class CsvContentImporter {
   static readonly bindingTypeId: string = InversifyUtils.createBindingId('csv-content-importer')
 
   abstract import(
     file: File,
     columnMapping: CsvColumnMapping,
-  ): Promise<ResultWithError<BdgAccountSegment, string>>
+  ): Promise<ResultWithError<CsvImportSuccess, string>>
 }
 
 @injectable()
@@ -29,7 +34,7 @@ export class CsvContentImporterImpl extends CsvContentImporter {
   import(
     file: File,
     columnMapping: CsvColumnMapping,
-  ): Promise<ResultWithError<BdgAccountSegment, string>> {
+  ): Promise<ResultWithError<CsvImportSuccess, string>> {
     return new Promise((resolve) => {
       const reader = this.readerFactory.createReader()
 
@@ -81,7 +86,7 @@ export class CsvContentImporterImpl extends CsvContentImporter {
           const segmentName = file.name.replace(/\.[^/.]+$/, '')
           const segment = new BdgAccountSegmentImpl(this.idGenerator.generateId(), segmentName, rows)
 
-          resolve({ success: true, value: segment })
+          resolve({ success: true, value: { segment, csvSource: { filename: file.name, content: text } } })
         } catch (err) {
           const message = err instanceof Error ? err.message : 'Failed to process CSV content'
           resolve({ success: false, error: message })

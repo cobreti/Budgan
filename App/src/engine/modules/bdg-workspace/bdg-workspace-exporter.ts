@@ -24,6 +24,7 @@ export type BdgWorkspaceExportSegmentEntry = {
   name: string
   dateStartAsString: string
   dateEndAsString: string
+  csvSourceFilename?: string
   rows: BdgWorkspaceExportSegmentRow[]
 }
 
@@ -50,6 +51,7 @@ export class BdgWorkspaceExporter {
       }
 
       for (const segment of account.segments) {
+        const csvSource = account.getCsvContentSegment(segment.id)
         result[segment.id] = {
           type: 'Segment',
           parentId: account.id,
@@ -57,6 +59,7 @@ export class BdgWorkspaceExporter {
           name: segment.name,
           dateStartAsString: segment.dateStartAsString,
           dateEndAsString: segment.dateEndAsString,
+          ...(csvSource ? { csvSourceFilename: csvSource.filename } : {}),
           rows: segment.rows.map(({ key, cardNumber, description, dateTransactionAsString, dateInscriptionAsString, amount }) => ({
             key,
             cardNumber,

@@ -8,11 +8,18 @@ export enum ZipEntry {
   Settings = 'Settings.json',
 }
 
+export const CSV_SOURCES_PREFIX = 'CsvSources/'
+
 export abstract class FileSaveService {
   static readonly bindingTypeId: string = InversifyUtils.createBindingId('file-save-service')
 
   abstract saveJson(handle: FileSystemFileHandle, content: unknown): Promise<void>
-  abstract saveWorkspace(handle: FileSystemFileHandle, workspaceContent: unknown, settingsContent: unknown): Promise<void>
+  abstract saveWorkspace(
+    handle: FileSystemFileHandle,
+    workspaceContent: unknown,
+    settingsContent: unknown,
+    csvSources?: Record<string, { filename: string; content: string }>,
+  ): Promise<void>
 }
 
 @injectable()
@@ -24,11 +31,21 @@ export class FileSaveServiceImpl extends FileSaveService {
     await writable.close()
   }
 
-  async saveWorkspace(handle: FileSystemFileHandle, workspaceContent: unknown, settingsContent: unknown): Promise<void> {
+  async saveWorkspace(
+    handle: FileSystemFileHandle,
+    workspaceContent: unknown,
+    settingsContent: unknown,
+    csvSources?: Record<string, { filename: string; content: string }>,
+  ): Promise<void> {
     const entries = await this._readExistingZipEntries(handle)
     const encoder = new TextEncoder()
     entries[ZipEntry.Workspace] = encoder.encode(JSON.stringify(workspaceContent, null, 2))
     entries[ZipEntry.Settings] = encoder.encode(JSON.stringify(settingsContent, null, 2))
+    if (csvSources) {
+      for (const [segmentId, source] of Object.entries(csvSources)) {
+        entries[`${CSV_SOURCES_PREFIX}${segmentId}`] = encoder.encode(source.content)
+      }
+    }
     const result = await this._zipEntries(entries)
     const writable = await handle.createWritable()
     await writable.write(result.buffer as ArrayBuffer)

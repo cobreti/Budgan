@@ -1,4 +1,5 @@
 import type { BdgAccountSegment } from './bdg-account-segment'
+import type { CsvContentSegment } from './csv-content-segment'
 
 export interface BdgAccount {
   id: string
@@ -6,6 +7,9 @@ export interface BdgAccount {
   columnMappingId: string
   segments: BdgAccountSegment[]
   addSegment(segment: BdgAccountSegment): void
+  csvContentSegments: CsvContentSegment[]
+  addCsvContentSegment(segment: CsvContentSegment): void
+  getCsvContentSegment(segmentId: string): CsvContentSegment | undefined
 }
 
 export class BdgAccountImpl implements BdgAccount {
@@ -13,6 +17,7 @@ export class BdgAccountImpl implements BdgAccount {
   private _name: string
   private _columnMappingId: string
   private _segments: BdgAccountSegment[] = []
+  private _csvContentSegments: CsvContentSegment[] = []
 
   constructor(id: string, name: string, columnMappingId: string) {
     this._id = id
@@ -46,5 +51,17 @@ export class BdgAccountImpl implements BdgAccount {
 
   addSegment(segment: BdgAccountSegment): void {
     this._segments.push(segment)
+  }
+
+  get csvContentSegments(): CsvContentSegment[] {
+    return this._csvContentSegments
+  }
+
+  addCsvContentSegment(segment: CsvContentSegment): void {
+    this._csvContentSegments.push(segment)
+  }
+
+  getCsvContentSegment(segmentId: string): CsvContentSegment | undefined {
+    return this._csvContentSegments.find((s) => s.segmentId === segmentId)
   }
 }
