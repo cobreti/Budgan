@@ -72,12 +72,9 @@
   import { useSettingsStore } from '@engineTestApp/stores/settings-store'
   import container from '@inversify/setup-inversify'
   import { BdgWorkspaceFactory } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
-  import { FileSaveService, ZipEntry, CSV_SOURCES_PREFIX } from '@engine/services/FileSaveService'
-  import { zipSync } from 'fflate'
   import { BdgWorkspaceExporter } from '@engine/modules/bdg-workspace/bdg-workspace-exporter'
-  import { BdgSettingsExporter } from '@engine/modules/bdg-settings/bdg-settings-exporter'
 
-  const fileSaveService = container.get<FileSaveService>(FileSaveService.bindingTypeId)
+  const workspaceExporter = container.get<BdgWorkspaceExporter>(BdgWorkspaceExporter.bindingTypeId)
 
   const { t } = useI18n()
   const workspaceStore = useWorkspaceStore()
@@ -116,17 +113,6 @@
     if (!workspace) return
 
     const filename = `${workspace.name}.zip`
-    const workspaceExport = new BdgWorkspaceExporter().export(workspace)
-    const settingsExport = new BdgSettingsExporter().export(settingsStore.settings)
-
-    const csvSources: Record<string, { filename: string; content: string }> = {}
-    for (const account of workspace.accounts) {
-      for (const src of account.csvContentSegments) {
-        if (src.content) {
-          csvSources[src.segmentId] = { filename: src.filename, content: src.content }
-        }
-      }
-    }
 
     if ('showSaveFilePicker' in window) {
       const fileHandle = await (window as Window & typeof globalThis & {
@@ -135,17 +121,9 @@
         suggestedName: filename,
         types: [{ description: 'Workspace file', accept: { 'application/zip': ['.zip'] } }],
       })
-      await fileSaveService.saveWorkspace(fileHandle, workspaceExport, settingsExport, csvSources)
+      await workspaceExporter.saveToHandle(fileHandle, workspace, settingsStore.settings)
     } else {
-      const encoder = new TextEncoder()
-      const entries: Record<string, Uint8Array> = {
-        [ZipEntry.Workspace]: encoder.encode(JSON.stringify(workspaceExport, null, 2)),
-        [ZipEntry.Settings]: encoder.encode(JSON.stringify(settingsExport, null, 2)),
-      }
-      for (const [segmentId, source] of Object.entries(csvSources)) {
-        entries[`${CSV_SOURCES_PREFIX}${segmentId}`] = encoder.encode(source.content)
-      }
-      const zip = zipSync(entries)
+      const zip = workspaceExporter.buildZipBytes(workspace, settingsStore.settings)
       const blob = new Blob([zip.buffer as ArrayBuffer], { type: 'application/zip' })
       const url = URL.createObjectURL(blob)
       const anchor = document.createElement('a')

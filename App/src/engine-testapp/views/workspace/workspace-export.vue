@@ -36,10 +36,11 @@
   import { useI18n } from 'vue-i18n'
   import { useWorkspaceStore } from '@engineTestApp/stores/workspace-store'
   import { BdgWorkspaceExporter } from '@engine/modules/bdg-workspace/bdg-workspace-exporter'
+  import container from '@inversify/setup-inversify'
 
   const { t } = useI18n()
   const workspaceStore = useWorkspaceStore()
-  const exporter = new BdgWorkspaceExporter()
+  const exporter = container.get<BdgWorkspaceExporter>(BdgWorkspaceExporter.bindingTypeId)
 
   const copied = ref(false)
 

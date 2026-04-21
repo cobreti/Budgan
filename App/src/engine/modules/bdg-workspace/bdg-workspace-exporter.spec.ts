@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { BdgWorkspaceExporter } from './bdg-workspace-exporter'
+import { BdgWorkspaceExporterImpl } from './bdg-workspace-exporter'
 import { BdgWorkspaceImpl } from './bdg-workspace'
 import { BdgAccountImpl } from './bdg-account'
 import { BdgAccountSegmentImpl } from './bdg-account-segment'
@@ -30,7 +30,7 @@ function buildWorkspace() {
 }
 
 describe('BdgWorkspaceExporter', () => {
-  const exporter = new BdgWorkspaceExporter()
+  const exporter = new BdgWorkspaceExporterImpl({ saveWorkspace: async () => {} } as never)
 
   test('workspace entry has type "Workspace" and no parentId', () => {
     const workspace = buildWorkspace()

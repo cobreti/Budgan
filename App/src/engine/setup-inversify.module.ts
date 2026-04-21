@@ -11,6 +11,10 @@ import {
   CsvContentImporter,
   CsvContentImporterImpl,
 } from '@engine/modules/csv-import/csv-content-importer'
+import {
+  BdgWorkspaceExporter,
+  BdgWorkspaceExporterImpl,
+} from '@engine/modules/bdg-workspace/bdg-workspace-exporter'
 
 export const engineModule = new ContainerModule((options: ContainerModuleLoadOptions) => {
   options.bind<ReaderFactory>(ReaderFactory.bindingTypeId).to(FileReaderFactoryImpl)
@@ -25,4 +29,5 @@ export const engineModule = new ContainerModule((options: ContainerModuleLoadOpt
     .inSingletonScope()
   options.bind<CsvContentImporter>(CsvContentImporter.bindingTypeId).to(CsvContentImporterImpl)
   options.bind<FileSaveService>(FileSaveService.bindingTypeId).to(FileSaveServiceImpl)
+  options.bind<BdgWorkspaceExporter>(BdgWorkspaceExporter.bindingTypeId).to(BdgWorkspaceExporterImpl)
 })
