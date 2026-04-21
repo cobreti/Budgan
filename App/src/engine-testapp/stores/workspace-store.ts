@@ -12,6 +12,7 @@ import { BdgAccountSegmentImpl, type BdgAccountSegment } from '@engine/modules/b
 import type { BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
 import type { ResultWithError } from '@engine/types/result-pattern'
 import container from '@inversify/setup-inversify'
+import { useCsvSourcesStore } from '@engineTestApp/stores/csv-sources-store'
 
 type SegmentRowSnapshot = {
   key: string
@@ -94,11 +95,17 @@ export const useWorkspaceStore = defineStore(
       const factory = container.get<BdgWorkspaceFactory>(BdgWorkspaceFactory.bindingTypeId)
       const accounts = workspaceSnapshot.value.accounts.map((a) => {
         const account = new BdgAccountImpl(a.id, a.name, a.columnMappingId)
+        const csvSourcesStore = useCsvSourcesStore()
         for (const s of a.segments) {
           const rows: BdgAccountSegmentRow[] = s.rows.map((r) => ({ ...r }))
           account.addSegment(new BdgAccountSegmentImpl(s.id, s.name, rows))
           if (s.csvSourceFilename) {
-            account.addCsvContentSegment({ segmentId: s.id, filename: s.csvSourceFilename, content: '' })
+            const persisted = csvSourcesStore.getCsvSource(s.id)
+            account.addCsvContentSegment({
+              segmentId: s.id,
+              filename: s.csvSourceFilename,
+              content: persisted?.content ?? '',
+            })
           }
         }
         return account
@@ -201,12 +208,14 @@ export const useWorkspaceStore = defineStore(
       const result = await importer.import(file, bdgMapping.columnMapping)
 
       if (result.success) {
-        account.addSegment(result.value.segment)
+        const { segment, csvSource } = result.value
+        account.addSegment(segment)
         account.addCsvContentSegment({
-          segmentId: result.value.segment.id,
-          filename: result.value.csvSource.filename,
-          content: result.value.csvSource.content,
+          segmentId: segment.id,
+          filename: csvSource.filename,
+          content: csvSource.content,
         })
+        useCsvSourcesStore().setCsvSource(segment.id, { filename: csvSource.filename, content: csvSource.content })
         _syncWorkspaceSnapshot()
       }
 
