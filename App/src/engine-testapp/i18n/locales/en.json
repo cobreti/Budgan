@@ -44,6 +44,7 @@
   "workspace.create.success": "Workspace created: {workspaceId}",
   "workspace.create.removed": "Current workspace removed.",
   "workspace.create.error": "Unable to create workspace.",
+  "workspace.create.storageSize": "Storage: {size}",
   "workspace.account.accounts.title": "Accounts",
   "workspace.account.accounts.description": "List and add new accounts to your current workspace.",
   "workspace.account.accounts.nameLabel": "Account Name",

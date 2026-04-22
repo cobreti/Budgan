@@ -44,6 +44,7 @@
   "workspace.create.success": "Espace de travail cree : {workspaceId}",
   "workspace.create.removed": "Espace de travail actuel supprime.",
   "workspace.create.error": "Impossible de creer l'espace de travail.",
+  "workspace.create.storageSize": "Stockage : {size}",
   "workspace.account.accounts.title": "Comptes",
   "workspace.account.accounts.description": "Affichez et ajoutez de nouveaux comptes a votre espace de travail actuel.",
   "workspace.account.accounts.nameLabel": "Nom du compte",

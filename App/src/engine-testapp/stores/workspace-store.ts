@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { CsvColumnMapping } from '@engine/modules/csv-import/csv-column-content'
 import type { CsvContentExtractionResult } from '@engine/modules/csv-import/csv-content-extractor'
 import type { BdgWorkspace } from '@engine/modules/bdg-workspace/bdg-workspace'
@@ -41,6 +41,12 @@ type WorkspaceSnapshot = {
   }>
 }
 
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
+}
+
 export const useWorkspaceStore = defineStore(
   'workspace',
   () => {
@@ -52,6 +58,12 @@ export const useWorkspaceStore = defineStore(
     const currentWorkspace = ref<BdgWorkspace | null>(null)
     const workspaceSnapshot = ref<WorkspaceSnapshot | null>(null)
     const selectedAccountId = ref<string | null>(null)
+
+    const workspaceStorageSize = computed<string | null>(() => {
+      if (!workspaceSnapshot.value) return null
+      const bytes = new Blob([JSON.stringify(workspaceSnapshot.value)]).size
+      return formatBytes(bytes)
+    })
 
     function _syncWorkspaceSnapshot(): void {
       if (!currentWorkspace.value) {
@@ -233,6 +245,7 @@ export const useWorkspaceStore = defineStore(
       currentWorkspace,
       workspaceSnapshot,
       selectedAccountId,
+      workspaceStorageSize,
       setParsedJson,
       setAppliedMapping,
       setSelectedFile,

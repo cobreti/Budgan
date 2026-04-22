@@ -13,6 +13,13 @@
         <p v-else class="workspace-create__current-empty">
           {{ t('workspace.create.currentWorkspaceEmpty') }}
         </p>
+        <p
+          v-if="workspaceStore.workspaceStorageSize !== null"
+          class="workspace-create__storage-size"
+          data-testid="workspace-create-storage-size"
+        >
+          {{ t('workspace.create.storageSize', { size: workspaceStore.workspaceStorageSize }) }}
+        </p>
         <button
           v-if="workspaceStore.currentWorkspace"
           class="workspace-create__save-button"
@@ -195,6 +202,12 @@
   }
 
   .workspace-create__current-empty {
+    color: var(--workspace-on-surface-variant);
+  }
+
+  .workspace-create__storage-size {
+    margin: 0;
+    font-size: 0.75rem;
     color: var(--workspace-on-surface-variant);
   }
 
