@@ -86,6 +86,10 @@ options.bind<MyService>(MyService.bindingTypeId).to(MyServiceImpl).inSingletonSc
 | `BdgWorkspaceFactory` | `BdgWorkspaceFactoryImpl` | singleton |
 | `BdgSettings` | `BdgSettingsImpl` | singleton |
 | `CsvContentImporter` | `CsvContentImporterImpl` | transient |
+| `FileSaveService` | `FileSaveServiceImpl` | transient |
+| `FileReadService` | `FileReadServiceImpl` | transient |
+| `BdgWorkspaceExporter` | `BdgWorkspaceExporterImpl` | transient |
+| `BdgWorkspaceImporter` | `BdgWorkspaceImporterImpl` | transient |
 
 ### Result pattern (no throwing for expected errors)
 
@@ -172,7 +176,7 @@ All routes are locale-prefixed: `/:locale(en|fr)/...`. Current route tree:
 ```
 /:locale
   /                       home
-  /zip-file               zip-file (stub)
+  /zip-file               zip-file (load workspace from zip)
   /settings
     /column-mappings      settings-column-mappings
   /workspace              workspace layout (sidebar nav)
@@ -234,7 +238,24 @@ BdgColumnMapping    { id, name, columnMapping: CsvColumnMapping }
 CsvContentExtractionResult  { delimiter, headerRowIndex, header: string[], rows: CsvJsonRecord[] }
 CsvColumnMapping            { 'card-number'?: number, 'date-transaction'?: number, 'amount'?: number,
                               'description'?: number, 'date-inscription'?: number }
-CsvContentImporter          import(file, columnMapping): Promise<ResultWithError<BdgAccountSegment, string>>
+CsvContentImporter          import(file, columnMapping): Promise<ResultWithError<CsvImportSuccess, string>>
+
+// Zip Export / Import
+BdgWorkspaceExporter        export(workspace): BdgWorkspaceExport
+                            saveToHandle(handle, workspace, settings): Promise<void>
+                            buildZipBytes(workspace, settings): Uint8Array
+BdgWorkspaceImporter        import(handle: FileSystemFileHandle): Promise<ResultWithError<BdgWorkspaceImportResult, string>>
+BdgWorkspaceImportResult    { workspace: BdgWorkspace, columnMappings: BdgColumnMapping[],
+                              csvSources: Array<{ segmentId, filename, content }> }
+
+// Zip format (fflate)
+//   Workspace.json  → flat Record<id, BdgWorkspaceExportEntry>  (type: 'Workspace' | 'Account' | 'Segment')
+//   Settings.json   → flat Record<"ColumnMapping:{id}", BdgSettingsExportColumnMappingEntry>
+//   CsvSources/{segmentId} → raw UTF-8 CSV text
+
+// File I/O services
+FileSaveService             saveWorkspace(handle, workspaceContent, settingsContent, csvSources?): Promise<void>
+FileReadService             readAsBytes(handle: FileSystemFileHandle): Promise<Uint8Array>
 ```
 
 > **Date parsing:** `BdgAccountSegment` uses `moment` (production dependency) to parse date strings in **local time**. Never use `new Date("YYYY-MM-DD")` directly — it parses as UTC and causes an off-by-one day in timezones west of UTC.

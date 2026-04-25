@@ -14,10 +14,11 @@ App/
     ├── engine/               # ★ Pure TypeScript — zero Vue/Pinia imports ever
     │   ├── models/           # Legacy type-only definitions (BankAccount, CSV)
     │   ├── modules/
-    │   │   ├── bdg-workspace/   # BdgWorkspace, BdgAccount, BdgAccountSegment, BdgWorkspaceFactory
+    │   │   ├── bdg-workspace/   # BdgWorkspace, BdgAccount, BdgAccountSegment, BdgWorkspaceFactory,
+    │   │   │                    # BdgWorkspaceExporter, BdgWorkspaceImporter
     │   │   ├── bdg-settings/    # BdgSettings (column mapping CRUD)
     │   │   └── csv-import/      # CsvContentExtractor, CsvContentImporter, CsvColumns, CsvColumnMapping
-    │   ├── services/            # IdGenerator, ReaderFactory
+    │   ├── services/            # IdGenerator, ReaderFactory, FileSaveService, FileReadService
     │   ├── types/               # Result<T>, ResultWithError<T,E>
     │   └── setup-inversify.module.ts  # All engine DI bindings
     ├── inversify/            # Container creation (shared by both apps)
@@ -207,6 +208,10 @@ const newId = idGenerator.generateId()
 | `BdgWorkspaceFactory` | `BdgWorkspaceFactoryImpl` | singleton |
 | `BdgSettings` | `BdgSettingsImpl` | singleton |
 | `CsvContentImporter` | `CsvContentImporterImpl` | transient |
+| `FileSaveService` | `FileSaveServiceImpl` | transient |
+| `FileReadService` | `FileReadServiceImpl` | transient |
+| `BdgWorkspaceExporter` | `BdgWorkspaceExporterImpl` | transient |
+| `BdgWorkspaceImporter` | `BdgWorkspaceImporterImpl` | transient |
 
 ---
 
@@ -231,8 +236,60 @@ CsvContentExtractionResult  { delimiter, headerRowIndex, header: string[], rows:
 CsvColumnMapping            { 'card-number'?: number, 'date-transaction'?: number, 'amount'?: number,
                               'description'?: number, 'date-inscription'?: number }
 CsvColumns (const)          'card-number' | 'date-inscription' | 'date-transaction' | 'amount' | 'description'
-CsvContentImporter          import(file: File, columnMapping: CsvColumnMapping): Promise<ResultWithError<BdgAccountSegment, string>>
+CsvContentImporter          import(file: File, columnMapping: CsvColumnMapping): Promise<ResultWithError<CsvImportSuccess, string>>
+
+// Zip Export / Import
+BdgWorkspaceExporter        export(workspace): BdgWorkspaceExport
+                            saveToHandle(handle, workspace, settings): Promise<void>
+                            buildZipBytes(workspace, settings): Uint8Array
+BdgWorkspaceImporter        import(handle: FileSystemFileHandle): Promise<ResultWithError<BdgWorkspaceImportResult, string>>
+BdgWorkspaceImportResult    { workspace: BdgWorkspace, columnMappings: BdgColumnMapping[],
+                              csvSources: Array<{ segmentId, filename, content }> }
+
+// Zip format (fflate) — see diagram below
+
+// File I/O services
+FileSaveService             saveWorkspace(handle, workspaceContent, settingsContent, csvSources?): Promise<void>
+FileReadService             readAsBytes(handle: FileSystemFileHandle): Promise<Uint8Array>
 ```
+
+### Workspace zip structure
+
+```
+workspace.zip
+├── Workspace.json
+│     {
+│       "<workspaceId>": { type: "Workspace", id, name },
+│       "<accountId>":   { type: "Account",   id, name, parentId: <workspaceId>, columnMappingId },
+│       "<segmentId>":   { type: "Segment",   id, name, parentId: <accountId>,
+│                          dateStartAsString, dateEndAsString,
+│                          csvSourceFilename?,
+│                          rows: [{ key, cardNumber, description,
+│                                   dateTransactionAsString, dateInscriptionAsString?,
+│                                   amount }] },
+│       ...                                        ← one entry per entity, keyed by id
+│     }
+│
+├── Settings.json
+│     {
+│       "ColumnMapping:<id>": { id, name, columnMapping:
+│                               { 'card-number'?: colIndex, 'date-transaction'?: colIndex,
+│                                 'amount'?: colIndex, 'description'?: colIndex,
+│                                 'date-inscription'?: colIndex } },
+│       ...
+│     }
+│
+└── CsvSources/
+      <segmentId>          ← raw UTF-8 CSV text (one file per segment that has a source)
+      <segmentId>
+      ...
+```
+
+**Key constraints:**
+- `Workspace.json` is a **flat map** — entries reference each other via `parentId`, not nesting.
+- `CsvSources/` files are named by `segmentId` (no extension). The original filename is stored in `Segment.csvSourceFilename`.
+- `Settings.json` may be absent (treated as no column mappings on import).
+- A segment with zero rows is skipped on import.
 
 > **Date parsing:** `BdgAccountSegment` uses `moment` (production dependency) to parse date strings in **local time**. Never use `new Date("YYYY-MM-DD")` directly — it parses as UTC and shifts by one day in timezones west of UTC.
 
@@ -249,7 +306,7 @@ All routes are locale-prefixed. Pattern: `/:locale(en|fr)/...`
 ```
 /:locale
   /                       home
-  /zip-file               zip-file (stub)
+  /zip-file               zip-file (load workspace from zip)
   /settings
     /column-mappings      settings-column-mappings
   /workspace              workspace layout (sidebar nav)
