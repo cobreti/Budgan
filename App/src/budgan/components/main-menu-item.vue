@@ -22,7 +22,7 @@ const emit = defineEmits<{
 </script>
 
 <style scoped>
-@use '@/assets/colors-def.scss';
+@use '@budgan/assets/colors-def.scss';
 
 .main-menu-item {
   display: flex;

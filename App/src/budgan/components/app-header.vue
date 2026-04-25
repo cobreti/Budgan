@@ -15,7 +15,7 @@
 </template>
 
 <style scoped>
-@use '@/assets/colors-def.scss';
+@use '@budgan/assets/colors-def.scss';
 
 .app-header__title {
   cursor: default;
@@ -28,7 +28,7 @@
 </style>
 
 <script setup lang="ts">
-import { useAppSettingsStore } from '@/stores/appSettings-store.ts'
+import { useAppSettingsStore } from '@budgan/stores/appSettings-store.ts'
 
 const appSettingsStore = useAppSettingsStore()
 </script>

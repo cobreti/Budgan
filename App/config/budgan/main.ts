@@ -11,7 +11,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 import BudganApp from './BudganApp.vue'
-import router from '@/router'
+import router from '@budgan/router'
 
 const app = createApp(BudganApp)
 const pinia = createPinia()

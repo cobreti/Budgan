@@ -31,9 +31,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useDisplay } from 'vuetify'
-import { useAppSettingsStore } from '@/stores/appSettings-store.ts'
-import MainMenuItem from '@/components/main-menu-item.vue'
-import NewWorkspaceDialog from '@/components/new-workspace-dialog.vue'
+import { useAppSettingsStore } from '@budgan/stores/appSettings-store.ts'
+import MainMenuItem from '@budgan/components/main-menu-item.vue'
+import NewWorkspaceDialog from '@budgan/components/new-workspace-dialog.vue'
 
 const appSettingsStore = useAppSettingsStore()
 const { width } = useDisplay()
@@ -53,7 +53,7 @@ function onOpenWorkspace() {
 </script>
 
 <style scoped>
-@use '@/assets/colors-def.scss';
+@use '@budgan/assets/colors-def.scss';
 
 .main-menu {
   height: 100%;

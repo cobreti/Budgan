@@ -9,6 +9,7 @@
         "baseUrl": ".",
         "paths": {
             "@/*": ["./src/*"],
+            "@budgan/*": ["./src/budgan/*"],
             "@engine/*": ["./src/engine/*"],
             "@inversify/*": ["./src/inversify/*"],
         },

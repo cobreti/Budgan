@@ -6,14 +6,14 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useAppSettingsStore } from '@/stores/appSettings-store.ts'
+import { useAppSettingsStore } from '@budgan/stores/appSettings-store.ts'
 
 const appSettingsStore = useAppSettingsStore()
 const version = computed(() => appSettingsStore.appSettings.version)
 </script>
 
 <style scoped>
-@use '@/assets/colors-def.scss';
+@use '@budgan/assets/colors-def.scss';
 
 .app-footer {
   display: flex;

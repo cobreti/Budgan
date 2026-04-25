@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useWorkspaceStore } from '@/stores/workspace-store.ts'
+import { useWorkspaceStore } from '@budgan/stores/workspace-store.ts'
 
 const props = defineProps<{
   modelValue: boolean
@@ -78,7 +78,7 @@ function onCreate(): void {
 </script>
 
 <style scoped>
-@use '@/assets/colors-def.scss';
+@use '@budgan/assets/colors-def.scss';
 
 .new-workspace-dialog__title {
   padding-top: 1.25rem;
