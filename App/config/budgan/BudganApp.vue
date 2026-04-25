@@ -31,14 +31,6 @@ import { RouterView } from 'vue-router'
 import { useAppSettingsStore } from '@/stores/appSettings-store.ts'
 import settings from '@/assets/settings.json';
 import { computed } from 'vue'
-import container from "@inversify/setup-inversify.ts";
-import {IdGenerator} from "@engine/services/IdGenerator.ts";
-import {ReaderFactory} from "@engine/services/FileReaderFactory.ts";
-import {CsvToBankAccount} from "@engine/services/CsvToBankAccount.ts";
-
-const IdGen = container.get<IdGenerator>(IdGenerator.bindingTypeId);
-const reader = container.get<ReaderFactory>(ReaderFactory.bindingTypeId);
-// const csvToBankAccount = container.get<CsvToBankAccount>(CsvToBankAccount.bindingTypeId);
 
 const appSettingsStore = useAppSettingsStore();
 
