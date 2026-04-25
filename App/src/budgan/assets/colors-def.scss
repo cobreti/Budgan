@@ -1,0 +1,13 @@
+@use 'vuetify/settings' as v;
+
+:root {
+  --bdg-primary:    rgb(var(--v-theme-primary));
+  --bdg-secondary:  rgb(var(--v-theme-secondary));
+  --bdg-background: rgb(var(--v-theme-background));
+  --bdg-surface:    rgb(var(--v-theme-surface));
+  --bdg-accent:     rgb(var(--v-theme-success));    /* green — positive values */
+  --bdg-error:      rgb(var(--v-theme-error));      /* red — negative values */
+  --bdg-on-primary: rgb(var(--v-theme-on-primary)); /* auto-calculated contrast */
+  --bdg-on-surface: rgb(var(--v-theme-on-surface));
+}
+
