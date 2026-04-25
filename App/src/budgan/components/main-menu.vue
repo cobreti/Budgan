@@ -24,22 +24,26 @@
       </div>
     </nav>
   </v-navigation-drawer>
+
+  <NewWorkspaceDialog v-model="showNewWorkspaceDialog" />
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useDisplay } from 'vuetify'
 import { useAppSettingsStore } from '@/stores/appSettings-store.ts'
 import MainMenuItem from '@/components/main-menu-item.vue'
+import NewWorkspaceDialog from '@/components/new-workspace-dialog.vue'
 
 const appSettingsStore = useAppSettingsStore()
 const { width } = useDisplay()
 
 const drawerWidth = computed(() => width.value < 1024 ? width.value : 600)
+const showNewWorkspaceDialog = ref(false)
 
 function onNewWorkspace() {
-  // TODO: handle new workspace
   appSettingsStore.toggleDrawer()
+  showNewWorkspaceDialog.value = true
 }
 
 function onOpenWorkspace() {

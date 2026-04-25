@@ -27,6 +27,7 @@ const vuetify = createVuetify({
             light: {
                 colors: {
                     primary: '#1E3A8A',
+                    'on-primary': '#FFFFFF',
                     secondary: '#3B82F6',
                     background: '#F8FAFC',
                     surface: '#FFFFFF',
@@ -39,6 +40,7 @@ const vuetify = createVuetify({
                     background: '#0F172A',
                     surface: '#1E293B',
                     primary: '#6366F1',
+                    'on-primary': '#FFFFFF',
                     success: '#22C55E',
                     warning: '#F59E0B',
                     'on-background': '#E2E8F0',
