@@ -1,0 +1,122 @@
+# Transaction Descriptions
+
+- [PO] Amazon.com Purchase
+- [PO] Walmart Store #1234
+- [WD] ATM Withdrawal - TD Bank
+- [DD] Payroll Deposit - Acme Corp
+- [WT] Wire Transfer from John Smith
+- [PO] Starbucks #8765
+- [PO] Shell Gas Station
+- [PM] Credit Card Payment - Chase
+- [TR] Transfer to Savings Account
+- [FE] Monthly Maintenance Fee
+- [IN] Interest Payment
+- [RF] Refund from Best Buy
+- [WD] Withdrawal - Branch Office
+- [PO] Netflix Subscription
+- [DD] Social Security Deposit - SSA
+- [PO] Target Store #5678
+- [WD] ATM Withdrawal - Bank of America
+- [TR] Transfer from Checking Account
+- [PO] Uber Trip Payment
+- [FE] Overdraft Fee
+- [PO] Apple iTunes Store
+- [PO] McDonald's Restaurant
+- [DD] Payroll Deposit - Tech Solutions Inc
+- [PO] Home Depot #9876
+- [WD] ATM Withdrawal - Wells Fargo
+- [PO] Costco Wholesale
+- [TR] Transfer to Checking Account
+- [PO] Spotify Premium Subscription
+- [RF] Refund from Macy's
+- [PO] CVS Pharmacy #4321
+- [PM] Credit Card Payment - Discover
+- [PO] Chipotle Mexican Grill
+- [DD] Direct Deposit - Freelance Payment
+- [WD] ATM Withdrawal - Citibank
+- [PO] Disney+ Subscription
+- [FE] Wire Transfer Fee
+- [PO] Kroger Grocery Store
+- [WT] Wire Transfer from Sarah Johnson
+- [PO] Exxon Gas Station
+- [IN] Savings Account Interest
+- [PO] Whole Foods Market
+- [TR] Transfer from Savings to Checking
+- [PO] HBO Max Subscription
+- [WD] Branch Withdrawal
+- [PO] Lowe's Home Improvement
+- [PM] Credit Card Payment - American Express
+- [PO] Panera Bread
+- [DD] Tax Refund Deposit - IRS
+- [PO] Microsoft 365 Subscription
+- [WD] ATM Withdrawal - PNC Bank
+- [RF] Refund from Nordstrom
+- [PO] Walgreens Pharmacy
+- [FE] ATM Foreign Transaction Fee
+- [PO] Dunkin Donuts
+- [WT] Wire Transfer from David Lee
+- [PO] Safeway Grocery
+- [TR] Transfer to Money Market Account
+- [PO] Adobe Creative Cloud
+- [DD] Payroll Deposit - Global Enterprises
+- [PO] BP Gas Station
+- [WD] ATM Withdrawal - US Bank
+- [PM] Credit Card Payment - Capital One
+- [PO] Subway Restaurant
+- [IN] Checking Account Interest
+- [PO] GameStop Store
+- [RF] Refund from Target
+- [PO] 7-Eleven Convenience Store
+- [FE] Insufficient Funds Fee
+- [PO] Hulu Subscription
+- [WT] Wire Transfer from Emily Brown
+- [PO] Publix Super Market
+- [WD] ATM Withdrawal - Capital One
+- [PO] Taco Bell
+- [TR] Transfer to Investment Account
+- [DD] Rental Income Deposit
+- [PO] Barnes & Noble Bookstore
+- [PM] Credit Card Payment - Citi
+- [PO] Trader Joe's
+- [FE] Stop Payment Fee
+- [PO] Domino's Pizza
+- [WD] ATM Withdrawal - Fifth Third Bank
+- [RF] Refund from Home Depot
+- [PO] Dollar General Store
+- [PO] YouTube Premium Subscription
+- [WT] Wire Transfer from Michael Chen
+- [DD] Payroll Deposit - Financial Services Co
+- [PO] Rite Aid Pharmacy
+- [TR] Transfer from Money Market
+- [PO] Planet Fitness Membership
+- [WD] ATM Withdrawal - Chase Bank
+- [PO] Pizza Hut
+- [IN] CD Interest Payment
+- [PM] Credit Card Payment - Bank of America
+- [PO] Office Depot
+- [FE] Paper Statement Fee
+- [PO] Kohl's Department Store
+- [DD] Dividend Deposit - Investment Fund
+- [RF] Refund from Walmart
+- [PO] Wendy's Restaurant
+- [WD] ATM Withdrawal - Regions Bank
+- [PO] Sam's Club
+- [TR] Transfer to Emergency Fund
+- [PO] Zoom Subscription
+- [WT] Wire Transfer from Jennifer White
+- [PO] Food Lion Grocery
+- [PM] Credit Card Payment - Wells Fargo
+- [PO] Burger King
+- [DD] Bonus Deposit - ABC Corporation
+- [FE] Account Closure Fee
+- [PO] Petco Pet Supplies
+- [WD] ATM Withdrawal - TD Bank
+- [RF] Refund from CVS Pharmacy
+- [PO] Aldi Grocery Store
+- [PO] Amazon Prime Subscription
+- [TR] Transfer from Joint Account
+- [PO] Papa John's Pizza
+- [WD] Teller Withdrawal
+- [PO] Bed Bath & Beyond
+- [DD] Payroll Deposit - Manufacturing LLC
+- [IN] Money Market Interest

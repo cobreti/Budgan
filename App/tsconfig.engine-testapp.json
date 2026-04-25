@@ -3,6 +3,9 @@
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "config/engine-testapp/**/*"],
   "compilerOptions": {
       "paths": {
+          "@/*": ["./src/*"],
+          "@engine/*": ["./src/engine/*"],
+          "@inversify/*": ["./src/inversify/*"],
           "@engineTestApp/*": ["./src/engine-testapp/*"],
           "@engineTestAppViews/*": ["./src/engine-testapp/views/*"],
           "@engineTestAppRouter/*": ["./src/engine-testapp/router/*"]

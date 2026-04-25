@@ -1,8 +1,108 @@
 @use 'vuetify/settings' as v;
 
 :root {
-    --app-nav-background: rgb(var(--v-theme-primary));
-    --app-nav-active-menu-item: rgb(var(--v-theme-on-primary));
-    --app-nav-active-menu-item-selected: rgb(var(--v-theme-on-primary));
-    --app-nav-inactive-menu-item: rgb(var(--v-theme-on-primary-variant), var(--v-medium-emphasis-opacity));
+  --app-nav-background: rgb(var(--v-theme-primary));
+  --app-nav-active-menu-item: rgb(var(--v-theme-on-primary));
+  --app-nav-active-menu-item-selected: rgb(var(--v-theme-on-primary));
+  --app-nav-inactive-menu-item: rgb(
+    var(--v-theme-on-primary-variant),
+    var(--v-medium-emphasis-opacity)
+  );
+
+  /* Workspace menu colors */
+  --workspace-menu-background: rgb(var(--v-theme-surface));
+  --workspace-menu-border: rgb(var(--v-theme-primary), var(--v-low-emphasis-opacity));
+  --workspace-menu-item-background: rgb(var(--v-theme-surface));
+  --workspace-menu-item-border: rgb(var(--v-theme-primary), var(--v-low-emphasis-opacity));
+  --workspace-menu-item-text: rgb(var(--v-theme-on-surface));
+  --workspace-menu-item-active-background: rgb(
+    var(--v-theme-primary),
+    var(--v-medium-emphasis-opacity)
+  );
+  --workspace-menu-item-active-border: rgb(var(--v-theme-primary));
+  --workspace-menu-item-active-text: rgb(var(--v-theme-on-primary));
+
+  /* Workspace panel colors */
+  --workspace-panel-background: rgb(var(--v-theme-surface));
+  --workspace-panel-border: rgb(var(--v-theme-outline));
+  --workspace-header-text: rgb(var(--v-theme-on-surface-variant));
+  --workspace-surface: rgb(var(--v-theme-surface));
+  --workspace-on-surface: rgb(var(--v-theme-on-surface));
+  --workspace-on-surface-variant: rgb(var(--v-theme-on-surface-variant));
+  --workspace-outline: rgb(var(--v-theme-outline));
+  --workspace-error: rgb(var(--v-theme-error));
+  --workspace-success: rgb(var(--v-theme-success));
+  --workspace-surface-variant-alpha-05: rgba(var(--v-theme-surface-variant), 0.05);
+  --workspace-error-low-emphasis: rgb(var(--v-theme-error), var(--v-low-emphasis-opacity));
+
+  /* Workspace account selection colors */
+  --workspace-account-select-border: rgb(var(--v-theme-primary));
+  --workspace-account-select-background: rgb(var(--v-theme-primary), var(--v-low-emphasis-opacity));
+  --workspace-account-check-unselected: rgb(var(--v-theme-on-surface-variant), var(--v-medium-emphasis-opacity));
+  --workspace-account-check-selected: rgb(var(--v-theme-success));
+
+  /* CSV Selection colors */
+  --csv-selection-button-background: rgb(var(--v-theme-primary));
+  --csv-selection-button-text: rgb(var(--v-theme-on-primary));
+  --csv-selection-secondary-button-background: rgb(var(--v-theme-surface));
+  --csv-selection-secondary-button-border: rgb(var(--v-theme-outline));
+  --csv-selection-secondary-button-text: rgb(var(--v-theme-on-surface));
+  --csv-selection-error-text: rgb(var(--v-theme-error));
+  --csv-selection-status-selected-background: rgb(
+    var(--v-theme-success),
+    var(--v-low-emphasis-opacity)
+  );
+  --csv-selection-status-selected-border: rgb(
+    var(--v-theme-success),
+    var(--v-medium-emphasis-opacity)
+  );
+  --csv-selection-status-selected-text: rgb(var(--v-theme-on-surface));
+  --csv-selection-status-empty-background: rgb(var(--v-theme-surface));
+  --csv-selection-status-empty-border: rgb(var(--v-theme-outline));
+  --csv-selection-status-empty-text: rgb(var(--v-theme-on-surface));
+
+  /* Column Mapping colors */
+  --column-mapping-status-applied-background: rgb(
+    var(--v-theme-success),
+    var(--v-low-emphasis-opacity)
+  );
+  --column-mapping-status-applied-border: rgb(
+    var(--v-theme-success),
+    var(--v-medium-emphasis-opacity)
+  );
+  --column-mapping-status-applied-text: rgb(var(--v-theme-on-surface));
+  --column-mapping-status-empty-background: rgb(var(--v-theme-surface));
+  --column-mapping-status-empty-border: rgb(var(--v-theme-outline));
+  --column-mapping-status-empty-text: rgb(var(--v-theme-on-surface));
+
+  /* JSON Data View colors */
+  --json-view-status-empty-background: rgb(var(--v-theme-surface));
+  --json-view-status-empty-border: rgb(var(--v-theme-outline));
+  --json-view-status-empty-text: rgb(var(--v-theme-on-surface));
+  --json-view-button-background: rgb(var(--v-theme-surface));
+  --json-view-button-border: rgb(var(--v-theme-outline));
+  --json-view-button-text: rgb(var(--v-theme-on-surface));
+  --json-view-output-background: rgb(var(--v-theme-surface));
+  --json-view-output-border: rgb(var(--v-theme-outline));
+  --json-view-output-text: rgb(var(--v-theme-on-surface));
+
+  /* Column Mapping controls colors */
+  --column-mapping-border: rgb(var(--v-theme-outline));
+  --column-mapping-select-background: rgb(var(--v-theme-surface));
+  --column-mapping-select-border: rgb(var(--v-theme-outline));
+  --column-mapping-select-text: rgb(var(--v-theme-on-surface));
+  --column-mapping-button-background: rgb(var(--v-theme-surface));
+  --column-mapping-button-border: rgb(var(--v-theme-outline));
+  --column-mapping-button-text: rgb(var(--v-theme-on-surface));
+  --column-mapping-requirement-required-background: rgb(
+    var(--v-theme-error),
+    var(--v-low-emphasis-opacity)
+  );
+  --column-mapping-requirement-required-text: rgb(var(--v-theme-error));
+  --column-mapping-requirement-optional-background: rgb(
+    var(--v-theme-outline),
+    var(--v-low-emphasis-opacity)
+  );
+  --column-mapping-requirement-optional-text: rgb(var(--v-theme-on-surface));
+  --column-mapping-error-text: rgb(var(--v-theme-error));
 }
