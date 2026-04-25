@@ -107,5 +107,11 @@
   "settings.columnMappings.localCsv.selected": "Fichier local utilisé : {fileName}",
   "settings.columnMappings.localCsv.clear": "Effacer",
   "settings.columnMappings.localCsv.parseError": "Impossible d'analyser le fichier CSV slectionn.",
-  "settings.columnMappings.jsonData.title": "Aperçu des données CSV"
+  "settings.columnMappings.jsonData.title": "Aperçu des données CSV",
+  "zipFile.title": "Charger un espace de travail depuis un zip",
+  "zipFile.description": "Sélectionnez un fichier zip exporté précédemment pour restaurer l'espace de travail.",
+  "zipFile.load": "Charger l'espace de travail",
+  "zipFile.loading": "Chargement…",
+  "zipFile.success": "Espace de travail chargé avec succès.",
+  "zipFile.errorPrefix": "Échec de l'importation : "
   }

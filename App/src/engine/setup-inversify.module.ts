@@ -7,6 +7,7 @@ import {
 } from './modules/bdg-workspace/bdg-workspace-factory'
 import { BdgSettings, BdgSettingsImpl } from '@engine/modules/bdg-settings/bdg-settings.ts'
 import { FileSaveService, FileSaveServiceImpl } from '@engine/services/FileSaveService'
+import { FileReadService, FileReadServiceImpl } from '@engine/services/FileReadService'
 import {
   CsvContentImporter,
   CsvContentImporterImpl,
@@ -15,6 +16,10 @@ import {
   BdgWorkspaceExporter,
   BdgWorkspaceExporterImpl,
 } from '@engine/modules/bdg-workspace/bdg-workspace-exporter'
+import {
+  BdgWorkspaceImporter,
+  BdgWorkspaceImporterImpl,
+} from '@engine/modules/bdg-workspace/bdg-workspace-importer'
 
 export const engineModule = new ContainerModule((options: ContainerModuleLoadOptions) => {
   options.bind<ReaderFactory>(ReaderFactory.bindingTypeId).to(FileReaderFactoryImpl)
@@ -29,5 +34,7 @@ export const engineModule = new ContainerModule((options: ContainerModuleLoadOpt
     .inSingletonScope()
   options.bind<CsvContentImporter>(CsvContentImporter.bindingTypeId).to(CsvContentImporterImpl)
   options.bind<FileSaveService>(FileSaveService.bindingTypeId).to(FileSaveServiceImpl)
+  options.bind<FileReadService>(FileReadService.bindingTypeId).to(FileReadServiceImpl)
   options.bind<BdgWorkspaceExporter>(BdgWorkspaceExporter.bindingTypeId).to(BdgWorkspaceExporterImpl)
+  options.bind<BdgWorkspaceImporter>(BdgWorkspaceImporter.bindingTypeId).to(BdgWorkspaceImporterImpl)
 })

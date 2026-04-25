@@ -107,5 +107,11 @@
   "settings.columnMappings.localCsv.selected": "Using local file: {fileName}",
   "settings.columnMappings.localCsv.clear": "Clear",
   "settings.columnMappings.localCsv.parseError": "Unable to parse the selected CSV file.",
-  "settings.columnMappings.jsonData.title": "CSV Data Preview"
+  "settings.columnMappings.jsonData.title": "CSV Data Preview",
+  "zipFile.title": "Load Workspace from Zip",
+  "zipFile.description": "Select a previously exported workspace zip file to restore it.",
+  "zipFile.load": "Load Workspace",
+  "zipFile.loading": "Loading…",
+  "zipFile.success": "Workspace loaded successfully.",
+  "zipFile.errorPrefix": "Import failed: "
   }

@@ -8,11 +8,13 @@ import { BdgAccountImpl } from '@engine/modules/bdg-workspace/bdg-account'
 import { BdgWorkspaceFactory } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
 import { BdgSettings } from '@engine/modules/bdg-settings/bdg-settings'
 import { CsvContentImporter } from '@engine/modules/csv-import/csv-content-importer'
+import { BdgWorkspaceImporter } from '@engine/modules/bdg-workspace/bdg-workspace-importer'
 import { BdgAccountSegmentImpl, type BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment'
 import type { BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
 import type { ResultWithError } from '@engine/types/result-pattern'
 import container from '@inversify/setup-inversify'
 import { useCsvSourcesStore } from '@engineTestApp/stores/csv-sources-store'
+import { useSettingsStore } from '@engineTestApp/stores/settings-store'
 
 type SegmentRowSnapshot = {
   key: string
@@ -236,6 +238,38 @@ export const useWorkspaceStore = defineStore(
         : result
     }
 
+    async function importWorkspaceFromZip(
+      handle: FileSystemFileHandle,
+    ): Promise<ResultWithError<void, string>> {
+      const importer = container.get<BdgWorkspaceImporter>(BdgWorkspaceImporter.bindingTypeId)
+      const result = await importer.import(handle)
+      if (!result.success) return result
+
+      const { workspace, columnMappings, csvSources } = result.value
+
+      const settingsStore = useSettingsStore()
+      const existingIds = new Set(settingsStore.columnMappings.map((m) => m.id))
+      for (const mapping of columnMappings) {
+        if (existingIds.has(mapping.id)) {
+          settingsStore.updateMapping(mapping)
+        } else {
+          settingsStore.insertMapping(mapping)
+        }
+      }
+
+      const csvSourcesStore = useCsvSourcesStore()
+      csvSourcesStore.clear()
+      for (const source of csvSources) {
+        csvSourcesStore.setCsvSource(source.segmentId, {
+          filename: source.filename,
+          content: source.content,
+        })
+      }
+
+      setCurrentWorkspace(workspace)
+      return { success: true, value: undefined }
+    }
+
     return {
       parsedJson,
       appliedMapping,
@@ -257,6 +291,7 @@ export const useWorkspaceStore = defineStore(
       setSelectedAccount,
       clearSelectedAccount,
       importSegmentToSelectedAccount,
+      importWorkspaceFromZip,
     }
   },
   {
