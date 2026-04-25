@@ -1,16 +1,4 @@
 <template>
-  <v-app-bar color="primary" title="Budgan">
-    <template #append>
-      v{{ version }}
-    </template>
-  </v-app-bar>
+  <v-app-bar color="primary" title="Budgan" />
 </template>
-
-<script setup lang="ts">
-import { computed } from 'vue'
-import { useAppSettingsStore } from '@/stores/appSettings-store.ts'
-
-const appSettingsStore = useAppSettingsStore()
-const version = computed(() => appSettingsStore.appSettings.version)
-</script>
 

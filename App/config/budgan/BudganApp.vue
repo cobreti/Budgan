@@ -5,6 +5,7 @@
       <v-main :scrollable="false">
         <RouterView />
       </v-main>
+      <AppFooter />
     </v-app>
   </div>
 </template>
@@ -18,6 +19,7 @@ import { RouterView } from 'vue-router'
 import { useAppSettingsStore } from '@/stores/appSettings-store.ts'
 import settings from '@/assets/settings.json'
 import AppHeader from '@/components/app-header.vue'
+import AppFooter from '@/components/app-footer.vue'
 
 const appSettingsStore = useAppSettingsStore()
 appSettingsStore.setVersion(settings.version)
