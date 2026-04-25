@@ -1,10 +1,13 @@
 {
   "app.title": "Budgan",
-  "mainMenu.newWorkspace": "New journal",
-  "mainMenu.openWorkspace": "Open journal",
-  "newWorkspaceDialog.title": "New journal",
+  "mainMenu.newWorkspace": "New Journal",
+  "mainMenu.openWorkspace": "Open Journal",
+  "mainMenu.accounts": "Accounts",
+  "newWorkspaceDialog.title": "New Journal",
   "newWorkspaceDialog.nameLabel": "Name",
   "newWorkspaceDialog.cancel": "Cancel",
-  "newWorkspaceDialog.create": "Create"
+  "newWorkspaceDialog.create": "Create",
+  "accounts.title": "Accounts",
+  "accounts.noWorkspace": "No journal open."
 }
 

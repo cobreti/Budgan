@@ -9,6 +9,13 @@ const router = createRouter({
             path: '/:locale(en|fr)',
             name: 'home',
             component: () => import('@budgan/views/home.vue'),
+            children: [
+                {
+                    path: 'accounts',
+                    name: 'accounts',
+                    component: () => import('@budgan/views/accounts.vue'),
+                },
+            ],
         },
     ]
 })

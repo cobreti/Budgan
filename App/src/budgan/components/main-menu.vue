@@ -21,6 +21,13 @@
           test-id="main-menu-open-workspace"
           @click="onOpenWorkspace"
         />
+        <MainMenuItem
+          v-if="workspaceStore.workspace"
+          icon="mdi-bank"
+          :label="t('mainMenu.accounts')"
+          test-id="main-menu-accounts"
+          @click="onAccounts"
+        />
       </div>
     </nav>
   </v-navigation-drawer>
@@ -32,16 +39,26 @@
 import { computed, ref } from 'vue'
 import { useDisplay } from 'vuetify'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import { useAppSettingsStore } from '@budgan/stores/appSettings-store.ts'
+import { useWorkspaceStore } from '@budgan/stores/workspace-store.ts'
 import MainMenuItem from '@budgan/components/main-menu-item.vue'
 import NewWorkspaceDialog from '@budgan/components/new-workspace-dialog.vue'
 
 const appSettingsStore = useAppSettingsStore()
+const workspaceStore = useWorkspaceStore()
 const { width } = useDisplay()
 const { t } = useI18n()
+const route = useRoute()
+const router = useRouter()
 
 const drawerWidth = computed(() => width.value < 1024 ? width.value : 600)
 const showNewWorkspaceDialog = ref(false)
+
+const localeParam = computed(() => {
+  const l = route.params.locale
+  return typeof l === 'string' ? l : 'en'
+})
 
 function onNewWorkspace() {
   appSettingsStore.toggleDrawer()
@@ -51,6 +68,11 @@ function onNewWorkspace() {
 function onOpenWorkspace() {
   // TODO: handle open workspace
   appSettingsStore.toggleDrawer()
+}
+
+function onAccounts() {
+  appSettingsStore.toggleDrawer()
+  router.push({ name: 'accounts', params: { locale: localeParam.value } })
 }
 </script>
 
