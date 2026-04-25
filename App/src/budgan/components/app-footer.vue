@@ -28,6 +28,7 @@ const version = computed(() => appSettingsStore.appSettings.version)
   font-size: 0.75rem;
   opacity: 0.5;
   color: var(--bdg-on-surface);
+  cursor: default;
 }
 </style>
 
