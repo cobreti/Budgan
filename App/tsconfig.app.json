@@ -10,6 +10,7 @@
         "paths": {
             "@/*": ["./src/*"],
             "@budgan/*": ["./src/budgan/*"],
+            "@budganI18n/*": ["./src/budgan/i18n/*"],
             "@engine/*": ["./src/engine/*"],
             "@inversify/*": ["./src/inversify/*"],
         },

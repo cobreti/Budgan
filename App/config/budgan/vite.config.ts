@@ -47,6 +47,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@budgan': fileURLToPath(new URL('../../src/budgan', import.meta.url)),
+            '@budganI18n': fileURLToPath(new URL('../../src/budgan/i18n', import.meta.url)),
             // '@XmlParser': fileURLToPath(new URL('../../src/core/modules/XmlParser', import.meta.url)),
             // '@models': fileURLToPath(new URL('../../src/core/models', import.meta.url)),
             // '@services': fileURLToPath(new URL('../../src/core/services', import.meta.url)),

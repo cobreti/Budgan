@@ -11,13 +11,13 @@
       <div class="main-menu__grid">
         <MainMenuItem
           icon="mdi-plus-box"
-          label="New Workspace"
+          :label="t('mainMenu.newWorkspace')"
           test-id="main-menu-new-workspace"
           @click="onNewWorkspace"
         />
         <MainMenuItem
           icon="mdi-folder-open"
-          label="Open Workspace"
+          :label="t('mainMenu.openWorkspace')"
           test-id="main-menu-open-workspace"
           @click="onOpenWorkspace"
         />
@@ -31,12 +31,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useDisplay } from 'vuetify'
+import { useI18n } from 'vue-i18n'
 import { useAppSettingsStore } from '@budgan/stores/appSettings-store.ts'
 import MainMenuItem from '@budgan/components/main-menu-item.vue'
 import NewWorkspaceDialog from '@budgan/components/new-workspace-dialog.vue'
 
 const appSettingsStore = useAppSettingsStore()
 const { width } = useDisplay()
+const { t } = useI18n()
 
 const drawerWidth = computed(() => width.value < 1024 ? width.value : 600)
 const showNewWorkspaceDialog = ref(false)

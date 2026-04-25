@@ -6,12 +6,12 @@
     @update:model-value="emit('update:modelValue', $event)"
   >
     <v-card class="new-workspace-dialog">
-      <v-card-title class="new-workspace-dialog__title">New Workspace</v-card-title>
+      <v-card-title class="new-workspace-dialog__title">{{ t('newWorkspaceDialog.title') }}</v-card-title>
 
       <v-card-text class="new-workspace-dialog__body">
         <v-text-field
           v-model="workspaceName"
-          label="Name"
+          :label="t('newWorkspaceDialog.nameLabel')"
           autofocus
           variant="outlined"
           density="compact"
@@ -27,7 +27,7 @@
           data-testid="new-workspace-cancel-btn"
           @click="onCancel"
         >
-          Cancel
+          {{ t('newWorkspaceDialog.cancel') }}
         </v-btn>
         <v-btn
           color="primary"
@@ -37,7 +37,7 @@
           data-testid="new-workspace-create-btn"
           @click="onCreate"
         >
-          Create
+          {{ t('newWorkspaceDialog.create') }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -46,7 +46,10 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useWorkspaceStore } from '@budgan/stores/workspace-store.ts'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   modelValue: boolean

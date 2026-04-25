@@ -9,7 +9,7 @@
       />
     </template>
     <template #title>
-      <span class="app-header__title">Budgan</span>
+      <span class="app-header__title">{{ t('app.title') }}</span>
     </template>
   </v-app-bar>
 </template>
@@ -28,8 +28,10 @@
 </style>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { useAppSettingsStore } from '@budgan/stores/appSettings-store.ts'
 
+const { t } = useI18n()
 const appSettingsStore = useAppSettingsStore()
 </script>
 

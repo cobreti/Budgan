@@ -9,6 +9,7 @@ import 'vuetify/styles'
 import container from '@inversify/setup-inversify'
 import '@mdi/font/css/materialdesignicons.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import { i18n } from '@budgan/i18n/i18n'
 
 import BudganApp from './BudganApp.vue'
 import router from '@budgan/router'
@@ -64,5 +65,6 @@ app.use<any>(vuetify, {
 
 app.use(pinia)
 app.use(router)
+app.use(i18n)
 
 app.mount('#app')
