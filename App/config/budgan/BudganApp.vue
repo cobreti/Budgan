@@ -38,7 +38,7 @@ import {CsvToBankAccount} from "@engine/services/CsvToBankAccount.ts";
 
 const IdGen = container.get<IdGenerator>(IdGenerator.bindingTypeId);
 const reader = container.get<ReaderFactory>(ReaderFactory.bindingTypeId);
-const csvToBankAccount = container.get<CsvToBankAccount>(CsvToBankAccount.bindingTypeId);
+// const csvToBankAccount = container.get<CsvToBankAccount>(CsvToBankAccount.bindingTypeId);
 
 const appSettingsStore = useAppSettingsStore();
 
