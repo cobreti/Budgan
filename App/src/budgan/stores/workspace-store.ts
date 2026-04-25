@@ -6,13 +6,16 @@ import type { BdgWorkspace } from '@engine/modules/bdg-workspace/bdg-workspace'
 
 export type WorkspaceStore = {
   workspace: Ref<BdgWorkspace | null>
+  workspacePath: Ref<string | null>
   createWorkspace(name: string): BdgWorkspace
   setWorkspace(workspace: BdgWorkspace): void
+  setWorkspacePath(path: string | null): void
   clearWorkspace(): void
 }
 
 export const useWorkspaceStore = defineStore<string, WorkspaceStore>('workspace', () => {
   const workspace = ref<BdgWorkspace | null>(null)
+  const workspacePath = ref<string | null>(null)
 
   const factory = container.get<BdgWorkspaceFactory>(BdgWorkspaceFactory.bindingTypeId)
 
@@ -20,6 +23,7 @@ export const useWorkspaceStore = defineStore<string, WorkspaceStore>('workspace'
     const newWorkspace = factory.createWorkspace()
     newWorkspace.name = name
     workspace.value = newWorkspace
+    workspacePath.value = null
     return newWorkspace
   }
 
@@ -27,14 +31,21 @@ export const useWorkspaceStore = defineStore<string, WorkspaceStore>('workspace'
     workspace.value = value
   }
 
+  function setWorkspacePath(path: string | null): void {
+    workspacePath.value = path
+  }
+
   function clearWorkspace(): void {
     workspace.value = null
+    workspacePath.value = null
   }
 
   return {
     workspace,
+    workspacePath,
     createWorkspace,
     setWorkspace,
+    setWorkspacePath,
     clearWorkspace,
   }
 })

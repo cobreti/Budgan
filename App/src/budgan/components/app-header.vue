@@ -11,6 +11,7 @@
     <template #title>
       <span class="app-header__title">{{ t('app.title') }}</span>
     </template>
+    <WorkspaceInfoHeader />
   </v-app-bar>
 </template>
 
@@ -30,6 +31,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useAppSettingsStore } from '@budgan/stores/appSettings-store.ts'
+import WorkspaceInfoHeader from '@budgan/components/workspace-info-header.vue'
 
 const { t } = useI18n()
 const appSettingsStore = useAppSettingsStore()
