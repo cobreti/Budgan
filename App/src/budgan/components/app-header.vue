@@ -5,6 +5,7 @@
         class="app-header__menu-btn"
         data-testid="app-header-menu-btn"
         aria-label="Open menu"
+        @click="appSettingsStore.toggleDrawer()"
       />
     </template>
     <template #title>
@@ -25,4 +26,10 @@
   cursor: pointer;
 }
 </style>
+
+<script setup lang="ts">
+import { useAppSettingsStore } from '@/stores/appSettings-store.ts'
+
+const appSettingsStore = useAppSettingsStore()
+</script>
 
