@@ -8,7 +8,7 @@
     data-testid="main-menu"
   >
     <nav class="main-menu">
-      <div class="main-menu__grid">
+      <div class="main-menu__section">
         <MainMenuItem
           icon="mdi-plus-box"
           :label="t('mainMenu.newWorkspace')"
@@ -21,14 +21,19 @@
           test-id="main-menu-open-workspace"
           @click="onOpenWorkspace"
         />
-        <MainMenuItem
-          v-if="workspaceStore.workspace"
-          icon="mdi-bank"
-          :label="t('mainMenu.accounts')"
-          test-id="main-menu-accounts"
-          @click="onAccounts"
-        />
       </div>
+
+      <template v-if="workspaceStore.workspace">
+        <hr class="main-menu__divider" />
+        <div class="main-menu__section">
+          <MainMenuItem
+            icon="mdi-bank"
+            :label="t('mainMenu.accounts')"
+            test-id="main-menu-accounts"
+            @click="onAccounts"
+          />
+        </div>
+      </template>
     </nav>
   </v-navigation-drawer>
 
@@ -85,11 +90,18 @@ function onAccounts() {
   color: var(--bdg-on-surface);
 }
 
-.main-menu__grid {
+.main-menu__section {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 1rem;
   padding: 1rem;
+}
+
+.main-menu__divider {
+  border: none;
+  border-top: 1px solid var(--bdg-secondary);
+  margin: 0 1rem;
+  opacity: 0.3;
 }
 </style>
 
