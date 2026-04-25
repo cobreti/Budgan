@@ -1,4 +1,4 @@
-import '../../src/engine-testapp/assets/main.scss'
+import '../../src/budgan/assets/main.scss'
 import { createApp } from 'vue'
 import { createVuetify } from 'vuetify'
 import { createPinia } from 'pinia'
@@ -24,12 +24,18 @@ const vuetify = createVuetify({
     theme: {
         defaultTheme: 'light',
         themes: {
-            dark: {
+            light: {
                 colors: {
-                    // "primary": colors.blue.darken3,
-                    // "secondary": colors.cyan.accent1,
-                    // "surface": colors.lightBlue.darken4
+                    primary: '#1E3A8A',
+                    secondary: '#3B82F6',
+                    background: '#F8FAFC',
+                    surface: '#FFFFFF',
+                    success: '#10B981',
+                    error: '#EF4444',
                 }
+            },
+            dark: {
+                colors: {}
             }
         }
     },

@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar color="teal-darken-4" title="Budgan">
+  <v-app-bar color="primary" title="Budgan">
     <template #append>
       v{{ version }}
     </template>

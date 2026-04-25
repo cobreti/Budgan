@@ -3,12 +3,16 @@ const themeVariables = {
     primaryDarken1: 'rgba(var(--v-theme-primary-darken-1))',
     secondaryDarken1: 'rgba(var(--v-theme-secondary-darken-1))',
     onPrimaryDarken1: 'rgba(var(--v-theme-on-primary-darken-1))',
-    borderColor: 'rgba(var(--v-border-color))'
+    borderColor: 'rgba(var(--v-border-color))',
+    accentColor: 'rgb(var(--v-theme-success))',
+    errorColor: 'rgb(var(--v-theme-error))',
 }
 
 export function useThemeColors() {
     return {
         surfaceVariant: themeVariables.onSurfaceVariantColor,
-        separator: themeVariables.borderColor
+        separator: themeVariables.borderColor,
+        accent: themeVariables.accentColor,
+        error: themeVariables.errorColor,
     }
 }
