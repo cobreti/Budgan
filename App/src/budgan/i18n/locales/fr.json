@@ -14,6 +14,8 @@
   "accounts.accountNameLabel": "Nom du compte",
   "accounts.cancel": "Annuler",
   "accounts.add": "Ajouter",
+  "accounts.columnMappingLabel": "Mapping de colonnes",
+  "accounts.createNewMapping": "Créer un nouveau mapping…",
   "accounts.segments": "aucun segment | {n} segment | {n} segments",
   "columnMapping.title": "Mapping colonnes",
   "columnMapping.noWorkspace": "Aucun journal ouvert. Créez ou ouvrez un journal pour configurer les mappings.",
@@ -43,4 +45,3 @@
   "columnMapping.fieldAmount": "Montant",
   "columnMapping.fieldDescription": "Description"
 }
-

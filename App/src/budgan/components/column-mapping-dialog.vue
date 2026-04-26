@@ -355,6 +355,7 @@ function onSaveNew(): void {
   }
   settingsStore.settings.addColumnMapping(newMapping)
   selectedMappingId.value = newMapping.id
+  emit('update:modelValue', false)
 }
 
 function onUpdate(): void {

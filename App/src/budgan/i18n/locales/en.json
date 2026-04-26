@@ -14,6 +14,8 @@
   "accounts.accountNameLabel": "Account Name",
   "accounts.cancel": "Cancel",
   "accounts.add": "Add",
+  "accounts.columnMappingLabel": "Column Mapping",
+  "accounts.createNewMapping": "Create new mapping…",
   "accounts.segments": "no segments | {n} segment | {n} segments",
   "columnMapping.title": "Column Mapping",
   "columnMapping.noWorkspace": "No journal open. Create or open a journal to configure column mappings.",
@@ -43,4 +45,3 @@
   "columnMapping.fieldAmount": "Amount",
   "columnMapping.fieldDescription": "Description"
 }
-
