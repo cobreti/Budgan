@@ -44,6 +44,7 @@ export type WorkspaceStore = {
   workspaceSnapshot: Ref<WorkspaceSnapshot | null>
   createWorkspace(name: string): BdgWorkspace
   createAccount(name: string, columnMappingId: string): void
+  removeSegment(accountId: string, segmentId: string): void
   importSegment(accountId: string, file: File): Promise<ResultWithError<BdgAccountSegment, string>>
   setWorkspace(workspace: BdgWorkspace): void
   setWorkspacePath(path: string | null): void
@@ -121,6 +122,14 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
     _syncWorkspaceSnapshot()
   }
 
+  function removeSegment(accountId: string, segmentId: string): void {
+    if (!workspace.value) return
+    const account = workspace.value.accounts.find((a) => a.id === accountId)
+    if (!account) return
+    account.removeSegment(segmentId)
+    _syncWorkspaceSnapshot()
+  }
+
   async function importSegment(
     accountId: string,
     file: File,
@@ -170,6 +179,7 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
     workspaceSnapshot,
     createWorkspace,
     createAccount,
+    removeSegment,
     importSegment,
     setWorkspace,
     setWorkspacePath,

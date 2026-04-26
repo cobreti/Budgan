@@ -50,5 +50,6 @@
   "account.importNoMapping": "No column mapping found for this account.",
   "account.importSuccess": "Segment imported: {name}",
   "account.noSegments": "No segments imported yet.",
-  "account.segmentRows": "no rows | {n} row | {n} rows"
+  "account.segmentRows": "no rows | {n} row | {n} rows",
+  "account.removeSegment": "Remove segment"
 }

@@ -38,13 +38,23 @@
           class="account-view__segment-item"
           :data-testid="`account-view-segment-${segment.id}`"
         >
-          <span class="account-view__segment-name">{{ segment.name }}</span>
-          <span class="account-view__segment-meta">
-            {{ segment.dateStartAsString }} – {{ segment.dateEndAsString }}
-          </span>
-          <span class="account-view__segment-meta">
-            {{ t('account.segmentRows', segment.rows.length) }}
-          </span>
+          <div class="account-view__segment-info">
+            <span class="account-view__segment-name">{{ segment.name }}</span>
+            <span class="account-view__segment-meta">
+              {{ segment.dateStartAsString }} – {{ segment.dateEndAsString }}
+            </span>
+            <span class="account-view__segment-meta">
+              {{ t('account.segmentRows', segment.rows.length) }}
+            </span>
+          </div>
+          <button
+            class="account-view__segment-remove-btn"
+            :data-testid="`account-view-remove-segment-${segment.id}`"
+            :title="t('account.removeSegment')"
+            @click="onRemoveSegment(segment.id)"
+          >
+            <v-icon icon="mdi-delete-outline" size="18" />
+          </button>
         </li>
       </ul>
       <p v-else class="account-view__no-segments" data-testid="account-view-no-segments">
@@ -82,6 +92,11 @@ function triggerFileInput(): void {
   importError.value = null
   importSuccess.value = null
   fileInputRef.value?.click()
+}
+
+function onRemoveSegment(segmentId: string): void {
+  if (!account.value) return
+  workspaceStore.removeSegment(account.value.id, segmentId)
 }
 
 async function onFileSelected(event: Event): Promise<void> {
@@ -193,12 +208,20 @@ async function onFileSelected(event: Event): Promise<void> {
 
 .account-view__segment-item {
   display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
+  align-items: center;
+  gap: 0.75rem;
   padding: 0.625rem 0.75rem;
   border: 1px solid var(--bdg-secondary);
   border-radius: 8px;
   background-color: var(--bdg-surface);
+}
+
+.account-view__segment-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
 }
 
 .account-view__segment-name {
@@ -215,5 +238,28 @@ async function onFileSelected(event: Event): Promise<void> {
   margin: 0;
   opacity: 0.6;
   font-size: 0.9rem;
+}
+
+.account-view__segment-remove-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--bdg-on-surface);
+  opacity: 0.4;
+  cursor: pointer;
+  transition: opacity 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.account-view__segment-remove-btn:hover {
+  opacity: 1;
+  color: var(--bdg-error);
+  border-color: var(--bdg-error);
 }
 </style>

@@ -7,6 +7,7 @@ export interface BdgAccount {
   columnMappingId: string
   segments: BdgAccountSegment[]
   addSegment(segment: BdgAccountSegment): void
+  removeSegment(segmentId: string): void
   csvContentSegments: CsvContentSegment[]
   addCsvContentSegment(segment: CsvContentSegment): void
   getCsvContentSegment(segmentId: string): CsvContentSegment | undefined
@@ -64,6 +65,10 @@ export class BdgAccountImpl implements BdgAccount {
     }
 
     this._segments.push(segment)
+  }
+
+  removeSegment(segmentId: string): void {
+    this._segments = this._segments.filter((s) => s.id !== segmentId)
   }
 
   get csvContentSegments(): CsvContentSegment[] {
