@@ -51,6 +51,7 @@
   "account.importSuccess": "Statement imported: {name}",
   "account.noSegments": "No statements imported yet.",
   "account.segmentRows": "no rows | {n} row | {n} rows",
+  "account.statementUniqueRows": "no unique | {n} unique | {n} unique",
   "account.removeSegment": "Remove statement",
   "account.viewSegments": "Statements",
   "account.viewTransactions": "Transactions",

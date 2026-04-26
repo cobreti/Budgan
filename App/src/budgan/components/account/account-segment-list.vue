@@ -17,6 +17,10 @@
         </span>
         <span class="account-segment-list__meta">
           {{ t('account.segmentRows', segment.rows.length) }}
+          <span
+            v-if="uniqueRowCount(segment) !== segment.rows.length"
+            class="account-segment-list__unique-count"
+          >({{ t('account.statementUniqueRows', uniqueRowCount(segment)) }})</span>
         </span>
       </div>
       <button
@@ -53,6 +57,10 @@ const workspaceStore = useWorkspaceStore()
 
 function onRemoveSegment(segmentId: string): void {
   workspaceStore.removeSegment(props.accountId, segmentId)
+}
+
+function uniqueRowCount(segment: BdgAccountSegment): number {
+  return segment.rows.filter((r) => !r.duplicateOf).length
 }
 </script>
 
@@ -94,6 +102,11 @@ function onRemoveSegment(segmentId: string): void {
 .account-segment-list__meta {
   font-size: 0.75rem;
   opacity: 0.6;
+}
+
+.account-segment-list__unique-count {
+  opacity: 0.6;
+  font-size: 0.7rem;
 }
 
 .account-segment-list__no-segments {

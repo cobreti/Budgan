@@ -51,6 +51,7 @@
   "account.importSuccess": "Relevé importé : {name}",
   "account.noSegments": "Aucun relevé importé.",
   "account.segmentRows": "aucune ligne | {n} ligne | {n} lignes",
+  "account.statementUniqueRows": "aucune unique | {n} unique | {n} uniques",
   "account.removeSegment": "Supprimer le relevé",
   "account.viewSegments": "Relevés",
   "account.viewTransactions": "Transactions",
