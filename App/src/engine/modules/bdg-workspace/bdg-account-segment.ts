@@ -14,6 +14,7 @@ export interface BdgAccountSegmentRow {
   dateTransaction?: Date
   dateInscription?: Date
   amount: number
+  duplicateOf?: string
 }
 
 export function computeRowKey(row: Omit<BdgAccountSegmentRow, 'key'>): string {

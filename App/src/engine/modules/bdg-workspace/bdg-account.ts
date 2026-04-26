@@ -50,6 +50,19 @@ export class BdgAccountImpl implements BdgAccount {
   }
 
   addSegment(segment: BdgAccountSegment): void {
+    const existingKeys = new Set<string>()
+    for (const s of this._segments) {
+      for (const r of s.rows) {
+        existingKeys.add(r.key)
+      }
+    }
+
+    for (const row of segment.rows) {
+      if (existingKeys.has(row.key)) {
+        row.duplicateOf = row.key
+      }
+    }
+
     this._segments.push(segment)
   }
 
