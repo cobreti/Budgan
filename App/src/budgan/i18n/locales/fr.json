@@ -47,5 +47,8 @@
   "account.notFound": "Compte introuvable.",
   "account.importCsv": "Importer CSV",
   "account.importCsvLoading": "Importation…",
-  "account.importNoMapping": "Aucun mapping de colonnes trouvé pour ce compte."
+  "account.importNoMapping": "Aucun mapping de colonnes trouvé pour ce compte.",
+  "account.importSuccess": "Segment importé : {name}",
+  "account.noSegments": "Aucun segment importé.",
+  "account.segmentRows": "aucune ligne | {n} ligne | {n} lignes"
 }

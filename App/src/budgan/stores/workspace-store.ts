@@ -5,8 +5,27 @@ import 'pinia-plugin-persistedstate'
 import container from '@inversify/setup-inversify'
 import { BdgWorkspaceFactory } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
 import { BdgAccountImpl } from '@engine/modules/bdg-workspace/bdg-account'
+import { BdgAccountSegmentImpl } from '@engine/modules/bdg-workspace/bdg-account-segment'
 import type { BdgWorkspace } from '@engine/modules/bdg-workspace/bdg-workspace'
+import type { BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment'
+import { CsvContentImporter } from '@engine/modules/csv-import/csv-content-importer'
+import type { ResultWithError } from '@engine/types/result-pattern'
 import { useSettingsStore } from './settings-store'
+
+type SegmentRowSnapshot = {
+  key: string
+  cardNumber: string
+  description: string
+  dateTransactionAsString: string
+  dateInscriptionAsString?: string
+  amount: number
+}
+
+type SegmentSnapshot = {
+  id: string
+  name: string
+  rows: SegmentRowSnapshot[]
+}
 
 type WorkspaceSnapshot = {
   id: string
@@ -15,6 +34,7 @@ type WorkspaceSnapshot = {
     id: string
     name: string
     columnMappingId: string
+    segments: SegmentSnapshot[]
   }>
 }
 
@@ -24,6 +44,7 @@ export type WorkspaceStore = {
   workspaceSnapshot: Ref<WorkspaceSnapshot | null>
   createWorkspace(name: string): BdgWorkspace
   createAccount(name: string, columnMappingId: string): void
+  importSegment(accountId: string, file: File): Promise<ResultWithError<BdgAccountSegment, string>>
   setWorkspace(workspace: BdgWorkspace): void
   setWorkspacePath(path: string | null): void
   clearWorkspace(): void
@@ -49,6 +70,18 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
         id: a.id,
         name: a.name,
         columnMappingId: a.columnMappingId,
+        segments: a.segments.map((s) => ({
+          id: s.id,
+          name: s.name,
+          rows: s.rows.map((r) => ({
+            key: r.key,
+            cardNumber: r.cardNumber,
+            description: r.description,
+            dateTransactionAsString: r.dateTransactionAsString,
+            dateInscriptionAsString: r.dateInscriptionAsString,
+            amount: r.amount,
+          })),
+        })),
       })),
     }
   }
@@ -58,9 +91,13 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
       workspace.value = null
       return
     }
-    const accounts = workspaceSnapshot.value.accounts.map(
-      (a) => new BdgAccountImpl(a.id, a.name, a.columnMappingId),
-    )
+    const accounts = workspaceSnapshot.value.accounts.map((a) => {
+      const account = new BdgAccountImpl(a.id, a.name, a.columnMappingId)
+      for (const s of a.segments ?? []) {
+        account.addSegment(new BdgAccountSegmentImpl(s.id, s.name, s.rows))
+      }
+      return account
+    })
     workspace.value = factory.reconstructWorkspace(
       workspaceSnapshot.value.id,
       workspaceSnapshot.value.name,
@@ -82,6 +119,33 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
     if (!workspace.value) return
     workspace.value.createAccount(name, columnMappingId)
     _syncWorkspaceSnapshot()
+  }
+
+  async function importSegment(
+    accountId: string,
+    file: File,
+  ): Promise<ResultWithError<BdgAccountSegment, string>> {
+    if (!workspace.value) return { success: false, error: 'No workspace' }
+
+    const account = workspace.value.accounts.find((a) => a.id === accountId)
+    if (!account) return { success: false, error: 'Account not found' }
+
+    const bdgMapping = useSettingsStore().columnMappings.find(
+      (m) => m.id === account.columnMappingId,
+    )
+    if (!bdgMapping) return { success: false, error: 'No column mapping found for this account' }
+
+    const importer = container.get<CsvContentImporter>(CsvContentImporter.bindingTypeId)
+    const result = await importer.import(file, bdgMapping.columnMapping)
+
+    if (result.success) {
+      account.addSegment(result.value.segment)
+      _syncWorkspaceSnapshot()
+    }
+
+    return result.success
+      ? { success: true, value: result.value.segment }
+      : result
   }
 
   function setWorkspace(value: BdgWorkspace): void {
@@ -106,6 +170,7 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
     workspaceSnapshot,
     createWorkspace,
     createAccount,
+    importSegment,
     setWorkspace,
     setWorkspacePath,
     clearWorkspace,
@@ -121,4 +186,3 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
     },
   },
 })
-

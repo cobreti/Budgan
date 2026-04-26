@@ -16,6 +16,9 @@
           <span>{{ importing ? t('account.importCsvLoading') : t('account.importCsv') }}</span>
         </button>
       </div>
+      <p v-if="importSuccess" class="account-view__success" data-testid="account-view-import-success">
+        {{ t('account.importSuccess', { name: importSuccess }) }}
+      </p>
       <p v-if="importError" class="account-view__error" data-testid="account-view-import-error">
         {{ importError }}
       </p>
@@ -27,6 +30,26 @@
         data-testid="account-view-file-input"
         @change="onFileSelected"
       />
+
+      <ul v-if="account.segments.length > 0" class="account-view__segments" data-testid="account-view-segments">
+        <li
+          v-for="segment in account.segments"
+          :key="segment.id"
+          class="account-view__segment-item"
+          :data-testid="`account-view-segment-${segment.id}`"
+        >
+          <span class="account-view__segment-name">{{ segment.name }}</span>
+          <span class="account-view__segment-meta">
+            {{ segment.dateStartAsString }} – {{ segment.dateEndAsString }}
+          </span>
+          <span class="account-view__segment-meta">
+            {{ t('account.segmentRows', segment.rows.length) }}
+          </span>
+        </li>
+      </ul>
+      <p v-else class="account-view__no-segments" data-testid="account-view-no-segments">
+        {{ t('account.noSegments') }}
+      </p>
     </template>
   </div>
 </template>
@@ -36,18 +59,15 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useWorkspaceStore } from '@budgan/stores/workspace-store.ts'
-import { useSettingsStore } from '@budgan/stores/settings-store.ts'
-import container from '@inversify/setup-inversify'
-import { CsvContentImporter } from '@engine/modules/csv-import/csv-content-importer'
 
 const { t } = useI18n()
 const route = useRoute()
 const workspaceStore = useWorkspaceStore()
-const settingsStore = useSettingsStore()
 
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const importing = ref(false)
 const importError = ref<string | null>(null)
+const importSuccess = ref<string | null>(null)
 
 const accountId = computed(() => {
   const id = route.params.accountId
@@ -60,6 +80,7 @@ const account = computed(() =>
 
 function triggerFileInput(): void {
   importError.value = null
+  importSuccess.value = null
   fileInputRef.value?.click()
 }
 
@@ -68,30 +89,20 @@ async function onFileSelected(event: Event): Promise<void> {
   const file = input.files?.[0]
   if (!file || !account.value) return
 
-  const bdgMapping = settingsStore.columnMappings.find(
-    (m) => m.id === account.value!.columnMappingId,
-  )
-  if (!bdgMapping) {
-    importError.value = t('account.importNoMapping')
-    input.value = ''
-    return
-  }
-
   importing.value = true
   importError.value = null
+  importSuccess.value = null
 
-  const importer = container.get<CsvContentImporter>(CsvContentImporter.bindingTypeId)
-  const result = await importer.import(file, bdgMapping.columnMapping)
+  const result = await workspaceStore.importSegment(account.value.id, file)
 
   importing.value = false
   input.value = ''
 
-  if (!result.success) {
-    importError.value = result.error
-    return
+  if (result.success) {
+    importSuccess.value = result.value.name
+  } else {
+    importError.value = result.error ?? 'Unknown error'
   }
-
-  account.value.addSegment(result.value.segment)
 }
 </script>
 
@@ -159,9 +170,50 @@ async function onFileSelected(event: Event): Promise<void> {
   display: none;
 }
 
+.account-view__success {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: var(--bdg-accent);
+}
+
 .account-view__error {
-  margin: 0;
+  margin: 0 0 1rem;
   font-size: 0.875rem;
   color: var(--bdg-error);
+}
+
+.account-view__segments {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.account-view__segment-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--bdg-secondary);
+  border-radius: 8px;
+  background-color: var(--bdg-surface);
+}
+
+.account-view__segment-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.account-view__segment-meta {
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+.account-view__no-segments {
+  margin: 0;
+  opacity: 0.6;
+  font-size: 0.9rem;
 }
 </style>
