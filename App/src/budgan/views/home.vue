@@ -1,10 +1,11 @@
 <template>
   <div class="home-view">
-    <!-- Home view placeholder -->
+    <RouterView />
   </div>
 </template>
 
 <script setup lang="ts">
+import { RouterView } from 'vue-router'
 </script>
 
 <style scoped>

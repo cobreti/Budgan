@@ -12,22 +12,22 @@
       {{ t('accounts.noWorkspace') }}
     </p>
 
-    <ul v-else class="accounts-view__list" data-testid="accounts-view-list">
-      <li
+    <div v-else class="accounts-view__list" data-testid="accounts-view-list">
+      <AccountCard
         v-for="account in workspaceStore.workspace.accounts"
         :key="account.id"
-        class="accounts-view__item"
-        :data-testid="`accounts-view-item-${account.id}`"
-      >
-        {{ account.name }}
-      </li>
-    </ul>
+        :account="account"
+      />
+      <AddAccountCard />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useWorkspaceStore } from '@budgan/stores/workspace-store.ts'
+import AccountCard from '@budgan/components/account/account-card.vue'
+import AddAccountCard from '@budgan/components/account/add-account-card.vue'
 
 const { t } = useI18n()
 const workspaceStore = useWorkspaceStore()
@@ -56,20 +56,11 @@ const workspaceStore = useWorkspaceStore()
 }
 
 .accounts-view__list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-}
-
-.accounts-view__item {
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--bdg-secondary);
-  border-radius: 6px;
-  background-color: var(--bdg-surface);
-  font-size: 0.95rem;
+  gap: 0.75rem;
 }
 </style>
+
+
 

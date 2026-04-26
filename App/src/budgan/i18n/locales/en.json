@@ -8,6 +8,11 @@
   "newWorkspaceDialog.cancel": "Cancel",
   "newWorkspaceDialog.create": "Create",
   "accounts.title": "Accounts",
-  "accounts.noWorkspace": "No journal open."
+  "accounts.noWorkspace": "No journal open.",
+  "accounts.addAccount": "Add Account",
+  "accounts.accountNameLabel": "Account Name",
+  "accounts.cancel": "Cancel",
+  "accounts.add": "Add",
+  "accounts.segments": "no segments | {n} segment | {n} segments"
 }
 
