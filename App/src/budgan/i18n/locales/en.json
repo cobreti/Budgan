@@ -37,6 +37,7 @@
   "columnMapping.missingRequired": "Required fields not mapped: {columns}",
   "columnMapping.save": "Save Mapping",
   "columnMapping.cancel": "Cancel",
+  "columnMapping.fieldCardNumber": "Card Number",
   "columnMapping.fieldDateTransaction": "Date Transaction",
   "columnMapping.fieldDateInscription": "Date Inscription",
   "columnMapping.fieldAmount": "Amount",

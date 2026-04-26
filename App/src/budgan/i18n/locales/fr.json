@@ -37,6 +37,7 @@
   "columnMapping.missingRequired": "Champs requis non mappés : {columns}",
   "columnMapping.save": "Enregistrer",
   "columnMapping.cancel": "Annuler",
+  "columnMapping.fieldCardNumber": "Numéro de carte",
   "columnMapping.fieldDateTransaction": "Date de transaction",
   "columnMapping.fieldDateInscription": "Date d'inscription",
   "columnMapping.fieldAmount": "Montant",

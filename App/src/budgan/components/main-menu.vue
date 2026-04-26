@@ -44,6 +44,7 @@
   </v-navigation-drawer>
 
   <NewWorkspaceDialog v-model="showNewWorkspaceDialog" />
+  <ColumnMappingDialog v-model="showColumnMappingDialog" />
 </template>
 
 <script setup lang="ts">
@@ -55,6 +56,7 @@ import { useAppSettingsStore } from '@budgan/stores/appSettings-store.ts'
 import { useWorkspaceStore } from '@budgan/stores/workspace-store.ts'
 import MainMenuItem from '@budgan/components/main-menu-item.vue'
 import NewWorkspaceDialog from '@budgan/components/new-workspace-dialog.vue'
+import ColumnMappingDialog from '@budgan/components/column-mapping-dialog.vue'
 
 const appSettingsStore = useAppSettingsStore()
 const workspaceStore = useWorkspaceStore()
@@ -65,6 +67,7 @@ const router = useRouter()
 
 const drawerWidth = computed(() => width.value < 1024 ? width.value : 600)
 const showNewWorkspaceDialog = ref(false)
+const showColumnMappingDialog = ref(false)
 
 const localeParam = computed(() => {
   const l = route.params.locale
@@ -88,7 +91,7 @@ function onAccounts() {
 
 function onColumnMapping() {
   appSettingsStore.toggleDrawer()
-  router.push({ name: 'column-mapping', params: { locale: localeParam.value } })
+  showColumnMappingDialog.value = true
 }
 </script>
 

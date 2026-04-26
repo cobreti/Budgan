@@ -15,11 +15,6 @@ const router = createRouter({
                     name: 'accounts',
                     component: () => import('@budgan/views/accounts.vue'),
                 },
-                {
-                    path: 'column-mapping',
-                    name: 'column-mapping',
-                    component: () => import('@budgan/views/column-mapping.vue'),
-                },
             ],
         },
     ]
