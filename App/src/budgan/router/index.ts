@@ -15,6 +15,11 @@ const router = createRouter({
                     name: 'accounts',
                     component: () => import('@budgan/views/accounts.vue'),
                 },
+                {
+                    path: 'accounts/:accountId',
+                    name: 'account',
+                    component: () => import('@budgan/views/account.vue'),
+                },
             ],
         },
     ]

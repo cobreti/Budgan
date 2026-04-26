@@ -2,6 +2,7 @@
   <v-card
     class="account-card"
     variant="outlined"
+    :to="{ name: 'account', params: { locale: localeParam, accountId: account.id } }"
     :data-testid="`account-card-${account.id}`"
   >
     <v-card-text class="account-card__body">
@@ -12,6 +13,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import type { BdgAccount } from '@engine/modules/bdg-workspace/bdg-account'
 
@@ -20,6 +23,12 @@ defineProps<{
 }>()
 
 const { t } = useI18n()
+const route = useRoute()
+
+const localeParam = computed(() => {
+  const l = route.params.locale
+  return typeof l === 'string' ? l : 'en'
+})
 </script>
 
 <style scoped>

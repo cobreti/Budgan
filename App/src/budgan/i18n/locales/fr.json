@@ -43,5 +43,9 @@
   "columnMapping.fieldDateTransaction": "Date de transaction",
   "columnMapping.fieldDateInscription": "Date d'inscription",
   "columnMapping.fieldAmount": "Montant",
-  "columnMapping.fieldDescription": "Description"
+  "columnMapping.fieldDescription": "Description",
+  "account.notFound": "Compte introuvable.",
+  "account.importCsv": "Importer CSV",
+  "account.importCsvLoading": "Importation…",
+  "account.importNoMapping": "Aucun mapping de colonnes trouvé pour ce compte."
 }
