@@ -3,6 +3,7 @@ import { ref, type Ref } from 'vue'
 import container from '@inversify/setup-inversify'
 import { BdgWorkspaceFactory } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
 import type { BdgWorkspace } from '@engine/modules/bdg-workspace/bdg-workspace'
+import { useSettingsStore } from './settings-store'
 
 export type WorkspaceStore = {
   workspace: Ref<BdgWorkspace | null>
@@ -24,6 +25,7 @@ export const useWorkspaceStore = defineStore<string, WorkspaceStore>('workspace'
     newWorkspace.name = name
     workspace.value = newWorkspace
     workspacePath.value = null
+    useSettingsStore().reinitialize()
     return newWorkspace
   }
 
@@ -38,6 +40,7 @@ export const useWorkspaceStore = defineStore<string, WorkspaceStore>('workspace'
   function clearWorkspace(): void {
     workspace.value = null
     workspacePath.value = null
+    useSettingsStore().reinitialize()
   }
 
   return {
