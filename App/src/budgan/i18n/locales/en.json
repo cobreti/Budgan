@@ -60,5 +60,7 @@
   "account.transactionList.colDate": "Date",
   "account.transactionList.colDescription": "Description",
   "account.transactionList.colAmount": "Amount",
-  "account.transactionList.duplicateWarning": "Duplicate transaction"
+  "account.transactionList.duplicateWarning": "Duplicate transaction",
+  "account.transactionList.showDuplicates": "Show duplicates",
+  "account.transactionList.hideDuplicates": "Hide duplicates"
 }

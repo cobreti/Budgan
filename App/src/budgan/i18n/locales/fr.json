@@ -60,5 +60,7 @@
   "account.transactionList.colDate": "Date",
   "account.transactionList.colDescription": "Description",
   "account.transactionList.colAmount": "Montant",
-  "account.transactionList.duplicateWarning": "Transaction en double"
+  "account.transactionList.duplicateWarning": "Transaction en double",
+  "account.transactionList.showDuplicates": "Afficher les doublons",
+  "account.transactionList.hideDuplicates": "Masquer les doublons"
 }

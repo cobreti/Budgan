@@ -1,5 +1,18 @@
 <template>
   <div class="account-transaction-list" data-testid="account-transaction-list">
+    <div class="account-transaction-list__toolbar" data-testid="account-transaction-list-toolbar">
+      <button
+        class="account-transaction-list__toggle-duplicates"
+        :class="{ 'account-transaction-list__toggle-duplicates--active': showDuplicates }"
+        type="button"
+        data-testid="account-transaction-list-toggle-duplicates"
+        @click="showDuplicates = !showDuplicates"
+      >
+        <v-icon :icon="showDuplicates ? 'mdi-content-copy' : 'mdi-content-copy-off'" size="16" />
+        {{ showDuplicates ? t('account.transactionList.hideDuplicates') : t('account.transactionList.showDuplicates') }}
+      </button>
+    </div>
+
     <div class="account-transaction-list__header" data-testid="account-transaction-list-header">
       <span class="account-transaction-list__cell account-transaction-list__cell--card">
         {{ t('account.transactionList.colCardNumber') }}
@@ -63,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment'
 
@@ -73,7 +86,12 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-const rows = computed(() => props.segments.flatMap((s) => s.rows))
+const showDuplicates = ref(true)
+
+const rows = computed(() => {
+  const all = props.segments.flatMap((s) => s.rows)
+  return showDuplicates.value ? all : all.filter((r) => !r.duplicateOf)
+})
 </script>
 
 <style scoped>
@@ -86,6 +104,36 @@ const rows = computed(() => props.segments.flatMap((s) => s.rows))
   border: 1px solid var(--bdg-secondary);
   border-radius: 8px;
   overflow: hidden;
+}
+
+.account-transaction-list__toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--bdg-secondary);
+  background-color: var(--bdg-surface);
+}
+
+.account-transaction-list__toggle-duplicates {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.75rem;
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  border: 1px solid var(--bdg-secondary);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--bdg-on-surface);
+  opacity: 0.6;
+  transition: opacity 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.account-transaction-list__toggle-duplicates--active {
+  opacity: 1;
+  border-color: var(--bdg-primary);
+  color: var(--bdg-primary);
 }
 
 .account-transaction-list__header,
