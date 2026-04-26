@@ -51,5 +51,13 @@
   "account.importSuccess": "Segment importé : {name}",
   "account.noSegments": "Aucun segment importé.",
   "account.segmentRows": "aucune ligne | {n} ligne | {n} lignes",
-  "account.removeSegment": "Supprimer le segment"
+  "account.removeSegment": "Supprimer le segment",
+  "account.viewSegments": "Segments",
+  "account.viewTransactions": "Transactions",
+  "account.transactionList.noTransactions": "Aucune transaction à afficher.",
+  "account.transactionList.colCardNumber": "Carte",
+  "account.transactionList.colDate": "Date",
+  "account.transactionList.colDescription": "Description",
+  "account.transactionList.colAmount": "Montant",
+  "account.transactionList.duplicateWarning": "Transaction en double"
 }

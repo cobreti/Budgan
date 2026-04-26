@@ -6,16 +6,39 @@
     <template v-else>
       <div class="account-view__header">
         <h1 class="account-view__name" data-testid="account-view-name">{{ account.name }}</h1>
-        <button
-          class="account-view__import-btn"
-          data-testid="account-view-import-csv"
-          :disabled="importing"
-          @click="triggerFileInput"
-        >
-          <v-icon class="account-view__import-btn-icon" icon="mdi-upload" size="18" />
-          <span>{{ importing ? t('account.importCsvLoading') : t('account.importCsv') }}</span>
-        </button>
+
+        <div class="account-view__toggle" data-testid="account-view-toggle">
+          <button
+            class="account-view__toggle-btn"
+            :class="{ 'account-view__toggle-btn--active': activeView === 'segments' }"
+            data-testid="account-view-toggle-segments"
+            @click="activeView = 'segments'"
+          >
+            {{ t('account.viewSegments') }}
+          </button>
+          <button
+            class="account-view__toggle-btn"
+            :class="{ 'account-view__toggle-btn--active': activeView === 'transactions' }"
+            data-testid="account-view-toggle-transactions"
+            @click="activeView = 'transactions'"
+          >
+            {{ t('account.viewTransactions') }}
+          </button>
+        </div>
+
+        <div class="account-view__header-actions">
+          <button
+            class="account-view__import-btn"
+            data-testid="account-view-import-csv"
+            :disabled="importing"
+            @click="triggerFileInput"
+          >
+            <v-icon class="account-view__import-btn-icon" icon="mdi-upload" size="18" />
+            <span>{{ importing ? t('account.importCsvLoading') : t('account.importCsv') }}</span>
+          </button>
+        </div>
       </div>
+
       <p v-if="importSuccess" class="account-view__success" data-testid="account-view-import-success">
         {{ t('account.importSuccess', { name: importSuccess }) }}
       </p>
@@ -31,7 +54,15 @@
         @change="onFileSelected"
       />
 
-      <AccountSegmentList :segments="account.segments" :account-id="account.id" />
+      <AccountSegmentList
+        v-if="activeView === 'segments'"
+        :segments="account.segments"
+        :account-id="account.id"
+      />
+      <AccountTransactionList
+        v-else
+        :segments="account.segments"
+      />
     </template>
   </div>
 </template>
@@ -42,6 +73,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useWorkspaceStore } from '@budgan/stores/workspace-store.ts'
 import AccountSegmentList from '@budgan/components/account/account-segment-list.vue'
+import AccountTransactionList from '@budgan/components/account/account-transaction-list.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -51,6 +83,7 @@ const fileInputRef = ref<HTMLInputElement | null>(null)
 const importing = ref(false)
 const importError = ref<string | null>(null)
 const importSuccess = ref<string | null>(null)
+const activeView = ref<'segments' | 'transactions'>('segments')
 
 const accountId = computed(() => {
   const id = route.params.accountId
@@ -100,11 +133,39 @@ async function onFileSelected(event: Event): Promise<void> {
 }
 
 .account-view__header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1rem;
+}
+
+.account-view__header-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.account-view__toggle {
+  display: flex;
+  border: 1px solid var(--bdg-secondary);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.account-view__toggle-btn {
+  padding: 0.3rem 1rem;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  background: transparent;
+  color: var(--bdg-on-surface);
+  border: none;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.account-view__toggle-btn--active {
+  background-color: var(--bdg-primary);
+  color: #ffffff;
 }
 
 .account-view__name {

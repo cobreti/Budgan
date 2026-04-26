@@ -51,5 +51,13 @@
   "account.importSuccess": "Segment imported: {name}",
   "account.noSegments": "No segments imported yet.",
   "account.segmentRows": "no rows | {n} row | {n} rows",
-  "account.removeSegment": "Remove segment"
+  "account.removeSegment": "Remove segment",
+  "account.viewSegments": "Segments",
+  "account.viewTransactions": "Transactions",
+  "account.transactionList.noTransactions": "No transactions to display.",
+  "account.transactionList.colCardNumber": "Card",
+  "account.transactionList.colDate": "Date",
+  "account.transactionList.colDescription": "Description",
+  "account.transactionList.colAmount": "Amount",
+  "account.transactionList.duplicateWarning": "Duplicate transaction"
 }
