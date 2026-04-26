@@ -19,6 +19,19 @@ const router = createRouter({
                     path: 'accounts/:accountId',
                     name: 'account',
                     component: () => import('@budgan/views/account.vue'),
+                    redirect: (to) => ({ name: 'account-statements', params: to.params }),
+                    children: [
+                        {
+                            path: 'statements',
+                            name: 'account-statements',
+                            component: () => import('@budgan/views/account-statements.vue'),
+                        },
+                        {
+                            path: 'transactions',
+                            name: 'account-transactions',
+                            component: () => import('@budgan/views/account-transactions.vue'),
+                        },
+                    ],
                 },
             ],
         },

@@ -12,7 +12,7 @@
             class="account-view__toggle-btn"
             :class="{ 'account-view__toggle-btn--active': activeView === 'segments' }"
             data-testid="account-view-toggle-segments"
-            @click="activeView = 'segments'"
+            @click="router.push({ name: 'account-statements', params: route.params })"
           >
             {{ t('account.viewSegments') }}
           </button>
@@ -20,7 +20,7 @@
             class="account-view__toggle-btn"
             :class="{ 'account-view__toggle-btn--active': activeView === 'transactions' }"
             data-testid="account-view-toggle-transactions"
-            @click="activeView = 'transactions'"
+            @click="router.push({ name: 'account-transactions', params: route.params })"
           >
             {{ t('account.viewTransactions') }}
           </button>
@@ -54,36 +54,29 @@
         @change="onFileSelected"
       />
 
-      <AccountSegmentList
-        v-if="activeView === 'segments'"
-        :segments="account.segments"
-        :account-id="account.id"
-      />
-      <AccountTransactionList
-        v-else
-        :segments="account.segments"
-      />
-    </template>
+      <RouterView />    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { RouterView, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useWorkspaceStore } from '@budgan/stores/workspace-store.ts'
-import AccountSegmentList from '@budgan/components/account/account-segment-list.vue'
-import AccountTransactionList from '@budgan/components/account/account-transaction-list.vue'
 
 const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
 const workspaceStore = useWorkspaceStore()
 
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const importing = ref(false)
 const importError = ref<string | null>(null)
 const importSuccess = ref<string | null>(null)
-const activeView = ref<'segments' | 'transactions'>('segments')
+
+const activeView = computed(() =>
+  route.name === 'account-transactions' ? 'transactions' : 'segments'
+)
 
 const accountId = computed(() => {
   const id = route.params.accountId
