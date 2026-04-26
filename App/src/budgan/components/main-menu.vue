@@ -32,6 +32,12 @@
             test-id="main-menu-accounts"
             @click="onAccounts"
           />
+          <MainMenuItem
+            icon="mdi-table-cog"
+            :label="t('mainMenu.columnMapping')"
+            test-id="main-menu-column-mapping"
+            @click="onColumnMapping"
+          />
         </div>
       </template>
     </nav>
@@ -78,6 +84,11 @@ function onOpenWorkspace() {
 function onAccounts() {
   appSettingsStore.toggleDrawer()
   router.push({ name: 'accounts', params: { locale: localeParam.value } })
+}
+
+function onColumnMapping() {
+  appSettingsStore.toggleDrawer()
+  router.push({ name: 'column-mapping', params: { locale: localeParam.value } })
 }
 </script>
 

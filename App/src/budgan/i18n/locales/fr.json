@@ -3,6 +3,7 @@
   "mainMenu.newWorkspace": "Nouveau journal",
   "mainMenu.openWorkspace": "Ouvrir un journal",
   "mainMenu.accounts": "Comptes",
+  "mainMenu.columnMapping": "Mapping colonnes",
   "newWorkspaceDialog.title": "Nouveau journal",
   "newWorkspaceDialog.nameLabel": "Nom",
   "newWorkspaceDialog.cancel": "Annuler",
@@ -13,6 +14,23 @@
   "accounts.accountNameLabel": "Nom du compte",
   "accounts.cancel": "Annuler",
   "accounts.add": "Ajouter",
-  "accounts.segments": "aucun segment | {n} segment | {n} segments"
+  "accounts.segments": "aucun segment | {n} segment | {n} segments",
+  "columnMapping.title": "Mapping colonnes",
+  "columnMapping.openCsv": "Ouvrir un fichier CSV",
+  "columnMapping.noCsv": "Ouvrez un fichier CSV pour configurer le mapping.",
+  "columnMapping.csvLoaded": "Utilisé : {filename}",
+  "columnMapping.mappingName": "Nom du mapping",
+  "columnMapping.nameRequired": "Le nom est requis.",
+  "columnMapping.nameDuplicate": "Ce nom est déjà utilisé.",
+  "columnMapping.notMapped": "Non mappé",
+  "columnMapping.required": "Requis",
+  "columnMapping.optional": "Optionnel",
+  "columnMapping.save": "Enregistrer",
+  "columnMapping.cancel": "Annuler",
+  "columnMapping.fieldCardNumber": "Numéro de carte",
+  "columnMapping.fieldDateTransaction": "Date de transaction",
+  "columnMapping.fieldDateInscription": "Date d'inscription",
+  "columnMapping.fieldAmount": "Montant",
+  "columnMapping.fieldDescription": "Description"
 }
 
