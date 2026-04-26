@@ -27,7 +27,10 @@
       v-for="(row, index) in rows"
       :key="row.key"
       class="account-transaction-list__row"
-      :class="index % 2 === 0 ? 'account-transaction-list__row--even' : 'account-transaction-list__row--odd'"
+      :class="[
+        index % 2 === 0 ? 'account-transaction-list__row--even' : 'account-transaction-list__row--odd',
+        { 'account-transaction-list__row--duplicate': row.duplicateOf }
+      ]"
       :data-testid="`account-transaction-list-row-${row.key}`"
     >
       <span class="account-transaction-list__cell account-transaction-list__cell--card">
@@ -128,6 +131,11 @@ const rows = computed(() => props.segments.flatMap((s) => s.rows))
   margin-left: 0.3rem;
   opacity: 0.45;
   vertical-align: middle;
+}
+
+.account-transaction-list__row--duplicate {
+  text-decoration: line-through;
+  opacity: 0.5;
 }
 
 .account-transaction-list__empty {
