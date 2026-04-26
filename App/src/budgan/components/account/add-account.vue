@@ -84,7 +84,7 @@ const showColumnMappingDialog = ref(false)
 const savedMappingCountBefore = ref(0)
 
 const mappingItems = computed(() => [
-  ...settingsStore.settings.columnMappings,
+  ...settingsStore.columnMappings,
   { id: CREATE_NEW_ID, name: t('accounts.createNewMapping') },
 ])
 
@@ -104,7 +104,7 @@ watch(() => props.modelValue, (open) => {
 // Auto-select a newly created mapping when the column mapping dialog closes
 watch(showColumnMappingDialog, (open) => {
   if (!open) {
-    const mappings = settingsStore.settings.columnMappings
+    const mappings = settingsStore.columnMappings
     if (mappings.length > savedMappingCountBefore.value) {
       selectedMappingId.value = mappings[mappings.length - 1].id
     }
@@ -114,7 +114,7 @@ watch(showColumnMappingDialog, (open) => {
 function onMappingChange(id: string): void {
   if (id === CREATE_NEW_ID) {
     selectedMappingId.value = ''
-    savedMappingCountBefore.value = settingsStore.settings.columnMappings.length
+    savedMappingCountBefore.value = settingsStore.columnMappings.length
     showColumnMappingDialog.value = true
   }
 }
@@ -126,7 +126,7 @@ function onCancel(): void {
 function onAdd(): void {
   const name = accountName.value.trim()
   if (!canAdd.value || !workspaceStore.workspace) return
-  workspaceStore.workspace.createAccount(name, selectedMappingId.value)
+  workspaceStore.createAccount(name, selectedMappingId.value)
   emit('created')
   emit('update:modelValue', false)
 }

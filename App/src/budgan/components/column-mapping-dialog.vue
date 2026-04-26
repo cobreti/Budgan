@@ -264,7 +264,7 @@ watch(() => props.modelValue, (open) => {
   }
 })
 
-const savedMappings = computed(() => settingsStore.settings.columnMappings)
+const savedMappings = computed(() => settingsStore.columnMappings)
 
 const missingRequiredFields = computed(() =>
   csvFields.filter((f) => f.required && !selectedColumns.value[f.key])
@@ -353,14 +353,14 @@ function onSaveNew(): void {
     name: mappingName.value.trim(),
     columnMapping: { ...currentMapping.value },
   }
-  settingsStore.settings.addColumnMapping(newMapping)
+  settingsStore.addColumnMapping(newMapping)
   selectedMappingId.value = newMapping.id
   emit('update:modelValue', false)
 }
 
 function onUpdate(): void {
   if (!selectedMappingId.value || !canSave.value) return
-  settingsStore.settings.updateColumnMapping({
+  settingsStore.updateColumnMapping({
     id: selectedMappingId.value,
     name: mappingName.value.trim(),
     columnMapping: { ...currentMapping.value },
@@ -369,7 +369,7 @@ function onUpdate(): void {
 
 function onDelete(): void {
   if (!selectedMappingId.value) return
-  settingsStore.settings.removeColumnMapping(selectedMappingId.value)
+  settingsStore.removeColumnMapping(selectedMappingId.value)
   selectedMappingId.value = ''
   mappingName.value = ''
   selectedColumns.value = {}
