@@ -9,7 +9,14 @@
       />
     </template>
     <template #title>
-      <span class="app-header__title">{{ t('app.title') }}</span>
+      <button
+        type="button"
+        class="app-header__title"
+        data-testid="app-header-title"
+        @click="onTitleClick"
+      >
+        {{ t('app.title') }}
+      </button>
     </template>
     <WorkspaceInfoHeader />
   </v-app-bar>
@@ -19,7 +26,12 @@
 @use '@budgan/assets/colors-def.scss';
 
 .app-header__title {
-  cursor: default;
+  border: none;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
   user-select: none;
 }
 
@@ -29,11 +41,24 @@
 </style>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import { useAppSettingsStore } from '@budgan/stores/appSettings-store.ts'
 import WorkspaceInfoHeader from '@budgan/components/workspace-info-header.vue'
 
 const { t } = useI18n()
 const appSettingsStore = useAppSettingsStore()
+const route = useRoute()
+const router = useRouter()
+
+const localeParam = computed(() => {
+  const l = route.params.locale
+  return typeof l === 'string' ? l : 'en'
+})
+
+function onTitleClick() {
+  router.push({ name: 'home', params: { locale: localeParam.value } })
+}
 </script>
 
