@@ -67,5 +67,8 @@
   "account.transactionList.hideDuplicates": "Hide duplicates",
   "workspaceInfoHeader.save": "Save",
   "workspaceInfoHeader.saving": "Saving…",
-  "workspaceInfoHeader.saveError": "Save failed"
+  "workspaceInfoHeader.saveError": "Save failed",
+  "languageSwitcher.label": "Language",
+  "languageSwitcher.english": "English",
+  "languageSwitcher.french": "French"
 }

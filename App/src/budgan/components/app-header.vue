@@ -18,7 +18,10 @@
         {{ t('app.title') }}
       </button>
     </template>
-    <WorkspaceInfoHeader />
+    <template #append>
+      <WorkspaceInfoHeader />
+      <LanguageSwitcher class="app-header__language-switcher" />
+    </template>
   </v-app-bar>
 </template>
 
@@ -38,6 +41,10 @@
 .app-header__menu-btn {
   cursor: pointer;
 }
+
+.app-header__language-switcher {
+  margin-left: 0.75rem;
+}
 </style>
 
 <script setup lang="ts">
@@ -46,6 +53,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useAppSettingsStore } from '@budgan/stores/appSettings-store.ts'
 import WorkspaceInfoHeader from '@budgan/components/workspace-info-header.vue'
+import LanguageSwitcher from '@budgan/components/language-switcher.vue'
 
 const { t } = useI18n()
 const appSettingsStore = useAppSettingsStore()

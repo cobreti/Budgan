@@ -67,5 +67,8 @@
   "account.transactionList.hideDuplicates": "Masquer les doublons",
   "workspaceInfoHeader.save": "Enregistrer",
   "workspaceInfoHeader.saving": "Enregistrement…",
-  "workspaceInfoHeader.saveError": "Échec de l'enregistrement"
+  "workspaceInfoHeader.saveError": "Échec de l'enregistrement",
+  "languageSwitcher.label": "Langue",
+  "languageSwitcher.english": "Anglais",
+  "languageSwitcher.french": "Français"
 }
