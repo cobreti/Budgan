@@ -62,5 +62,8 @@
   "account.transactionList.colAmount": "Montant",
   "account.transactionList.duplicateWarning": "Transaction en double",
   "account.transactionList.showDuplicates": "Afficher les doublons",
-  "account.transactionList.hideDuplicates": "Masquer les doublons"
+  "account.transactionList.hideDuplicates": "Masquer les doublons",
+  "workspaceInfoHeader.save": "Enregistrer",
+  "workspaceInfoHeader.saving": "Enregistrement…",
+  "workspaceInfoHeader.saveError": "Échec de l'enregistrement"
 }

@@ -4,6 +4,7 @@ import type { PiniaPluginContext } from 'pinia'
 import 'pinia-plugin-persistedstate'
 import container from '@inversify/setup-inversify'
 import { BdgWorkspaceFactory } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
+import { BdgWorkspaceExporter } from '@engine/modules/bdg-workspace/bdg-workspace-exporter'
 import { BdgAccountImpl } from '@engine/modules/bdg-workspace/bdg-account'
 import { BdgAccountSegmentImpl } from '@engine/modules/bdg-workspace/bdg-account-segment'
 import type { BdgWorkspace } from '@engine/modules/bdg-workspace/bdg-workspace'
@@ -46,6 +47,7 @@ export type WorkspaceStore = {
   createAccount(name: string, columnMappingId: string): void
   removeSegment(accountId: string, segmentId: string): void
   importSegment(accountId: string, file: File): Promise<ResultWithError<BdgAccountSegment, string>>
+  saveWorkspace(): Promise<ResultWithError<string, string>>
   setWorkspace(workspace: BdgWorkspace): void
   setWorkspacePath(path: string | null): void
   clearWorkspace(): void
@@ -157,6 +159,39 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
       : result
   }
 
+  async function saveWorkspace(): Promise<ResultWithError<string, string>> {
+    if (!workspace.value) return { success: false, error: 'No workspace' }
+
+    const exporter = container.get<BdgWorkspaceExporter>(BdgWorkspaceExporter.bindingTypeId)
+    const settings = useSettingsStore().settings
+
+    try {
+      if ('showSaveFilePicker' in window) {
+        const handle = await (window as Window & {
+          showSaveFilePicker(options?: unknown): Promise<FileSystemFileHandle>
+        }).showSaveFilePicker({
+          suggestedName: `${workspace.value.name}.bdg`,
+          types: [{ description: 'Budgan file', accept: { 'application/zip': ['.bdg'] } }],
+        })
+        await exporter.saveToHandle(handle, workspace.value, settings)
+        return { success: true, value: handle.name }
+      } else {
+        const bytes = exporter.buildZipBytes(workspace.value, settings)
+        const blob = new Blob([bytes.buffer as ArrayBuffer], { type: 'application/zip' })
+        const url = URL.createObjectURL(blob)
+        const anchor = document.createElement('a')
+        anchor.href = url
+        anchor.download = `${workspace.value.name}.bdg`
+        anchor.click()
+        URL.revokeObjectURL(url)
+        return { success: true, value: `${workspace.value.name}.bdg` }
+      }
+    } catch (e: unknown) {
+      if (e instanceof DOMException && e.name === 'AbortError') return { success: false }
+      return { success: false, error: e instanceof Error ? e.message : 'Unknown error' }
+    }
+  }
+
   function setWorkspace(value: BdgWorkspace): void {
     workspace.value = value
     _syncWorkspaceSnapshot()
@@ -181,6 +216,7 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
     createAccount,
     removeSegment,
     importSegment,
+    saveWorkspace,
     setWorkspace,
     setWorkspacePath,
     clearWorkspace,
