@@ -5,6 +5,7 @@ import 'pinia-plugin-persistedstate'
 import container from '@inversify/setup-inversify'
 import { BdgWorkspaceFactory } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
 import { BdgWorkspaceExporter } from '@engine/modules/bdg-workspace/bdg-workspace-exporter'
+import { BdgWorkspaceImporter } from '@engine/modules/bdg-workspace/bdg-workspace-importer'
 import { BdgAccountImpl } from '@engine/modules/bdg-workspace/bdg-account'
 import { BdgAccountSegmentImpl } from '@engine/modules/bdg-workspace/bdg-account-segment'
 import type { BdgWorkspace } from '@engine/modules/bdg-workspace/bdg-workspace'
@@ -48,6 +49,7 @@ export type WorkspaceStore = {
   removeSegment(accountId: string, segmentId: string): void
   importSegment(accountId: string, file: File): Promise<ResultWithError<BdgAccountSegment, string>>
   saveWorkspace(): Promise<ResultWithError<string, string>>
+  loadWorkspace(): Promise<ResultWithError<void, string>>
   setWorkspace(workspace: BdgWorkspace): void
   setWorkspacePath(path: string | null): void
   clearWorkspace(): void
@@ -167,7 +169,7 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
 
     try {
       if ('showSaveFilePicker' in window) {
-        const handle = await (window as Window & {
+        const handle = await (window as unknown as {
           showSaveFilePicker(options?: unknown): Promise<FileSystemFileHandle>
         }).showSaveFilePicker({
           suggestedName: `${workspace.value.name}.bdg`,
@@ -186,6 +188,39 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
         URL.revokeObjectURL(url)
         return { success: true, value: `${workspace.value.name}.bdg` }
       }
+    } catch (e: unknown) {
+      if (e instanceof DOMException && e.name === 'AbortError') return { success: false }
+      return { success: false, error: e instanceof Error ? e.message : 'Unknown error' }
+    }
+  }
+
+  async function loadWorkspace(): Promise<ResultWithError<void, string>> {
+    try {
+      const [handle] = await (window as unknown as {
+        showOpenFilePicker(options?: unknown): Promise<FileSystemFileHandle[]>
+      }).showOpenFilePicker({
+        types: [{ description: 'Budgan file', accept: { 'application/zip': ['.bdg'] } }],
+        multiple: false,
+      })
+
+      const importer = container.get<BdgWorkspaceImporter>(BdgWorkspaceImporter.bindingTypeId)
+      const result = await importer.import(handle)
+      if (!result.success) return result
+
+      const { workspace: importedWorkspace, columnMappings } = result.value
+
+      const settingsStore = useSettingsStore()
+      const existingIds = new Set(settingsStore.columnMappings.map((m) => m.id))
+      for (const mapping of columnMappings) {
+        if (existingIds.has(mapping.id)) {
+          settingsStore.updateColumnMapping(mapping)
+        } else {
+          settingsStore.addColumnMapping(mapping)
+        }
+      }
+
+      setWorkspace(importedWorkspace)
+      return { success: true, value: undefined }
     } catch (e: unknown) {
       if (e instanceof DOMException && e.name === 'AbortError') return { success: false }
       return { success: false, error: e instanceof Error ? e.message : 'Unknown error' }
@@ -217,6 +252,7 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
     removeSegment,
     importSegment,
     saveWorkspace,
+    loadWorkspace,
     setWorkspace,
     setWorkspacePath,
     clearWorkspace,

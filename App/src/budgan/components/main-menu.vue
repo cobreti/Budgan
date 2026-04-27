@@ -45,6 +45,15 @@
 
   <NewWorkspaceDialog v-model="showNewWorkspaceDialog" />
   <ColumnMappingDialog v-model="showColumnMappingDialog" />
+
+  <v-snackbar
+    v-model="showLoadError"
+    color="error"
+    :timeout="4000"
+    data-testid="main-menu-load-error-snackbar"
+  >
+    {{ loadError }}
+  </v-snackbar>
 </template>
 
 <script setup lang="ts">
@@ -68,6 +77,8 @@ const router = useRouter()
 const drawerWidth = computed(() => width.value < 1024 ? width.value : 600)
 const showNewWorkspaceDialog = ref(false)
 const showColumnMappingDialog = ref(false)
+const loadError = ref<string | null>(null)
+const showLoadError = computed(() => !!loadError.value)
 
 const localeParam = computed(() => {
   const l = route.params.locale
@@ -79,9 +90,13 @@ function onNewWorkspace() {
   showNewWorkspaceDialog.value = true
 }
 
-function onOpenWorkspace() {
-  // TODO: handle open workspace
+async function onOpenWorkspace() {
   appSettingsStore.toggleDrawer()
+  loadError.value = null
+  const result = await workspaceStore.loadWorkspace()
+  if (!result.success && 'error' in result) {
+    loadError.value = t('mainMenu.loadWorkspaceError')
+  }
 }
 
 function onAccounts() {

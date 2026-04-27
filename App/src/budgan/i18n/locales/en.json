@@ -4,6 +4,7 @@
   "mainMenu.openWorkspace": "Open Journal",
   "mainMenu.accounts": "Accounts",
   "mainMenu.columnMapping": "Column Mapping",
+  "mainMenu.loadWorkspaceError": "Failed to open workspace",
   "newWorkspaceDialog.title": "New Journal",
   "newWorkspaceDialog.nameLabel": "Name",
   "newWorkspaceDialog.cancel": "Cancel",
