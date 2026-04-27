@@ -21,6 +21,14 @@
           test-id="main-menu-open-workspace"
           @click="onOpenWorkspace"
         />
+        <MainMenuItem
+          v-if="workspaceStore.workspace"
+          icon="mdi-trash-can"
+          :label="t('mainMenu.clearWorkspace')"
+          test-id="main-menu-clear-workspace"
+          class="main-menu__item--danger"
+          @click="onClearWorkspace"
+        />
       </div>
 
       <template v-if="workspaceStore.workspace">
@@ -108,6 +116,11 @@ function onColumnMapping() {
   appSettingsStore.toggleDrawer()
   showColumnMappingDialog.value = true
 }
+
+function onClearWorkspace() {
+  workspaceStore.clearWorkspace()
+  appSettingsStore.toggleDrawer()
+}
 </script>
 
 <style scoped>
@@ -120,10 +133,15 @@ function onColumnMapping() {
 }
 
 .main-menu__section {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
   gap: 1rem;
   padding: 1rem;
+}
+
+.main-menu__section :deep(.main-menu-item) {
+  width: 120px;
 }
 
 .main-menu__divider {
@@ -131,6 +149,19 @@ function onColumnMapping() {
   border-top: 1px solid var(--bdg-secondary);
   margin: 0 1rem;
   opacity: 0.3;
+}
+
+.main-menu__item--danger {
+  margin-left: auto;
+}
+
+.main-menu__item--danger :deep(.main-menu-item) {
+  border-color: var(--bdg-error);
+  color: var(--bdg-error);
+}
+
+.main-menu__item--danger :deep(.main-menu-item__icon) {
+  color: var(--bdg-error);
 }
 </style>
 

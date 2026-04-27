@@ -241,6 +241,8 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
     workspacePath.value = null
     workspaceSnapshot.value = null
     useSettingsStore().reinitialize()
+    localStorage.removeItem('budgan-workspace')
+    localStorage.removeItem('budgan-settings')
   }
 
   return {
