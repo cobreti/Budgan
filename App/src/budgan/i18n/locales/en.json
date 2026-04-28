@@ -19,6 +19,7 @@
   "accounts.columnMappingLabel": "Column Mapping",
   "accounts.createNewMapping": "Create new mapping…",
   "accounts.segments": "no statements | {n} statement | {n} statements",
+  "accounts.delete": "Delete account",
   "columnMapping.title": "Column Mapping",
   "columnMapping.noWorkspace": "No journal open. Create or open a journal to configure column mappings.",
   "columnMapping.description": "Map CSV columns to Budgan fields.",
