@@ -40,7 +40,7 @@
       </div>
 
       <p v-if="importSuccess" class="account-view__success" data-testid="account-view-import-success">
-        {{ t('account.importSuccess', { name: importSuccess }) }}
+        {{ importSuccess }}
       </p>
       <p v-if="importError" class="account-view__error" data-testid="account-view-import-error">
         {{ importError }}
@@ -49,12 +49,14 @@
         ref="fileInputRef"
         type="file"
         accept=".csv"
+        multiple
         class="account-view__file-input"
         data-testid="account-view-file-input"
         @change="onFileSelected"
       />
 
-      <RouterView />    </template>
+      <RouterView />
+    </template>
   </div>
 </template>
 
@@ -95,22 +97,46 @@ function triggerFileInput(): void {
 
 async function onFileSelected(event: Event): Promise<void> {
   const input = event.target as HTMLInputElement
-  const file = input.files?.[0]
-  if (!file || !account.value) return
+  const files = Array.from(input.files ?? [])
+  if (files.length === 0 || !account.value) return
 
   importing.value = true
   importError.value = null
   importSuccess.value = null
+  const importedSegmentNames: string[] = []
+  const failedFileNames: string[] = []
+  let firstError: string | null = null
 
-  const result = await workspaceStore.importSegment(account.value.id, file)
+  for (const file of files) {
+    const result = await workspaceStore.importSegment(account.value.id, file)
+
+    if (result.success) {
+      importedSegmentNames.push(result.value.name)
+      continue
+    }
+
+    failedFileNames.push(file.name)
+    if (!firstError && result.error) {
+      firstError = result.error
+    }
+  }
 
   importing.value = false
   input.value = ''
 
-  if (result.success) {
-    importSuccess.value = result.value.name
-  } else {
-    importError.value = result.error ?? 'Unknown error'
+  if (importedSegmentNames.length === 1) {
+    importSuccess.value = t('account.importSuccess', { name: importedSegmentNames[0] })
+  } else if (importedSegmentNames.length > 1) {
+    importSuccess.value = t('account.importSuccessMultiple', { n: importedSegmentNames.length })
+  }
+
+  if (failedFileNames.length === 1 && importedSegmentNames.length === 0) {
+    importError.value = firstError ?? 'Unknown error'
+  } else if (failedFileNames.length > 0) {
+    importError.value = t('account.importErrorMultiple', {
+      n: failedFileNames.length,
+      files: failedFileNames.join(', '),
+    })
   }
 }
 </script>

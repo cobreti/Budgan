@@ -52,6 +52,8 @@
   "account.importCsvLoading": "Importing…",
   "account.importNoMapping": "No column mapping found for this account.",
   "account.importSuccess": "Statement imported: {name}",
+  "account.importSuccessMultiple": "{n} statements imported",
+  "account.importErrorMultiple": "Failed to import {n} files: {files}",
   "account.noSegments": "No statements imported yet.",
   "account.segmentRows": "no rows | {n} row | {n} rows",
   "account.statementUniqueRows": "no unique | {n} unique | {n} unique",
