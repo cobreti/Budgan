@@ -10,6 +10,7 @@ export type AppSettingsStore = {
     appSettings: Ref<AppSettings>
 
     setVersion(version: string): void
+    toggleDrawer(): void
 }
 
 export const useAppSettingsStore = defineStore<string, AppSettingsStore>('appSettings', () => {
@@ -26,8 +27,13 @@ export const useAppSettingsStore = defineStore<string, AppSettingsStore>('appSet
         }
     }
 
+    function toggleDrawer() {
+        appSettings.value.drawerVisible = !appSettings.value.drawerVisible
+    }
+
     return {
         appSettings,
-        setVersion
+        setVersion,
+        toggleDrawer
     }
 })

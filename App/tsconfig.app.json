@@ -8,9 +8,6 @@
         "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
         "baseUrl": ".",
         "paths": {
-            "@/*": ["./src/*"],
-            "@engine/*": ["./src/engine/*"],
-            "@inversify/*": ["./src/inversify/*"],
         },
         "types": ["reflect-metadata"],
         "experimentalDecorators": true,
