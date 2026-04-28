@@ -8,11 +8,6 @@
         "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
         "baseUrl": ".",
         "paths": {
-            "@/*": ["./src/*"],
-            "@budgan/*": ["./src/budgan/*"],
-            "@budganI18n/*": ["./src/budgan/i18n/*"],
-            "@engine/*": ["./src/engine/*"],
-            "@inversify/*": ["./src/inversify/*"],
         },
         "types": ["reflect-metadata"],
         "experimentalDecorators": true,
