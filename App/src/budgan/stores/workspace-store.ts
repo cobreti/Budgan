@@ -194,14 +194,42 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
     }
   }
 
-  async function loadWorkspace(): Promise<ResultWithError<void, string>> {
-    try {
+  async function _requestWorkspaceFileHandle(): Promise<FileSystemFileHandle> {
+    if ('showOpenFilePicker' in window) {
       const [handle] = await (window as unknown as {
         showOpenFilePicker(options?: unknown): Promise<FileSystemFileHandle[]>
       }).showOpenFilePicker({
         types: [{ description: 'Budgan file', accept: { 'application/zip': ['.bdg'] } }],
         multiple: false,
       })
+      return handle
+    }
+
+    const file = await new Promise<File>((resolve, reject) => {
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = '.bdg,application/zip'
+      input.onchange = () => {
+        const selected = input.files?.[0]
+        if (!selected) {
+          reject(new DOMException('User aborted', 'AbortError'))
+          return
+        }
+        resolve(selected)
+      }
+      input.click()
+    })
+
+    return {
+      kind: 'file',
+      name: file.name,
+      getFile: async () => file,
+    } as unknown as FileSystemFileHandle
+  }
+
+  async function loadWorkspace(): Promise<ResultWithError<void, string>> {
+    try {
+      const handle = await _requestWorkspaceFileHandle()
 
       const importer = container.get<BdgWorkspaceImporter>(BdgWorkspaceImporter.bindingTypeId)
       const result = await importer.import(handle)
