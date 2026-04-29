@@ -86,7 +86,7 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-const showDuplicates = ref(true)
+const showDuplicates = ref(false)
 
 const rows = computed(() => {
   const all = props.segments.flatMap((s) => s.rows)
