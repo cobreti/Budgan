@@ -5,7 +5,16 @@
     </p>
     <template v-else>
       <div class="account-view__header">
-        <h1 class="account-view__name" data-testid="account-view-name">{{ account.name }}</h1>
+        <div class="account-view__title">
+          <button
+            class="account-view__back-btn"
+            data-testid="account-view-back"
+            @click="goToAccounts"
+          >
+            <v-icon class="account-view__back-btn-icon" icon="mdi-triangle" size="24" />
+          </button>
+          <h1 class="account-view__name" data-testid="account-view-name">{{ account.name }}</h1>
+        </div>
 
         <div class="account-view__toggle" data-testid="account-view-toggle">
           <button
@@ -89,6 +98,11 @@ const account = computed(() =>
   workspaceStore.workspace?.accounts.find((a) => a.id === accountId.value) ?? null,
 )
 
+function goToAccounts(): void {
+  const locale = typeof route.params.locale === 'string' ? route.params.locale : 'en'
+  router.push({ name: 'accounts', params: { locale } })
+}
+
 function triggerFileInput(): void {
   importError.value = null
   importSuccess.value = null
@@ -157,6 +171,30 @@ async function onFileSelected(event: Event): Promise<void> {
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
+}
+
+.account-view__title {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.account-view__back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--bdg-on-surface);
+  cursor: pointer;
+}
+
+.account-view__back-btn-icon {
+  pointer-events: none;
+  color: currentColor;
+  transform: rotate(-90deg);
+  scale: 0.6;
 }
 
 .account-view__header-actions {

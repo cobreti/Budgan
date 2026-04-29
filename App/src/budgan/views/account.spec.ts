@@ -78,6 +78,14 @@ describe('AccountView', () => {
     route.params.accountId = 'acc-1'
   })
 
+  test('navigates back to accounts list', async () => {
+    const wrapper = mountView()
+
+    await wrapper.get('[data-testid="account-view-back"]').trigger('click')
+
+    expect(push).toHaveBeenCalledWith({ name: 'accounts', params: { locale: 'fr' } })
+  })
+
   test('allows selecting multiple CSV files', () => {
     const wrapper = mountView()
     const fileInput = wrapper.get('[data-testid="account-view-file-input"]')
