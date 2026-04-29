@@ -14,18 +14,62 @@
     </div>
 
     <div class="account-transaction-list__header" data-testid="account-transaction-list-header">
-      <span class="account-transaction-list__cell account-transaction-list__cell--card">
+      <button
+        class="account-transaction-list__cell account-transaction-list__sort-button account-transaction-list__cell--card"
+        type="button"
+        data-testid="account-transaction-list-sort-card"
+        @click="toggleSort('cardNumber')"
+      >
         {{ t('account.transactionList.colCardNumber') }}
-      </span>
-      <span class="account-transaction-list__cell account-transaction-list__cell--date">
+        <v-icon
+          v-if="sortColumn === 'cardNumber'"
+          class="account-transaction-list__sort-icon"
+          :icon="sortDirection === 'asc' ? 'mdi-arrow-up' : 'mdi-arrow-down'"
+          size="14"
+        />
+      </button>
+      <button
+        class="account-transaction-list__cell account-transaction-list__sort-button account-transaction-list__cell--date"
+        type="button"
+        data-testid="account-transaction-list-sort-date"
+        @click="toggleSort('dateTransaction')"
+      >
         {{ t('account.transactionList.colDate') }}
-      </span>
-      <span class="account-transaction-list__cell account-transaction-list__cell--description">
+        <v-icon
+          v-if="sortColumn === 'dateTransaction'"
+          class="account-transaction-list__sort-icon"
+          :icon="sortDirection === 'asc' ? 'mdi-arrow-up' : 'mdi-arrow-down'"
+          size="14"
+        />
+      </button>
+      <button
+        class="account-transaction-list__cell account-transaction-list__sort-button account-transaction-list__cell--description"
+        type="button"
+        data-testid="account-transaction-list-sort-description"
+        @click="toggleSort('description')"
+      >
         {{ t('account.transactionList.colDescription') }}
-      </span>
-      <span class="account-transaction-list__cell account-transaction-list__cell--amount">
+        <v-icon
+          v-if="sortColumn === 'description'"
+          class="account-transaction-list__sort-icon"
+          :icon="sortDirection === 'asc' ? 'mdi-arrow-up' : 'mdi-arrow-down'"
+          size="14"
+        />
+      </button>
+      <button
+        class="account-transaction-list__cell account-transaction-list__sort-button account-transaction-list__sort-button--amount account-transaction-list__cell--amount"
+        type="button"
+        data-testid="account-transaction-list-sort-amount"
+        @click="toggleSort('amount')"
+      >
         {{ t('account.transactionList.colAmount') }}
-      </span>
+        <v-icon
+          v-if="sortColumn === 'amount'"
+          class="account-transaction-list__sort-icon"
+          :icon="sortDirection === 'asc' ? 'mdi-arrow-up' : 'mdi-arrow-down'"
+          size="14"
+        />
+      </button>
     </div>
 
     <p
@@ -78,7 +122,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment'
+import type { BdgAccountSegment, BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
 
 const props = defineProps<{
   segments: BdgAccountSegment[]
@@ -88,9 +132,57 @@ const { t } = useI18n()
 
 const showDuplicates = ref(false)
 
+type SortColumn = 'cardNumber' | 'dateTransaction' | 'description' | 'amount'
+type SortDirection = 'asc' | 'desc'
+
+const sortColumn = ref<SortColumn>('dateTransaction')
+const sortDirection = ref<SortDirection>('desc')
+
+function toggleSort(column: SortColumn): void {
+  if (sortColumn.value === column) {
+    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
+    return
+  }
+
+  sortColumn.value = column
+  sortDirection.value = 'asc'
+}
+
+function compareText(left: string, right: string): number {
+  return left.localeCompare(right, undefined, { numeric: true, sensitivity: 'base' })
+}
+
+function compareRows(left: BdgAccountSegmentRow, right: BdgAccountSegmentRow): number {
+  let result: number
+
+  if (sortColumn.value === 'cardNumber') {
+    result = compareText(left.cardNumber, right.cardNumber)
+  } else if (sortColumn.value === 'dateTransaction') {
+    const leftDate = left.dateTransaction?.getTime()
+    const rightDate = right.dateTransaction?.getTime()
+
+    if (leftDate !== undefined && rightDate !== undefined) {
+      result = leftDate - rightDate
+    } else {
+      result = compareText(left.dateTransactionAsString, right.dateTransactionAsString)
+    }
+  } else if (sortColumn.value === 'description') {
+    result = compareText(left.description, right.description)
+  } else {
+    result = left.amount - right.amount
+  }
+
+  if (result === 0) {
+    result = compareText(left.key, right.key)
+  }
+
+  return sortDirection.value === 'asc' ? result : -result
+}
+
 const rows = computed(() => {
   const all = props.segments.flatMap((s) => s.rows)
-  return showDuplicates.value ? all : all.filter((r) => !r.duplicateOf)
+  const filtered = showDuplicates.value ? all : all.filter((r) => !r.duplicateOf)
+  return [...filtered].sort(compareRows)
 })
 </script>
 
@@ -152,6 +244,28 @@ const rows = computed(() => {
   position: sticky;
   top: 0;
   z-index: 1;
+}
+
+.account-transaction-list__sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+}
+
+.account-transaction-list__sort-button--amount {
+  justify-content: flex-end;
+}
+
+.account-transaction-list__sort-icon {
+  opacity: 0.7;
 }
 
 .account-transaction-list__row--even {
