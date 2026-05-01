@@ -31,6 +31,11 @@ const router = createRouter({
                             name: 'account-transactions',
                             component: () => import('@budgan/views/account-transactions.vue'),
                         },
+                        {
+                            path: 'graphs',
+                            name: 'account-graphs',
+                            component: () => import('@budgan/views/account-graphs.vue'),
+                        },
                     ],
                 },
             ],

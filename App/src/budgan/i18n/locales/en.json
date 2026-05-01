@@ -60,6 +60,7 @@
   "account.removeSegment": "Remove statement",
   "account.viewSegments": "Statements",
   "account.viewTransactions": "Transactions",
+  "account.viewGraphs": "Graphs",
   "account.transactionList.noTransactions": "No transactions to display.",
   "account.transactionList.colCardNumber": "Card",
   "account.transactionList.colDate": "Date",

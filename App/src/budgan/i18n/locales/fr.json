@@ -60,6 +60,7 @@
   "account.removeSegment": "Supprimer le relevé",
   "account.viewSegments": "Relevés",
   "account.viewTransactions": "Transactions",
+  "account.viewGraphs": "Graphiques",
   "account.transactionList.noTransactions": "Aucune transaction à afficher.",
   "account.transactionList.colCardNumber": "Carte",
   "account.transactionList.colDate": "Date",

@@ -33,6 +33,14 @@
           >
             {{ t('account.viewTransactions') }}
           </button>
+          <button
+            class="account-view__toggle-btn"
+            :class="{ 'account-view__toggle-btn--active': activeView === 'graphs' }"
+            data-testid="account-view-toggle-graphs"
+            @click="router.push({ name: 'account-graphs', params: route.params })"
+          >
+            {{ t('account.viewGraphs') }}
+          </button>
         </div>
 
         <div class="account-view__header-actions">
@@ -85,9 +93,11 @@ const importing = ref(false)
 const importError = ref<string | null>(null)
 const importSuccess = ref<string | null>(null)
 
-const activeView = computed(() =>
-  route.name === 'account-transactions' ? 'transactions' : 'segments'
-)
+const activeView = computed(() => {
+  if (route.name === 'account-transactions') return 'transactions'
+  if (route.name === 'account-graphs') return 'graphs'
+  return 'segments'
+})
 
 const accountId = computed(() => {
   const id = route.params.accountId
