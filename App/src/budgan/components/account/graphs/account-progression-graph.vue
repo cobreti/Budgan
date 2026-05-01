@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed } from 'vue'
 import { Line } from 'vue-chartjs'
 import {
   Chart as ChartJS,
@@ -33,14 +33,15 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 const props = defineProps<{ segments: BdgAccountSegment[] }>()
 const { t } = useI18n()
 
-const primaryColor = ref('#1867c0')
-
-onMounted(() => {
-  const value = getComputedStyle(document.documentElement)
-    .getPropertyValue('--bdg-primary')
-    .trim()
-  if (value) primaryColor.value = value
-})
+const _style = getComputedStyle(document.documentElement)
+// Vuetify stores theme colors as raw space-separated RGB channels, e.g. "24 103 192".
+// CSS custom properties are returned verbatim by getPropertyValue (no variable resolution),
+// so we read the base channel variables and build concrete color strings for canvas.
+const _primary = _style.getPropertyValue('--v-theme-primary').trim().replace(/ /g, ', ')
+const _onSurface = _style.getPropertyValue('--v-theme-on-surface').trim().replace(/ /g, ', ')
+const chartLineColor = `rgb(${_primary})`
+const chartFillColor = `rgba(${_primary}, 0.13)`
+const chartGridColor = `rgba(${_onSurface}, 0.10)`
 
 const sortedPoints = computed(() => {
   const rows = props.segments
@@ -67,8 +68,8 @@ const chartData = computed<ChartData<'line'>>(() => ({
     {
       label: t('account.progressionGraph.balance'),
       data: sortedPoints.value.map((p) => p.balance),
-      borderColor: primaryColor.value,
-      backgroundColor: primaryColor.value + '22',
+      borderColor: chartLineColor,
+      backgroundColor: chartFillColor,
       fill: true,
       tension: 0.3,
       pointRadius: sortedPoints.value.length > 100 ? 0 : 3,
@@ -101,7 +102,7 @@ const chartOptions = computed<ChartOptions<'line'>>(() => ({
       grid: { display: false },
     },
     y: {
-      grid: { color: 'rgba(128,128,128,0.15)' },
+      grid: { color: chartGridColor },
     },
   },
 }))
