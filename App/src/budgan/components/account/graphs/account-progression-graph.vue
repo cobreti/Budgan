@@ -27,10 +27,14 @@ import {
 } from 'chart.js'
 import { useI18n } from 'vue-i18n'
 import type { BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment.ts'
+import type { BdgAccountReferenceBalance } from '@engine/modules/bdg-workspace/bdg-account.ts'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler)
 
-const props = defineProps<{ segments: BdgAccountSegment[] }>()
+const props = defineProps<{
+  segments: BdgAccountSegment[]
+  referenceBalance: BdgAccountReferenceBalance | null
+}>()
 const { t } = useI18n()
 
 const _style = getComputedStyle(document.documentElement)
@@ -50,17 +54,26 @@ const sortedPoints = computed(() => {
 
   rows.sort((a, b) => a.dateTransaction!.getTime() - b.dateTransaction!.getTime())
 
-  let balance = 0
-  return rows.map((r) => {
+  const points: { label: string; balance: number }[] = []
+  let balance = props.referenceBalance?.amount ?? 0
+
+  if (props.referenceBalance) {
+    points.push({ label: props.referenceBalance.dateAsString, balance: props.referenceBalance.amount })
+  }
+
+  for (const r of rows) {
     balance += r.amount
-    return {
-      label: r.dateTransactionAsString,
-      balance: Math.round(balance * 100) / 100,
-    }
-  })
+    points.push({ label: r.dateTransactionAsString, balance: Math.round(balance * 100) / 100 })
+  }
+
+  return points
 })
 
-const hasData = computed(() => sortedPoints.value.length > 0)
+const hasData = computed(() =>
+  props.segments
+    .flatMap((s) => s.rows)
+    .some((r) => !r.duplicateOf && r.dateTransaction instanceof Date),
+)
 
 const chartData = computed<ChartData<'line'>>(() => ({
   labels: sortedPoints.value.map((p) => p.label),

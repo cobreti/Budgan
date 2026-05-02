@@ -1,6 +1,10 @@
 <template>
   <div class="account-graphs" data-testid="account-graphs">
-    <AccountProgressionGraph v-if="account" :segments="account.segments" />
+    <AccountProgressionGraph
+      v-if="account"
+      :segments="account.segments"
+      :reference-balance="account.referenceBalance"
+    />
   </div>
 </template>
 
