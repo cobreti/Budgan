@@ -13,7 +13,11 @@
       </button>
     </div>
 
-    <div class="account-transaction-list__header" data-testid="account-transaction-list-header">
+    <div
+      class="account-transaction-list__header"
+      :class="{ 'account-transaction-list__header--with-balance': referenceBalance }"
+      data-testid="account-transaction-list-header"
+    >
       <button
         class="account-transaction-list__cell account-transaction-list__sort-button account-transaction-list__cell--card"
         type="button"
@@ -70,6 +74,13 @@
           size="14"
         />
       </button>
+      <span
+        v-if="referenceBalance"
+        class="account-transaction-list__cell account-transaction-list__cell--balance"
+        data-testid="account-transaction-list-col-balance"
+      >
+        {{ t('account.transactionList.colBalance') }}
+      </span>
     </div>
 
     <p
@@ -86,7 +97,8 @@
       class="account-transaction-list__row"
       :class="[
         index % 2 === 0 ? 'account-transaction-list__row--even' : 'account-transaction-list__row--odd',
-        { 'account-transaction-list__row--duplicate': row.duplicateOf }
+        { 'account-transaction-list__row--duplicate': row.duplicateOf },
+        { 'account-transaction-list__row--with-balance': referenceBalance },
       ]"
       :data-testid="`account-transaction-list-row-${row.key}`"
     >
@@ -115,6 +127,18 @@
       >
         {{ row.amount.toFixed(2) }}
       </span>
+      <span
+        v-if="referenceBalance"
+        class="account-transaction-list__cell account-transaction-list__cell--balance"
+        :class="runningBalanceByKey.has(row.key)
+          ? runningBalanceByKey.get(row.key)! >= 0
+            ? 'account-transaction-list__cell--amount-positive'
+            : 'account-transaction-list__cell--amount-negative'
+          : ''"
+        :data-testid="`account-transaction-list-balance-${row.key}`"
+      >
+        {{ runningBalanceByKey.has(row.key) ? runningBalanceByKey.get(row.key)!.toFixed(2) : '' }}
+      </span>
     </div>
   </div>
 </template>
@@ -123,9 +147,11 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { BdgAccountSegment, BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
+import type { BdgAccountReferenceBalance } from '@engine/modules/bdg-workspace/bdg-account.ts'
 
 const props = defineProps<{
   segments: BdgAccountSegment[]
+  referenceBalance: BdgAccountReferenceBalance | null
 }>()
 
 const { t } = useI18n()
@@ -184,6 +210,21 @@ const rows = computed(() => {
   const filtered = showDuplicates.value ? all : all.filter((r) => !r.duplicateOf)
   return [...filtered].sort(compareRows)
 })
+
+const runningBalanceByKey = computed((): Map<string, number> => {
+  if (!props.referenceBalance) return new Map()
+  const nonDups = props.segments
+    .flatMap((s) => s.rows)
+    .filter((r) => !r.duplicateOf && r.dateTransaction instanceof Date)
+  nonDups.sort((a, b) => a.dateTransaction!.getTime() - b.dateTransaction!.getTime())
+  let balance = props.referenceBalance.amount
+  const map = new Map<string, number>()
+  for (const r of nonDups) {
+    balance = Math.round((balance + r.amount) * 100) / 100
+    map.set(r.key, balance)
+  }
+  return map
+})
 </script>
 
 <style scoped>
@@ -237,6 +278,11 @@ const rows = computed(() => {
   padding: 0.375rem 0.75rem;
 }
 
+.account-transaction-list__header--with-balance,
+.account-transaction-list__row--with-balance {
+  grid-template-columns: minmax(9rem, auto) minmax(8rem, auto) 1fr minmax(7rem, auto) minmax(8rem, auto);
+}
+
 .account-transaction-list__header {
   font-weight: 600;
   background-color: var(--bdg-surface);
@@ -276,9 +322,14 @@ const rows = computed(() => {
   background-color: var(--bdg-surface);
 }
 
-.account-transaction-list__cell--amount {
+.account-transaction-list__cell--amount,
+.account-transaction-list__cell--balance {
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+.account-transaction-list__cell--balance {
+  font-weight: 600;
 }
 
 .account-transaction-list__cell--amount-positive {

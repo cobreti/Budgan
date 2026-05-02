@@ -2,6 +2,7 @@
   <AccountTransactionList
     v-if="account"
     :segments="account.segments"
+    :reference-balance="account.referenceBalance"
     data-testid="account-transactions-view"
   />
 </template>
