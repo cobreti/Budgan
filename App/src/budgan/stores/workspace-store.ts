@@ -37,6 +37,7 @@ type WorkspaceSnapshot = {
     name: string
     columnMappingId: string
     segments: SegmentSnapshot[]
+    balanceSnapshot?: { amount: number; dateAsString: string }
   }>
 }
 
@@ -47,6 +48,8 @@ export type WorkspaceStore = {
   createWorkspace(name: string): BdgWorkspace
   createAccount(name: string, columnMappingId: string): void
   removeAccount(accountId: string): void
+  setAccountBalanceSnapshot(accountId: string, amount: number, dateAsString: string): void
+  clearAccountBalanceSnapshot(accountId: string): void
   removeSegment(accountId: string, segmentId: string): void
   importSegment(accountId: string, file: File): Promise<ResultWithError<BdgAccountSegment, string>>
   saveWorkspace(): Promise<ResultWithError<string, string>>
@@ -76,6 +79,9 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
         id: a.id,
         name: a.name,
         columnMappingId: a.columnMappingId,
+        ...(a.balanceSnapshot
+          ? { balanceSnapshot: { amount: a.balanceSnapshot.amount, dateAsString: a.balanceSnapshot.dateAsString } }
+          : {}),
         segments: a.segments.map((s) => ({
           id: s.id,
           name: s.name,
@@ -101,6 +107,9 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
       const account = new BdgAccountImpl(a.id, a.name, a.columnMappingId)
       for (const s of a.segments ?? []) {
         account.addSegment(new BdgAccountSegmentImpl(s.id, s.name, s.rows))
+      }
+      if (a.balanceSnapshot) {
+        account.setBalanceSnapshot(a.balanceSnapshot.amount, a.balanceSnapshot.dateAsString)
       }
       return account
     })
@@ -130,6 +139,22 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
   function removeAccount(accountId: string): void {
     if (!workspace.value) return
     workspace.value.removeAccount(accountId)
+    _syncWorkspaceSnapshot()
+  }
+
+  function setAccountBalanceSnapshot(accountId: string, amount: number, dateAsString: string): void {
+    if (!workspace.value) return
+    const account = workspace.value.accounts.find((a) => a.id === accountId)
+    if (!account) return
+    account.setBalanceSnapshot(amount, dateAsString)
+    _syncWorkspaceSnapshot()
+  }
+
+  function clearAccountBalanceSnapshot(accountId: string): void {
+    if (!workspace.value) return
+    const account = workspace.value.accounts.find((a) => a.id === accountId)
+    if (!account) return
+    account.clearBalanceSnapshot()
     _syncWorkspaceSnapshot()
   }
 
@@ -287,6 +312,8 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
     createWorkspace,
     createAccount,
     removeAccount,
+    setAccountBalanceSnapshot,
+    clearAccountBalanceSnapshot,
     removeSegment,
     importSegment,
     saveWorkspace,

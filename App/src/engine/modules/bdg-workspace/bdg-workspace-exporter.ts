@@ -20,6 +20,7 @@ export type BdgWorkspaceExportAccountEntry = {
   id: string
   name: string
   columnMappingId: string
+  balanceSnapshot?: { amount: number; dateAsString: string }
 }
 
 export type BdgWorkspaceExportSegmentRow = Omit<BdgAccountSegmentRow, 'dateTransaction' | 'dateInscription'>
@@ -76,6 +77,9 @@ export class BdgWorkspaceExporterImpl extends BdgWorkspaceExporter {
         id: account.id,
         name: account.name,
         columnMappingId: account.columnMappingId,
+        ...(account.balanceSnapshot
+          ? { balanceSnapshot: { amount: account.balanceSnapshot.amount, dateAsString: account.balanceSnapshot.dateAsString } }
+          : {}),
       }
 
       for (const segment of account.segments) {
