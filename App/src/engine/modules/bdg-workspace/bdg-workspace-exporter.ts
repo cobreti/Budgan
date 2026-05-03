@@ -92,12 +92,12 @@ export class BdgWorkspaceExporterImpl extends BdgWorkspaceExporter {
           dateStartAsString: segment.dateStartAsString,
           dateEndAsString: segment.dateEndAsString,
           ...(csvSource ? { csvSourceFilename: csvSource.filename } : {}),
-          rows: segment.rows.map(({ key, cardNumber, description, dateTransactionAsString, dateInscriptionAsString, amount }) => ({
+          rows: segment.rows.map(({ key, cardNumber, description, dateInscriptionAsString, dateTransactionAsString, amount }) => ({
             key,
             cardNumber,
             description,
-            dateTransactionAsString,
-            ...(dateInscriptionAsString !== undefined ? { dateInscriptionAsString } : {}),
+            dateInscriptionAsString,
+            ...(dateTransactionAsString !== undefined ? { dateTransactionAsString } : {}),
             amount,
           })),
         }

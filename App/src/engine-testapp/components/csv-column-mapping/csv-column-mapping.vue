@@ -144,12 +144,12 @@
     {
       key: CsvColumns.dateInscription,
       labelKey: 'workspace.mapping.dateInscription',
-      required: false
+      required: true
     },
     {
       key: CsvColumns.dateTransaction,
       labelKey: 'workspace.mapping.dateTransaction',
-      required: true
+      required: false
     },
     {
       key: CsvColumns.amount,

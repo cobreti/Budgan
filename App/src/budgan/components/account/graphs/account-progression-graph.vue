@@ -50,9 +50,9 @@ const chartGridColor = `rgba(${_onSurface}, 0.10)`
 const sortedPoints = computed(() => {
   const rows = props.segments
     .flatMap((s) => s.rows)
-    .filter((r) => !r.duplicateOf && r.dateTransaction instanceof Date)
+    .filter((r) => !r.duplicateOf && r.dateInscription instanceof Date)
 
-  rows.sort((a, b) => a.dateTransaction!.getTime() - b.dateTransaction!.getTime())
+  rows.sort((a, b) => a.dateInscription!.getTime() - b.dateInscription!.getTime())
 
   const points: { label: string; balance: number }[] = []
   let balance = props.referenceBalance?.amount ?? 0
@@ -63,7 +63,7 @@ const sortedPoints = computed(() => {
 
   for (const r of rows) {
     balance += r.amount
-    points.push({ label: r.dateTransactionAsString, balance: Math.round(balance * 100) / 100 })
+    points.push({ label: r.dateInscriptionAsString, balance: Math.round(balance * 100) / 100 })
   }
 
   return points
@@ -72,7 +72,7 @@ const sortedPoints = computed(() => {
 const hasData = computed(() =>
   props.segments
     .flatMap((s) => s.rows)
-    .some((r) => !r.duplicateOf && r.dateTransaction instanceof Date),
+    .some((r) => !r.duplicateOf && r.dateInscription instanceof Date),
 )
 
 const chartData = computed<ChartData<'line'>>(() => ({

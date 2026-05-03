@@ -135,19 +135,19 @@ export class BdgAccountImpl implements BdgAccount {
 
     const rows = this._segments
       .flatMap((s) => s.rows)
-      .filter((r) => !r.duplicateOf && r.dateTransaction !== undefined)
+      .filter((r) => !r.duplicateOf && r.dateInscription !== undefined)
 
     if (rows.length === 0) {
       this._referenceBalance = null
       return
     }
 
-    const minTime = Math.min(...rows.map((r) => r.dateTransaction!.getTime()))
+    const minTime = Math.min(...rows.map((r) => r.dateInscription!.getTime()))
     const refMoment = moment(minTime).subtract(1, 'day')
 
     const snapshotTime = this._balanceSnapshot.date.getTime()
     const txSum = rows
-      .filter((r) => r.dateTransaction!.getTime() <= snapshotTime)
+      .filter((r) => r.dateInscription!.getTime() <= snapshotTime)
       .reduce((acc, r) => acc + r.amount, 0)
 
     this._referenceBalance = {

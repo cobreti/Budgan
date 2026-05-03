@@ -5,7 +5,7 @@ const baseRow: BdgAccountSegmentRow = {
   key: '1234|2024-03-15|-4.2|Coffee',
   cardNumber: '1234',
   description: 'Coffee',
-  dateTransactionAsString: '2024-03-15',
+  dateInscriptionAsString: '2024-03-15',
   amount: -4.2,
 }
 
@@ -34,7 +34,7 @@ describe('BdgAccountSegment', () => {
       key: `1234|${date}|${amount}|Coffee`,
       cardNumber: '1234',
       description: 'Coffee',
-      dateTransactionAsString: date,
+      dateInscriptionAsString: date,
       amount,
     })
     const rows = [makeRow('2024-03-01', -1), makeRow('2024-03-15', -2), makeRow('2024-03-31', -3)]

@@ -39,7 +39,7 @@ function makeIdGenerator(id: string): IdGenerator {
 const columnMapping: CsvColumnMapping = {
   [CsvColumns.cardNumber]: 0,
   [CsvColumns.description]: 1,
-  [CsvColumns.dateTransaction]: 2,
+  [CsvColumns.dateInscription]: 2,
   [CsvColumns.amount]: 3,
 }
 
