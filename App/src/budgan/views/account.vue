@@ -5,7 +5,16 @@
     </p>
     <template v-else>
       <div class="account-view__header">
-        <h1 class="account-view__name" data-testid="account-view-name">{{ account.name }}</h1>
+        <div class="account-view__title">
+          <button
+            class="account-view__back-btn"
+            data-testid="account-view-back"
+            @click="goToAccounts"
+          >
+            <v-icon class="account-view__back-btn-icon" icon="mdi-triangle" size="24" />
+          </button>
+          <h1 class="account-view__name" data-testid="account-view-name">{{ account.name }}</h1>
+        </div>
 
         <div class="account-view__toggle" data-testid="account-view-toggle">
           <button
@@ -24,6 +33,14 @@
           >
             {{ t('account.viewTransactions') }}
           </button>
+          <button
+            class="account-view__toggle-btn"
+            :class="{ 'account-view__toggle-btn--active': activeView === 'graphs' }"
+            data-testid="account-view-toggle-graphs"
+            @click="router.push({ name: 'account-graphs', params: route.params })"
+          >
+            {{ t('account.viewGraphs') }}
+          </button>
         </div>
 
         <div class="account-view__header-actions">
@@ -40,7 +57,7 @@
       </div>
 
       <p v-if="importSuccess" class="account-view__success" data-testid="account-view-import-success">
-        {{ t('account.importSuccess', { name: importSuccess }) }}
+        {{ importSuccess }}
       </p>
       <p v-if="importError" class="account-view__error" data-testid="account-view-import-error">
         {{ importError }}
@@ -49,12 +66,14 @@
         ref="fileInputRef"
         type="file"
         accept=".csv"
+        multiple
         class="account-view__file-input"
         data-testid="account-view-file-input"
         @change="onFileSelected"
       />
 
-      <RouterView />    </template>
+      <RouterView />
+    </template>
   </div>
 </template>
 
@@ -74,9 +93,11 @@ const importing = ref(false)
 const importError = ref<string | null>(null)
 const importSuccess = ref<string | null>(null)
 
-const activeView = computed(() =>
-  route.name === 'account-transactions' ? 'transactions' : 'segments'
-)
+const activeView = computed(() => {
+  if (route.name === 'account-transactions') return 'transactions'
+  if (route.name === 'account-graphs') return 'graphs'
+  return 'segments'
+})
 
 const accountId = computed(() => {
   const id = route.params.accountId
@@ -87,6 +108,11 @@ const account = computed(() =>
   workspaceStore.workspace?.accounts.find((a) => a.id === accountId.value) ?? null,
 )
 
+function goToAccounts(): void {
+  const locale = typeof route.params.locale === 'string' ? route.params.locale : 'en'
+  router.push({ name: 'accounts', params: { locale } })
+}
+
 function triggerFileInput(): void {
   importError.value = null
   importSuccess.value = null
@@ -95,22 +121,46 @@ function triggerFileInput(): void {
 
 async function onFileSelected(event: Event): Promise<void> {
   const input = event.target as HTMLInputElement
-  const file = input.files?.[0]
-  if (!file || !account.value) return
+  const files = Array.from(input.files ?? [])
+  if (files.length === 0 || !account.value) return
 
   importing.value = true
   importError.value = null
   importSuccess.value = null
+  const importedSegmentNames: string[] = []
+  const failedFileNames: string[] = []
+  let firstError: string | null = null
 
-  const result = await workspaceStore.importSegment(account.value.id, file)
+  for (const file of files) {
+    const result = await workspaceStore.importSegment(account.value.id, file)
+
+    if (result.success) {
+      importedSegmentNames.push(result.value.name)
+      continue
+    }
+
+    failedFileNames.push(file.name)
+    if (!firstError && result.error) {
+      firstError = result.error
+    }
+  }
 
   importing.value = false
   input.value = ''
 
-  if (result.success) {
-    importSuccess.value = result.value.name
-  } else {
-    importError.value = result.error ?? 'Unknown error'
+  if (importedSegmentNames.length === 1) {
+    importSuccess.value = t('account.importSuccess', { name: importedSegmentNames[0] })
+  } else if (importedSegmentNames.length > 1) {
+    importSuccess.value = t('account.importSuccessMultiple', { n: importedSegmentNames.length })
+  }
+
+  if (failedFileNames.length === 1 && importedSegmentNames.length === 0) {
+    importError.value = firstError ?? 'Unknown error'
+  } else if (failedFileNames.length > 0) {
+    importError.value = t('account.importErrorMultiple', {
+      n: failedFileNames.length,
+      files: failedFileNames.join(', '),
+    })
   }
 }
 </script>
@@ -131,6 +181,30 @@ async function onFileSelected(event: Event): Promise<void> {
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
+}
+
+.account-view__title {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.account-view__back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--bdg-on-surface);
+  cursor: pointer;
+}
+
+.account-view__back-btn-icon {
+  pointer-events: none;
+  color: currentColor;
+  transform: rotate(-90deg);
+  scale: 0.6;
 }
 
 .account-view__header-actions {

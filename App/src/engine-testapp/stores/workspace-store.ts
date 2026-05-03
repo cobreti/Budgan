@@ -40,6 +40,7 @@ type WorkspaceSnapshot = {
     name: string
     columnMappingId: string
     segments: SegmentSnapshot[]
+    balanceSnapshot?: { amount: number; dateAsString: string }
   }>
 }
 
@@ -79,6 +80,9 @@ export const useWorkspaceStore = defineStore(
           id: a.id,
           name: a.name,
           columnMappingId: a.columnMappingId,
+          ...(a.balanceSnapshot
+            ? { balanceSnapshot: { amount: a.balanceSnapshot.amount, dateAsString: a.balanceSnapshot.dateAsString } }
+            : {}),
           segments: a.segments.map((s) => {
             const csvSource = a.getCsvContentSegment(s.id)
             return {
@@ -121,6 +125,9 @@ export const useWorkspaceStore = defineStore(
               content: persisted?.content ?? '',
             })
           }
+        }
+        if (a.balanceSnapshot) {
+          account.setBalanceSnapshot(a.balanceSnapshot.amount, a.balanceSnapshot.dateAsString)
         }
         return account
       })
@@ -196,6 +203,22 @@ export const useWorkspaceStore = defineStore(
 
     function clearSelectedAccount(): void {
       selectedAccountId.value = null
+    }
+
+    function setAccountBalanceSnapshot(accountId: string, amount: number, dateAsString: string): void {
+      if (!currentWorkspace.value) return
+      const result = currentWorkspace.value.getAccount(accountId)
+      if (!result.success) return
+      result.value.setBalanceSnapshot(amount, dateAsString)
+      _syncWorkspaceSnapshot()
+    }
+
+    function clearAccountBalanceSnapshot(accountId: string): void {
+      if (!currentWorkspace.value) return
+      const result = currentWorkspace.value.getAccount(accountId)
+      if (!result.success) return
+      result.value.clearBalanceSnapshot()
+      _syncWorkspaceSnapshot()
     }
 
     async function importSegmentToSelectedAccount(
@@ -290,6 +313,8 @@ export const useWorkspaceStore = defineStore(
       removeAccountFromCurrentWorkspace,
       setSelectedAccount,
       clearSelectedAccount,
+      setAccountBalanceSnapshot,
+      clearAccountBalanceSnapshot,
       importSegmentToSelectedAccount,
       importWorkspaceFromZip,
     }

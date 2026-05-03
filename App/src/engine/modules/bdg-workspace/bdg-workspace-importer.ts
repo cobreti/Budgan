@@ -135,6 +135,13 @@ export class BdgWorkspaceImporterImpl extends BdgWorkspaceImporter {
         })
       }
 
+      if (accountEntry.balanceSnapshot) {
+        account.setBalanceSnapshot(
+          accountEntry.balanceSnapshot.amount,
+          accountEntry.balanceSnapshot.dateAsString,
+        )
+      }
+
       return account
     })
 
