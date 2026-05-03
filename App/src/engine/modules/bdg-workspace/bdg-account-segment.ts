@@ -9,16 +9,16 @@ export interface BdgAccountSegmentRow {
   key: string
   cardNumber: string
   description: string
-  dateTransactionAsString: string
-  dateInscriptionAsString?: string
-  dateTransaction?: Date
+  dateInscriptionAsString: string
+  dateTransactionAsString?: string
   dateInscription?: Date
+  dateTransaction?: Date
   amount: number
   duplicateOf?: string
 }
 
 export function computeRowKey(row: Omit<BdgAccountSegmentRow, 'key'>): string {
-  return `${row.cardNumber}|${row.dateTransactionAsString}|${row.amount}|${row.description}`
+  return `${row.cardNumber}|${row.dateInscriptionAsString}|${row.amount}|${row.description}`
 }
 
 export interface BdgAccountSegment {
@@ -49,29 +49,29 @@ export class BdgAccountSegmentImpl implements BdgAccountSegment {
     this._name = name
     this._rows = rows
 
-    // Prepopulate dateTransaction on each row from dateTransactionAsString before finding min/max
+    // Prepopulate dateInscription on each row from dateInscriptionAsString before finding min/max
     for (const row of this._rows) {
-      if (!row.dateTransaction) {
-        const parsed = parseLocalDate(row.dateTransactionAsString)
+      if (!row.dateInscription) {
+        const parsed = parseLocalDate(row.dateInscriptionAsString)
         if (parsed !== undefined) {
-          row.dateTransaction = parsed
+          row.dateInscription = parsed
         }
       }
     }
 
     const dates = this._rows
-      .map(r => r.dateTransaction)
+      .map(r => r.dateInscription)
       .filter((d): d is Date => d !== undefined)
 
     const minTime = Math.min(...dates.map(d => d.getTime()))
     const maxTime = Math.max(...dates.map(d => d.getTime()))
 
-    const minRow = this._rows.find(r => r.dateTransaction?.getTime() === minTime)
-    const maxRow = this._rows.find(r => r.dateTransaction?.getTime() === maxTime)
+    const minRow = this._rows.find(r => r.dateInscription?.getTime() === minTime)
+    const maxRow = this._rows.find(r => r.dateInscription?.getTime() === maxTime)
 
     // Use the original string from the matching row; fall back to ISO string if needed
-    this._dateStartAsString = minRow?.dateTransactionAsString ?? new Date(minTime).toISOString()
-    this._dateEndAsString = maxRow?.dateTransactionAsString ?? new Date(maxTime).toISOString()
+    this._dateStartAsString = minRow?.dateInscriptionAsString ?? new Date(minTime).toISOString()
+    this._dateEndAsString = maxRow?.dateInscriptionAsString ?? new Date(maxTime).toISOString()
 
     // Set dateStart / dateEnd by parsing the resolved strings
     this._dateStart = parseLocalDate(this._dateStartAsString) ?? new Date(minTime)

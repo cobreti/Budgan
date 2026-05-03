@@ -44,7 +44,7 @@ describe('useWorkspaceStore — segment persistence', () => {
                   key: '1234|2024-03-15|-4.2|Coffee',
                   cardNumber: '1234',
                   description: 'Coffee',
-                  dateTransactionAsString: '2024-03-15',
+                  dateInscriptionAsString: '2024-03-15',
                   amount: -4.2,
                 },
               ],
@@ -85,8 +85,8 @@ describe('useWorkspaceStore — segment persistence', () => {
               id: 'seg-1',
               name: 'March',
               rows: [
-                { key: '1|2024-03-01|-1|A', cardNumber: '1', description: 'A', dateTransactionAsString: '2024-03-01', amount: -1 },
-                { key: '1|2024-03-31|-2|B', cardNumber: '1', description: 'B', dateTransactionAsString: '2024-03-31', amount: -2 },
+                { key: '1|2024-03-01|-1|A', cardNumber: '1', description: 'A', dateInscriptionAsString: '2024-03-01', amount: -1 },
+                { key: '1|2024-03-31|-2|B', cardNumber: '1', description: 'B', dateInscriptionAsString: '2024-03-31', amount: -2 },
               ],
             },
           ],
@@ -134,7 +134,7 @@ describe('useWorkspaceStore — segment persistence', () => {
     const account = workspace.createAccount('My Account', 'mapping-1')
     account.addSegment(
       new BdgAccountSegmentImpl('seg-1', 'March', [
-        { key: '1234|2024-03-15|-4.2|Coffee', cardNumber: '1234', description: 'Coffee', dateTransactionAsString: '2024-03-15', amount: -4.2 },
+        { key: '1234|2024-03-15|-4.2|Coffee', cardNumber: '1234', description: 'Coffee', dateInscriptionAsString: '2024-03-15', amount: -4.2 },
       ]),
     )
 
@@ -157,7 +157,7 @@ describe('useWorkspaceStore — segment persistence', () => {
     const account = workspace.createAccount('My Account', 'mapping-1')
 
     const mockSegment = new BdgAccountSegmentImpl('seg-imported', 'march', [
-      { key: '9999|2024-03-01|1200|Salary', cardNumber: '9999', description: 'Salary', dateTransactionAsString: '2024-03-01', amount: 1200 },
+      { key: '9999|2024-03-01|1200|Salary', cardNumber: '9999', description: 'Salary', dateInscriptionAsString: '2024-03-01', amount: 1200 },
     ])
     const mockImporter = {
       import: vi.fn().mockResolvedValue({
@@ -206,7 +206,7 @@ describe('useWorkspaceStore — segment persistence', () => {
             {
               id: 'seg-rt',
               name: 'Data',
-              rows: [{ key: '0001|2024-06-01|99|Test', cardNumber: '0001', description: 'Test', dateTransactionAsString: '2024-06-01', amount: 99 }],
+              rows: [{ key: '0001|2024-06-01|99|Test', cardNumber: '0001', description: 'Test', dateInscriptionAsString: '2024-06-01', amount: 99 }],
             },
           ],
         },

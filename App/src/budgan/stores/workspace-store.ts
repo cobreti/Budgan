@@ -18,8 +18,8 @@ type SegmentRowSnapshot = {
   key: string
   cardNumber: string
   description: string
-  dateTransactionAsString: string
-  dateInscriptionAsString?: string
+  dateInscriptionAsString: string
+  dateTransactionAsString?: string
   amount: number
 }
 
@@ -89,8 +89,8 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
             key: r.key,
             cardNumber: r.cardNumber,
             description: r.description,
-            dateTransactionAsString: r.dateTransactionAsString,
             dateInscriptionAsString: r.dateInscriptionAsString,
+            ...(r.dateTransactionAsString !== undefined ? { dateTransactionAsString: r.dateTransactionAsString } : {}),
             amount: r.amount,
           })),
         })),

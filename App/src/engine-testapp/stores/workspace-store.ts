@@ -20,8 +20,8 @@ type SegmentRowSnapshot = {
   key: string
   cardNumber: string
   description: string
-  dateTransactionAsString: string
-  dateInscriptionAsString?: string
+  dateInscriptionAsString: string
+  dateTransactionAsString?: string
   amount: number
 }
 
@@ -93,9 +93,9 @@ export const useWorkspaceStore = defineStore(
                 key: r.key,
                 cardNumber: r.cardNumber,
                 description: r.description,
-                dateTransactionAsString: r.dateTransactionAsString,
-                ...(r.dateInscriptionAsString !== undefined
-                  ? { dateInscriptionAsString: r.dateInscriptionAsString }
+                dateInscriptionAsString: r.dateInscriptionAsString,
+                ...(r.dateTransactionAsString !== undefined
+                  ? { dateTransactionAsString: r.dateTransactionAsString }
                   : {}),
                 amount: r.amount,
               })),
@@ -208,7 +208,7 @@ export const useWorkspaceStore = defineStore(
     function setAccountBalanceSnapshot(accountId: string, amount: number, dateAsString: string): void {
       if (!currentWorkspace.value) return
       const result = currentWorkspace.value.getAccount(accountId)
-      if (!result.success) return
+      if (!result || !result.success) return
       result.value.setBalanceSnapshot(amount, dateAsString)
       _syncWorkspaceSnapshot()
     }
@@ -216,7 +216,7 @@ export const useWorkspaceStore = defineStore(
     function clearAccountBalanceSnapshot(accountId: string): void {
       if (!currentWorkspace.value) return
       const result = currentWorkspace.value.getAccount(accountId)
-      if (!result.success) return
+      if (!result || !result.success) return
       result.value.clearBalanceSnapshot()
       _syncWorkspaceSnapshot()
     }

@@ -36,11 +36,11 @@
         class="account-transaction-list__cell account-transaction-list__sort-button account-transaction-list__cell--date"
         type="button"
         data-testid="account-transaction-list-sort-date"
-        @click="toggleSort('dateTransaction')"
+        @click="toggleSort('dateInscription')"
       >
         {{ t('account.transactionList.colDate') }}
         <v-icon
-          v-if="sortColumn === 'dateTransaction'"
+          v-if="sortColumn === 'dateInscription'"
           class="account-transaction-list__sort-icon"
           :icon="sortDirection === 'asc' ? 'mdi-arrow-up' : 'mdi-arrow-down'"
           size="14"
@@ -106,7 +106,7 @@
         {{ row.cardNumber }}
       </span>
       <span class="account-transaction-list__cell account-transaction-list__cell--date">
-        {{ row.dateTransactionAsString }}
+        {{ row.dateInscriptionAsString }}
       </span>
       <span class="account-transaction-list__cell account-transaction-list__cell--description">
         {{ row.description }}
@@ -158,10 +158,10 @@ const { t } = useI18n()
 
 const showDuplicates = ref(false)
 
-type SortColumn = 'cardNumber' | 'dateTransaction' | 'description' | 'amount'
+type SortColumn = 'cardNumber' | 'dateInscription' | 'description' | 'amount'
 type SortDirection = 'asc' | 'desc'
 
-const sortColumn = ref<SortColumn>('dateTransaction')
+const sortColumn = ref<SortColumn>('dateInscription')
 const sortDirection = ref<SortDirection>('desc')
 
 function toggleSort(column: SortColumn): void {
@@ -183,14 +183,14 @@ function compareRows(left: BdgAccountSegmentRow, right: BdgAccountSegmentRow): n
 
   if (sortColumn.value === 'cardNumber') {
     result = compareText(left.cardNumber, right.cardNumber)
-  } else if (sortColumn.value === 'dateTransaction') {
-    const leftDate = left.dateTransaction?.getTime()
-    const rightDate = right.dateTransaction?.getTime()
+  } else if (sortColumn.value === 'dateInscription') {
+    const leftDate = left.dateInscription?.getTime()
+    const rightDate = right.dateInscription?.getTime()
 
     if (leftDate !== undefined && rightDate !== undefined) {
       result = leftDate - rightDate
     } else {
-      result = compareText(left.dateTransactionAsString, right.dateTransactionAsString)
+      result = compareText(left.dateInscriptionAsString, right.dateInscriptionAsString)
     }
   } else if (sortColumn.value === 'description') {
     result = compareText(left.description, right.description)
@@ -215,8 +215,8 @@ const runningBalanceByKey = computed((): Map<string, number> => {
   if (!props.referenceBalance) return new Map()
   const nonDups = props.segments
     .flatMap((s) => s.rows)
-    .filter((r) => !r.duplicateOf && r.dateTransaction instanceof Date)
-  nonDups.sort((a, b) => a.dateTransaction!.getTime() - b.dateTransaction!.getTime())
+    .filter((r) => !r.duplicateOf && r.dateInscription instanceof Date)
+  nonDups.sort((a, b) => a.dateInscription!.getTime() - b.dateInscription!.getTime())
   let balance = props.referenceBalance.amount
   const map = new Map<string, number>()
   for (const r of nonDups) {

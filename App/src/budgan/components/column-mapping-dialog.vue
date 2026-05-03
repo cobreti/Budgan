@@ -238,8 +238,8 @@ type CsvMappingField = { key: CsvColumnId; labelKey: string; required: boolean }
 
 const csvFields: CsvMappingField[] = [
   { key: CsvColumns.cardNumber,      labelKey: 'columnMapping.fieldCardNumber',      required: true },
-  { key: CsvColumns.dateTransaction, labelKey: 'columnMapping.fieldDateTransaction',  required: true },
-  { key: CsvColumns.dateInscription, labelKey: 'columnMapping.fieldDateInscription',  required: false },
+  { key: CsvColumns.dateTransaction, labelKey: 'columnMapping.fieldDateTransaction',  required: false },
+  { key: CsvColumns.dateInscription, labelKey: 'columnMapping.fieldDateInscription',  required: true },
   { key: CsvColumns.amount,          labelKey: 'columnMapping.fieldAmount',           required: true },
   { key: CsvColumns.description,     labelKey: 'columnMapping.fieldDescription',      required: true },
 ]

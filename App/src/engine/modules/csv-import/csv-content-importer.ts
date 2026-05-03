@@ -66,7 +66,7 @@ export class CsvContentImporterImpl extends CsvContentImporter {
             const partial = {
               cardNumber: getValue(CsvColumns.cardNumber),
               description: getValue(CsvColumns.description),
-              dateTransactionAsString: getValue(CsvColumns.dateTransaction),
+              dateInscriptionAsString: getValue(CsvColumns.dateInscription),
               amount,
             }
 
@@ -75,9 +75,9 @@ export class CsvContentImporterImpl extends CsvContentImporter {
               key: computeRowKey(partial),
             }
 
-            const dateInscription = getValue(CsvColumns.dateInscription)
-            if (dateInscription) {
-              segmentRow.dateInscriptionAsString = dateInscription
+            const dateTransaction = getValue(CsvColumns.dateTransaction)
+            if (dateTransaction) {
+              segmentRow.dateTransactionAsString = dateTransaction
             }
 
             return segmentRow
