@@ -3,6 +3,7 @@
     v-if="account"
     :segments="account.segments"
     :reference-balance="account.referenceBalance"
+    :balance-snapshot="account.balanceSnapshot"
     data-testid="account-transactions-view"
   />
 </template>

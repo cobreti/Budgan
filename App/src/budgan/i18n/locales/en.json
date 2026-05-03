@@ -80,6 +80,7 @@
   "account.transactionList.duplicateWarning": "Duplicate transaction",
   "account.transactionList.showDuplicates": "Show duplicates",
   "account.transactionList.hideDuplicates": "Hide duplicates",
+  "account.transactionList.balanceSnapshot": "Balance snapshot",
   "workspaceInfoHeader.save": "Save",
   "workspaceInfoHeader.saving": "Saving…",
   "workspaceInfoHeader.saveError": "Save failed",
