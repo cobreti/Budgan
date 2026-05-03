@@ -51,26 +51,26 @@ export default defineConfig({
                 background_color: '#ffffff',
                 theme_color: '#1e1e2e',
                 icons: [
-                    { src: '/Budgan48.png',  sizes: '48x48',   type: 'image/png' },
-                    { src: '/Budgan180.png', sizes: '180x180', type: 'image/png' },
-                    { src: '/Budgan256.png', sizes: '256x256', type: 'image/png' },
+                    { src: '/images/Budgan48.png',  sizes: '48x48',   type: 'image/png' },
+                    { src: '/images/Budgan180.png', sizes: '180x180', type: 'image/png' },
+                    { src: '/images/Budgan256.png', sizes: '256x256', type: 'image/png' },
                 ],
               screenshots: [
                 {
-                  src: '/screenshots/desktop-landscape.png',
+                  src: '/images/screenshots/desktop-landscape.png',
                   sizes: '1140x853',
                   type: 'image/png',
                   form_factor: 'wide',
                 },
                 {
-                  src: '/screenshots/desktop-portrait.png',
+                  src: '/images/screenshots/desktop-portrait.png',
                   sizes: '518x690',
                   type: 'image/png',
                   form_factor: 'narrow',
                 }
               ]
             }
-        }),
+        })
     ],
     optimizeDeps: {
         esbuildOptions: {
