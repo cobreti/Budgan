@@ -6,6 +6,7 @@
   "mainMenu.columnMapping": "Mapping colonnes",
   "mainMenu.loadWorkspaceError": "Échec de l'ouverture du journal",
   "mainMenu.clearWorkspace": "Fermer le journal",
+  "mainMenu.installApp": "Installer l'app",
   "newWorkspaceDialog.title": "Nouveau journal",
   "newWorkspaceDialog.nameLabel": "Nom",
   "newWorkspaceDialog.cancel": "Annuler",

@@ -48,6 +48,18 @@
           />
         </div>
       </template>
+
+      <template v-if="installPrompt">
+        <hr class="main-menu__divider" />
+        <div class="main-menu__section main-menu__section--install">
+          <MainMenuItem
+            icon="mdi-download"
+            :label="t('mainMenu.installApp')"
+            test-id="main-menu-install-app"
+            @click="onInstallApp"
+          />
+        </div>
+      </template>
     </nav>
   </v-navigation-drawer>
 
@@ -65,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useDisplay } from 'vuetify'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
@@ -121,6 +133,23 @@ function onClearWorkspace() {
   workspaceStore.clearWorkspace()
   appSettingsStore.toggleDrawer()
 }
+
+const installPrompt = ref<Event | null>(null)
+
+function onBeforeInstallPrompt(e: Event) {
+  e.preventDefault()
+  installPrompt.value = e
+}
+
+onMounted(() => window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt))
+onUnmounted(() => window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt))
+
+async function onInstallApp() {
+  const prompt = installPrompt.value as (Event & { prompt(): Promise<void> }) | null
+  if (!prompt) return
+  await prompt.prompt()
+  installPrompt.value = null
+}
 </script>
 
 <style scoped>
@@ -128,6 +157,8 @@ function onClearWorkspace() {
 
 .main-menu {
   height: 100%;
+  display: flex;
+  flex-direction: column;
   background-color: var(--bdg-surface);
   color: var(--bdg-on-surface);
 }
@@ -149,6 +180,10 @@ function onClearWorkspace() {
   border-top: 1px solid var(--bdg-secondary);
   margin: 0 1rem;
   opacity: 0.3;
+}
+
+.main-menu__section--install {
+  margin-top: auto;
 }
 
 .main-menu__item--danger {

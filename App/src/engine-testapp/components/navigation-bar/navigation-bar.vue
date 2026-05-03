@@ -28,9 +28,11 @@
       </div>
     </div>
 
-    <div v-if="installPrompt" class="menu__install-row">
+    <div v-if="!isStandalone" class="menu__install-row">
       <button
         class="menu__install-button"
+        :class="{ 'menu__install-button--disabled': !installPrompt }"
+        :disabled="!installPrompt"
         data-testid="navbar-install-button"
         @click="promptInstall"
       >
