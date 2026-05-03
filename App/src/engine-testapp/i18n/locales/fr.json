@@ -6,6 +6,7 @@
   "navbar.language": "Langue",
   "navbar.en": "English",
   "navbar.fr": "Français",
+  "navbar.addToHomeScreen": "Ajouter à l'écran d'accueil",
   "workspace.title": "Test de l'espace de travail",
   "workspace.description": "Choisissez un fichier CSV sur le disque pour le charger dans l'espace de travail.",
   "workspace.menu.currentWorkspace": "Espace de travail actuel",
