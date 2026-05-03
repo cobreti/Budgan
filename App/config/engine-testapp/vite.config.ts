@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import sassDts from 'vite-plugin-sass-dts'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import { VitePWA } from 'vite-plugin-pwa'
 
 function appRelativePaths(path: string) {
     return fileURLToPath(new URL(`../../src/engine-testapp${path}`, import.meta.url))
@@ -38,7 +39,29 @@ export default defineConfig({
             }
         }
     },
-    plugins: [vue(), sassDts(), vueJsx(), tsconfigPaths()],
+    plugins: [
+        vue(),
+        sassDts(),
+        vueJsx(),
+        tsconfigPaths(),
+        VitePWA({
+            registerType: 'autoUpdate',
+            manifest: {
+                name: 'Budgan',
+                short_name: 'Budgan',
+                description: 'CSV bank statement import and workspace management',
+                display: 'standalone',
+                background_color: '#ffffff',
+                theme_color: '#1e1e2e',
+                icons: [
+                    { src: '/Budgan48.png',  sizes: '48x48',   type: 'image/png' },
+                    { src: '/Budgan180.png', sizes: '180x180', type: 'image/png' },
+                    { src: '/Budgan256.png', sizes: '256x256', type: 'image/png' },
+                    { src: '/Budgan512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+                ],
+            },
+        }),
+    ],
     optimizeDeps: {
         esbuildOptions: {
             tsconfigRaw: {

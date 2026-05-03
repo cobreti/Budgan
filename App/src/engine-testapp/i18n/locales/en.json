@@ -6,6 +6,7 @@
   "navbar.language": "Language",
   "navbar.en": "English",
   "navbar.fr": "Français",
+  "navbar.addToHomeScreen": "Add to Home Screen",
   "workspace.title": "Workspace Test",
   "workspace.description": "Choose a CSV file from disk to load it into the workspace.",
   "workspace.menu.currentWorkspace": "Current Workspace",
