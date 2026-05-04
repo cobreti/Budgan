@@ -71,6 +71,7 @@
   "account.progressionGraph.title": "Progression du solde",
   "account.progressionGraph.noData": "Aucune donnée de transaction à afficher.",
   "account.progressionGraph.balance": "Solde",
+  "account.progressionGraph.balanceSnapshot": "Solde de référence",
   "account.transactionList.noTransactions": "Aucune transaction à afficher.",
   "account.transactionList.colCardNumber": "Carte",
   "account.transactionList.colDate": "Date",

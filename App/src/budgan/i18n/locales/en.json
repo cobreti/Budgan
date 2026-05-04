@@ -71,6 +71,7 @@
   "account.progressionGraph.title": "Balance Progression",
   "account.progressionGraph.noData": "No transaction data to display.",
   "account.progressionGraph.balance": "Balance",
+  "account.progressionGraph.balanceSnapshot": "Balance snapshot",
   "account.transactionList.noTransactions": "No transactions to display.",
   "account.transactionList.colCardNumber": "Card",
   "account.transactionList.colDate": "Date",
