@@ -84,17 +84,20 @@
     </div>
 
     <p
-      v-if="listItems.every((i) => i.kind === 'snapshot')"
+      v-if="!hasTransactions"
       class="account-transaction-list__empty"
       data-testid="account-transaction-list-empty"
     >
       {{ t('account.transactionList.noTransactions') }}
     </p>
 
-    <template v-for="(item, index) in listItems" :key="item.key">
+    <template v-for="(item, index) in iterator" :key="item.kind === 'transaction' ? item.row.key : item.kind">
+      <!-- Start item: not shown in the list -->
+      <template v-if="item.kind === 'start'" />
+
       <!-- Balance snapshot row -->
       <div
-        v-if="item.kind === 'snapshot'"
+        v-else-if="item.kind === 'snapshot'"
         class="account-transaction-list__row account-transaction-list__row--snapshot"
         :class="{ 'account-transaction-list__row--with-balance': referenceBalance }"
         data-testid="account-transaction-list-snapshot-row"
@@ -169,13 +172,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { BdgAccountSegment, BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
+import type { BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment'
 import type { BdgAccountBalanceSnapshot, BdgAccountReferenceBalance } from '@engine/modules/bdg-workspace/bdg-account.ts'
 import { TransactionIterator, type TransactionSortColumn, type TransactionSortDirection } from '@engine/modules/transaction-iterator/transaction-iterator'
-
-type RowItem = { kind: 'row'; key: string; row: BdgAccountSegmentRow; runningBalance: number }
-type SnapshotItem = { kind: 'snapshot'; key: string; amount: number; dateAsString: string; date: Date }
-type ListItem = RowItem | SnapshotItem
 
 const props = defineProps<{
   segments: BdgAccountSegment[]
@@ -200,30 +199,22 @@ function toggleSort(column: TransactionSortColumn): void {
   sortDirection.value = 'asc'
 }
 
-const listItems = computed((): ListItem[] => {
-  const items: ListItem[] = []
-  const iterator = new TransactionIterator(
-    props.segments,
-    props.referenceBalance,
-    props.balanceSnapshot,
-    {
-      includeDuplicates: showDuplicates.value,
-      sortColumn: sortColumn.value,
-      sortDirection: sortDirection.value,
-    },
+const iterator = computed(() => new TransactionIterator(
+  props.segments,
+  props.referenceBalance,
+  props.balanceSnapshot,
+  {
+    includeDuplicates: showDuplicates.value,
+    sortColumn: sortColumn.value,
+    sortDirection: sortDirection.value,
+  },
+))
+
+const hasTransactions = computed(() =>
+  props.segments.some((s) =>
+    s.rows.some((r) => showDuplicates.value || !r.duplicateOf)
   )
-
-  for (const item of iterator) {
-    if (item.kind === 'start') continue
-    if (item.kind === 'snapshot') {
-      items.push({ kind: 'snapshot', key: 'balance-snapshot', amount: item.amount, dateAsString: item.dateAsString, date: item.date })
-    } else {
-      items.push({ kind: 'row', key: item.row.key, row: item.row, runningBalance: item.runningBalance })
-    }
-  }
-
-  return items
-})
+)
 </script>
 
 <style scoped>
