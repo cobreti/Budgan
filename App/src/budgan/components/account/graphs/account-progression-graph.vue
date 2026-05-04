@@ -28,6 +28,7 @@ import {
 import { useI18n } from 'vue-i18n'
 import type { BdgAccountBalanceSnapshot, BdgAccountReferenceBalance } from '@engine/modules/bdg-workspace/bdg-account.ts'
 import type { BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment.ts'
+import { TransactionIterator } from '@engine/modules/transaction-iterator/transaction-iterator'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler)
 
@@ -50,41 +51,19 @@ const chartFillColor = `rgba(${_primary}, 0.13)`
 const chartGridColor = `rgba(${_onSurface}, 0.10)`
 const chartSnapshotColor = `rgb(${_success})`
 
-const sortedPoints = computed(() => {
-  const rows = props.segments
-    .flatMap((s) => s.rows)
-    .filter((r) => !r.duplicateOf && r.dateInscription instanceof Date)
+type GraphPoint = { label: string; balance: number; isSnapshot: boolean }
 
-  rows.sort((a, b) => a.dateInscription!.getTime() - b.dateInscription!.getTime())
+const sortedPoints = computed((): GraphPoint[] => {
+  const points: GraphPoint[] = []
+  const iterator = new TransactionIterator(props.segments, props.referenceBalance, props.balanceSnapshot)
 
-  const points: { label: string; balance: number }[] = []
-  let balance = props.referenceBalance?.amount ?? 0
-
-  if (props.referenceBalance) {
-    points.push({ label: props.referenceBalance.dateAsString, balance: props.referenceBalance.amount })
-  }
-
-  for (const r of rows) {
-    balance += r.amount
-    points.push({ label: r.dateInscriptionAsString, balance: Math.round(balance * 100) / 100 })
-  }
-
-  // Insert snapshot date into labels if not already present
-  if (props.balanceSnapshot) {
-    const snapshotLabel = props.balanceSnapshot.dateAsString
-    const snapshotTime = props.balanceSnapshot.date.getTime()
-    const exists = points.some((p) => p.label === snapshotLabel)
-    if (!exists) {
-      const insertIdx = points.findIndex((p) => {
-        // Labels are date strings — compare via snapshot time against the reference date
-        return new Date(p.label).getTime() > snapshotTime
-      })
-      const entry = { label: snapshotLabel, balance: props.balanceSnapshot.amount }
-      if (insertIdx === -1) {
-        points.push(entry)
-      } else {
-        points.splice(insertIdx, 0, entry)
-      }
+  for (const item of iterator) {
+    if (item.kind === 'start') {
+      points.push({ label: item.dateAsString, balance: item.amount, isSnapshot: false })
+    } else if (item.kind === 'transaction') {
+      points.push({ label: item.row.dateInscriptionAsString, balance: item.runningBalance, isSnapshot: false })
+    } else {
+      points.push({ label: item.dateAsString, balance: item.amount, isSnapshot: true })
     }
   }
 
@@ -99,9 +78,7 @@ const hasData = computed(() =>
 
 const snapshotPointData = computed(() => {
   if (!props.balanceSnapshot) return null
-  const label = props.balanceSnapshot.dateAsString
-  const amount = props.balanceSnapshot.amount
-  return sortedPoints.value.map((p) => (p.label === label ? amount : null))
+  return sortedPoints.value.map((p) => (p.isSnapshot ? p.balance : null))
 })
 
 const chartData = computed<ChartData<'line'>>(() => {
