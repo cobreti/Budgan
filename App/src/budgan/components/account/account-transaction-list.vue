@@ -84,62 +84,87 @@
     </div>
 
     <p
-      v-if="rows.length === 0"
+      v-if="listItems.every((i) => i.kind === 'snapshot')"
       class="account-transaction-list__empty"
       data-testid="account-transaction-list-empty"
     >
       {{ t('account.transactionList.noTransactions') }}
     </p>
 
-    <div
-      v-for="(row, index) in rows"
-      :key="row.key"
-      class="account-transaction-list__row"
-      :class="[
-        index % 2 === 0 ? 'account-transaction-list__row--even' : 'account-transaction-list__row--odd',
-        { 'account-transaction-list__row--duplicate': row.duplicateOf },
-        { 'account-transaction-list__row--with-balance': referenceBalance },
-      ]"
-      :data-testid="`account-transaction-list-row-${row.key}`"
-    >
-      <span class="account-transaction-list__cell account-transaction-list__cell--card">
-        {{ row.cardNumber }}
-      </span>
-      <span class="account-transaction-list__cell account-transaction-list__cell--date">
-        {{ row.dateInscriptionAsString }}
-      </span>
-      <span class="account-transaction-list__cell account-transaction-list__cell--description">
-        {{ row.description }}
-        <v-icon
-          v-if="row.duplicateOf"
-          class="account-transaction-list__duplicate-icon"
-          icon="mdi-content-copy"
-          size="14"
-          :aria-label="t('account.transactionList.duplicateWarning')"
-          data-testid="account-transaction-list-duplicate-icon"
-        />
-      </span>
-      <span
-        class="account-transaction-list__cell account-transaction-list__cell--amount"
-        :class="row.amount >= 0
-          ? 'account-transaction-list__cell--amount-positive'
-          : 'account-transaction-list__cell--amount-negative'"
+    <template v-for="(item, index) in listItems" :key="item.key">
+      <!-- Balance snapshot row -->
+      <div
+        v-if="item.kind === 'snapshot'"
+        class="account-transaction-list__row account-transaction-list__row--snapshot"
+        :class="{ 'account-transaction-list__row--with-balance': referenceBalance }"
+        data-testid="account-transaction-list-snapshot-row"
       >
-        {{ row.amount.toFixed(2) }}
-      </span>
-      <span
-        v-if="referenceBalance"
-        class="account-transaction-list__cell account-transaction-list__cell--balance"
-        :class="runningBalanceByKey.has(row.key)
-          ? runningBalanceByKey.get(row.key)! >= 0
+        <span class="account-transaction-list__cell account-transaction-list__cell--card" />
+        <span class="account-transaction-list__cell account-transaction-list__cell--date">
+          {{ item.dateAsString }}
+        </span>
+        <span class="account-transaction-list__cell account-transaction-list__cell--description account-transaction-list__cell--snapshot-label">
+          {{ t('account.transactionList.balanceSnapshot') }}
+        </span>
+        <span class="account-transaction-list__cell account-transaction-list__cell--amount" />
+        <span
+          class="account-transaction-list__cell account-transaction-list__cell--balance"
+          data-testid="account-transaction-list-balance-snapshot"
+        >
+          {{ item.amount.toFixed(2) }}
+        </span>
+      </div>
+
+      <!-- Transaction row -->
+      <div
+        v-else
+        class="account-transaction-list__row"
+        :class="[
+          index % 2 === 0 ? 'account-transaction-list__row--even' : 'account-transaction-list__row--odd',
+          { 'account-transaction-list__row--duplicate': item.row.duplicateOf },
+          { 'account-transaction-list__row--with-balance': referenceBalance },
+        ]"
+        :data-testid="`account-transaction-list-row-${item.row.key}`"
+      >
+        <span class="account-transaction-list__cell account-transaction-list__cell--card">
+          {{ item.row.cardNumber }}
+        </span>
+        <span class="account-transaction-list__cell account-transaction-list__cell--date">
+          {{ item.row.dateInscriptionAsString }}
+        </span>
+        <span class="account-transaction-list__cell account-transaction-list__cell--description">
+          {{ item.row.description }}
+          <v-icon
+            v-if="item.row.duplicateOf"
+            class="account-transaction-list__duplicate-icon"
+            icon="mdi-content-copy"
+            size="14"
+            :aria-label="t('account.transactionList.duplicateWarning')"
+            data-testid="account-transaction-list-duplicate-icon"
+          />
+        </span>
+        <span
+          class="account-transaction-list__cell account-transaction-list__cell--amount"
+          :class="item.row.amount >= 0
             ? 'account-transaction-list__cell--amount-positive'
-            : 'account-transaction-list__cell--amount-negative'
-          : ''"
-        :data-testid="`account-transaction-list-balance-${row.key}`"
-      >
-        {{ runningBalanceByKey.has(row.key) ? runningBalanceByKey.get(row.key)!.toFixed(2) : '' }}
-      </span>
-    </div>
+            : 'account-transaction-list__cell--amount-negative'"
+        >
+          {{ item.row.amount.toFixed(2) }}
+        </span>
+        <span
+          v-if="referenceBalance"
+          class="account-transaction-list__cell account-transaction-list__cell--balance"
+          :class="runningBalanceByKey.has(item.row.key)
+            ? runningBalanceByKey.get(item.row.key)! >= 0
+              ? 'account-transaction-list__cell--amount-positive'
+              : 'account-transaction-list__cell--amount-negative'
+            : ''"
+          :data-testid="`account-transaction-list-balance-${item.row.key}`"
+        >
+          {{ runningBalanceByKey.has(item.row.key) ? runningBalanceByKey.get(item.row.key)!.toFixed(2) : '' }}
+        </span>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -147,11 +172,16 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { BdgAccountSegment, BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
-import type { BdgAccountReferenceBalance } from '@engine/modules/bdg-workspace/bdg-account.ts'
+import type { BdgAccountBalanceSnapshot, BdgAccountReferenceBalance } from '@engine/modules/bdg-workspace/bdg-account.ts'
+
+type RowItem = { kind: 'row'; key: string; row: BdgAccountSegmentRow }
+type SnapshotItem = { kind: 'snapshot'; key: string; amount: number; dateAsString: string; date: Date }
+type ListItem = RowItem | SnapshotItem
 
 const props = defineProps<{
   segments: BdgAccountSegment[]
   referenceBalance: BdgAccountReferenceBalance | null
+  balanceSnapshot: BdgAccountBalanceSnapshot | null
 }>()
 
 const { t } = useI18n()
@@ -205,10 +235,37 @@ function compareRows(left: BdgAccountSegmentRow, right: BdgAccountSegmentRow): n
   return sortDirection.value === 'asc' ? result : -result
 }
 
-const rows = computed(() => {
+const listItems = computed((): ListItem[] => {
   const all = props.segments.flatMap((s) => s.rows)
   const filtered = showDuplicates.value ? all : all.filter((r) => !r.duplicateOf)
-  return [...filtered].sort(compareRows)
+  const sortedRows: RowItem[] = [...filtered].sort(compareRows).map((r) => ({ kind: 'row', key: r.key, row: r }))
+
+  if (!props.balanceSnapshot) return sortedRows
+
+  const snapshot: SnapshotItem = {
+    kind: 'snapshot',
+    key: 'balance-snapshot',
+    amount: props.balanceSnapshot.amount,
+    dateAsString: props.balanceSnapshot.dateAsString,
+    date: props.balanceSnapshot.date,
+  }
+
+  if (sortColumn.value !== 'dateInscription') return [snapshot, ...sortedRows]
+
+  const snapshotTime = props.balanceSnapshot.date.getTime()
+  let insertIdx = sortedRows.length
+  for (let i = 0; i < sortedRows.length; i++) {
+    const rowDate = sortedRows[i].row.dateInscription?.getTime()
+    if (rowDate === undefined) continue
+    if (sortDirection.value === 'asc' ? rowDate > snapshotTime : rowDate < snapshotTime) {
+      insertIdx = i
+      break
+    }
+  }
+
+  const result = [...sortedRows]
+  result.splice(insertIdx, 0, snapshot)
+  return result
 })
 
 const runningBalanceByKey = computed((): Map<string, number> => {
@@ -338,6 +395,18 @@ const runningBalanceByKey = computed((): Map<string, number> => {
 
 .account-transaction-list__cell--amount-negative {
   color: var(--bdg-error);
+}
+
+.account-transaction-list__row--snapshot {
+  background-color: var(--bdg-surface);
+  border-top: 1px dashed var(--bdg-secondary);
+  border-bottom: 1px dashed var(--bdg-secondary);
+  opacity: 0.8;
+}
+
+.account-transaction-list__cell--snapshot-label {
+  font-style: italic;
+  opacity: 0.7;
 }
 
 .account-transaction-list__duplicate-icon {

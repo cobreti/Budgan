@@ -11,7 +11,7 @@
             data-testid="account-view-back"
             @click="goToAccounts"
           >
-            <v-icon class="account-view__back-btn-icon" icon="mdi-triangle" size="24" />
+            <v-icon class="account-view__back-btn-icon" icon="mdi-chevron-left" size="24" />
           </button>
           <h1 class="account-view__name" data-testid="account-view-name">{{ account.name }}</h1>
         </div>
@@ -203,8 +203,6 @@ async function onFileSelected(event: Event): Promise<void> {
 .account-view__back-btn-icon {
   pointer-events: none;
   color: currentColor;
-  transform: rotate(-90deg);
-  scale: 0.6;
 }
 
 .account-view__header-actions {

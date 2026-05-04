@@ -26,14 +26,15 @@ import {
   type ChartOptions,
 } from 'chart.js'
 import { useI18n } from 'vue-i18n'
+import type { BdgAccountBalanceSnapshot, BdgAccountReferenceBalance } from '@engine/modules/bdg-workspace/bdg-account.ts'
 import type { BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment.ts'
-import type { BdgAccountReferenceBalance } from '@engine/modules/bdg-workspace/bdg-account.ts'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler)
 
 const props = defineProps<{
   segments: BdgAccountSegment[]
   referenceBalance: BdgAccountReferenceBalance | null
+  balanceSnapshot: BdgAccountBalanceSnapshot | null
 }>()
 const { t } = useI18n()
 
@@ -43,9 +44,11 @@ const _style = getComputedStyle(document.documentElement)
 // so we read the base channel variables and build concrete color strings for canvas.
 const _primary = _style.getPropertyValue('--v-theme-primary').trim().replace(/ /g, ', ')
 const _onSurface = _style.getPropertyValue('--v-theme-on-surface').trim().replace(/ /g, ', ')
+const _success = _style.getPropertyValue('--v-theme-success').trim().replace(/ /g, ', ')
 const chartLineColor = `rgb(${_primary})`
 const chartFillColor = `rgba(${_primary}, 0.13)`
 const chartGridColor = `rgba(${_onSurface}, 0.10)`
+const chartSnapshotColor = `rgb(${_success})`
 
 const sortedPoints = computed(() => {
   const rows = props.segments
@@ -66,6 +69,25 @@ const sortedPoints = computed(() => {
     points.push({ label: r.dateInscriptionAsString, balance: Math.round(balance * 100) / 100 })
   }
 
+  // Insert snapshot date into labels if not already present
+  if (props.balanceSnapshot) {
+    const snapshotLabel = props.balanceSnapshot.dateAsString
+    const snapshotTime = props.balanceSnapshot.date.getTime()
+    const exists = points.some((p) => p.label === snapshotLabel)
+    if (!exists) {
+      const insertIdx = points.findIndex((p) => {
+        // Labels are date strings — compare via snapshot time against the reference date
+        return new Date(p.label).getTime() > snapshotTime
+      })
+      const entry = { label: snapshotLabel, balance: props.balanceSnapshot.amount }
+      if (insertIdx === -1) {
+        points.push(entry)
+      } else {
+        points.splice(insertIdx, 0, entry)
+      }
+    }
+  }
+
   return points
 })
 
@@ -75,9 +97,16 @@ const hasData = computed(() =>
     .some((r) => !r.duplicateOf && r.dateInscription instanceof Date),
 )
 
-const chartData = computed<ChartData<'line'>>(() => ({
-  labels: sortedPoints.value.map((p) => p.label),
-  datasets: [
+const snapshotPointData = computed(() => {
+  if (!props.balanceSnapshot) return null
+  const label = props.balanceSnapshot.dateAsString
+  const amount = props.balanceSnapshot.amount
+  return sortedPoints.value.map((p) => (p.label === label ? amount : null))
+})
+
+const chartData = computed<ChartData<'line'>>(() => {
+  const labels = sortedPoints.value.map((p) => p.label)
+  const datasets: ChartData<'line'>['datasets'] = [
     {
       label: t('account.progressionGraph.balance'),
       data: sortedPoints.value.map((p) => p.balance),
@@ -88,8 +117,23 @@ const chartData = computed<ChartData<'line'>>(() => ({
       pointRadius: sortedPoints.value.length > 100 ? 0 : 3,
       pointHoverRadius: 5,
     },
-  ],
-}))
+  ]
+
+  if (snapshotPointData.value) {
+    datasets.push({
+      label: t('account.progressionGraph.balanceSnapshot'),
+      data: snapshotPointData.value,
+      borderColor: chartSnapshotColor,
+      backgroundColor: chartSnapshotColor,
+      pointRadius: 7,
+      pointHoverRadius: 9,
+      pointStyle: 'rectRot',
+      showLine: false,
+    })
+  }
+
+  return { labels, datasets }
+})
 
 const chartOptions = computed<ChartOptions<'line'>>(() => ({
   responsive: true,
@@ -102,7 +146,11 @@ const chartOptions = computed<ChartOptions<'line'>>(() => ({
     legend: { display: false },
     tooltip: {
       callbacks: {
-        label: (ctx) => ` ${(ctx.parsed.y ?? 0).toFixed(2)}`,
+        label: (ctx) => {
+          const value = (ctx.parsed.y ?? 0).toFixed(2)
+          if (ctx.datasetIndex === 1) return ` ${t('account.progressionGraph.balanceSnapshot')}: ${value}`
+          return ` ${value}`
+        },
       },
     },
   },
