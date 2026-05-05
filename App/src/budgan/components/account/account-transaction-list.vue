@@ -84,17 +84,20 @@
     </div>
 
     <p
-      v-if="listItems.every((i) => i.kind === 'snapshot')"
+      v-if="!hasTransactions"
       class="account-transaction-list__empty"
       data-testid="account-transaction-list-empty"
     >
       {{ t('account.transactionList.noTransactions') }}
     </p>
 
-    <template v-for="(item, index) in listItems" :key="item.key">
+    <template v-for="(item, index) in iterator" :key="item.kind === 'transaction' ? item.row.key : item.kind">
+      <!-- Start item: not shown in the list -->
+      <template v-if="item.kind === 'start'" />
+
       <!-- Balance snapshot row -->
       <div
-        v-if="item.kind === 'snapshot'"
+        v-else-if="item.kind === 'snapshot'"
         class="account-transaction-list__row account-transaction-list__row--snapshot"
         :class="{ 'account-transaction-list__row--with-balance': referenceBalance }"
         data-testid="account-transaction-list-snapshot-row"
@@ -154,14 +157,12 @@
         <span
           v-if="referenceBalance"
           class="account-transaction-list__cell account-transaction-list__cell--balance"
-          :class="runningBalanceByKey.has(item.row.key)
-            ? runningBalanceByKey.get(item.row.key)! >= 0
-              ? 'account-transaction-list__cell--amount-positive'
-              : 'account-transaction-list__cell--amount-negative'
-            : ''"
+          :class="item.runningBalance >= 0
+            ? 'account-transaction-list__cell--amount-positive'
+            : 'account-transaction-list__cell--amount-negative'"
           :data-testid="`account-transaction-list-balance-${item.row.key}`"
         >
-          {{ runningBalanceByKey.has(item.row.key) ? runningBalanceByKey.get(item.row.key)!.toFixed(2) : '' }}
+          {{ item.runningBalance.toFixed(2) }}
         </span>
       </div>
     </template>
@@ -171,12 +172,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { BdgAccountSegment, BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
+import type { BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment'
 import type { BdgAccountBalanceSnapshot, BdgAccountReferenceBalance } from '@engine/modules/bdg-workspace/bdg-account.ts'
-
-type RowItem = { kind: 'row'; key: string; row: BdgAccountSegmentRow }
-type SnapshotItem = { kind: 'snapshot'; key: string; amount: number; dateAsString: string; date: Date }
-type ListItem = RowItem | SnapshotItem
+import { TransactionIterator, type TransactionSortColumn, type TransactionSortDirection } from '@engine/modules/transaction-iterator/transaction-iterator'
 
 const props = defineProps<{
   segments: BdgAccountSegment[]
@@ -188,13 +186,10 @@ const { t } = useI18n()
 
 const showDuplicates = ref(false)
 
-type SortColumn = 'cardNumber' | 'dateInscription' | 'description' | 'amount'
-type SortDirection = 'asc' | 'desc'
+const sortColumn = ref<TransactionSortColumn>('dateInscription')
+const sortDirection = ref<TransactionSortDirection>('desc')
 
-const sortColumn = ref<SortColumn>('dateInscription')
-const sortDirection = ref<SortDirection>('desc')
-
-function toggleSort(column: SortColumn): void {
+function toggleSort(column: TransactionSortColumn): void {
   if (sortColumn.value === column) {
     sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc'
     return
@@ -204,84 +199,22 @@ function toggleSort(column: SortColumn): void {
   sortDirection.value = 'asc'
 }
 
-function compareText(left: string, right: string): number {
-  return left.localeCompare(right, undefined, { numeric: true, sensitivity: 'base' })
-}
+const iterator = computed(() => new TransactionIterator(
+  props.segments,
+  props.referenceBalance,
+  props.balanceSnapshot,
+  {
+    includeDuplicates: showDuplicates.value,
+    sortColumn: sortColumn.value,
+    sortDirection: sortDirection.value,
+  },
+))
 
-function compareRows(left: BdgAccountSegmentRow, right: BdgAccountSegmentRow): number {
-  let result: number
-
-  if (sortColumn.value === 'cardNumber') {
-    result = compareText(left.cardNumber, right.cardNumber)
-  } else if (sortColumn.value === 'dateInscription') {
-    const leftDate = left.dateInscription?.getTime()
-    const rightDate = right.dateInscription?.getTime()
-
-    if (leftDate !== undefined && rightDate !== undefined) {
-      result = leftDate - rightDate
-    } else {
-      result = compareText(left.dateInscriptionAsString, right.dateInscriptionAsString)
-    }
-  } else if (sortColumn.value === 'description') {
-    result = compareText(left.description, right.description)
-  } else {
-    result = left.amount - right.amount
-  }
-
-  if (result === 0) {
-    result = compareText(left.key, right.key)
-  }
-
-  return sortDirection.value === 'asc' ? result : -result
-}
-
-const listItems = computed((): ListItem[] => {
-  const all = props.segments.flatMap((s) => s.rows)
-  const filtered = showDuplicates.value ? all : all.filter((r) => !r.duplicateOf)
-  const sortedRows: RowItem[] = [...filtered].sort(compareRows).map((r) => ({ kind: 'row', key: r.key, row: r }))
-
-  if (!props.balanceSnapshot) return sortedRows
-
-  const snapshot: SnapshotItem = {
-    kind: 'snapshot',
-    key: 'balance-snapshot',
-    amount: props.balanceSnapshot.amount,
-    dateAsString: props.balanceSnapshot.dateAsString,
-    date: props.balanceSnapshot.date,
-  }
-
-  if (sortColumn.value !== 'dateInscription') return [snapshot, ...sortedRows]
-
-  const snapshotTime = props.balanceSnapshot.date.getTime()
-  let insertIdx = sortedRows.length
-  for (let i = 0; i < sortedRows.length; i++) {
-    const rowDate = sortedRows[i].row.dateInscription?.getTime()
-    if (rowDate === undefined) continue
-    if (sortDirection.value === 'asc' ? rowDate > snapshotTime : rowDate < snapshotTime) {
-      insertIdx = i
-      break
-    }
-  }
-
-  const result = [...sortedRows]
-  result.splice(insertIdx, 0, snapshot)
-  return result
-})
-
-const runningBalanceByKey = computed((): Map<string, number> => {
-  if (!props.referenceBalance) return new Map()
-  const nonDups = props.segments
-    .flatMap((s) => s.rows)
-    .filter((r) => !r.duplicateOf && r.dateInscription instanceof Date)
-  nonDups.sort((a, b) => a.dateInscription!.getTime() - b.dateInscription!.getTime())
-  let balance = props.referenceBalance.amount
-  const map = new Map<string, number>()
-  for (const r of nonDups) {
-    balance = Math.round((balance + r.amount) * 100) / 100
-    map.set(r.key, balance)
-  }
-  return map
-})
+const hasTransactions = computed(() =>
+  props.segments.some((s) =>
+    s.rows.some((r) => showDuplicates.value || !r.duplicateOf)
+  )
+)
 </script>
 
 <style scoped>

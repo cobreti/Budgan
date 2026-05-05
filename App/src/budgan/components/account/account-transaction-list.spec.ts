@@ -49,6 +49,8 @@ function mountList() {
   return shallowMount(AccountTransactionList, {
     props: {
       segments: [segment],
+      referenceBalance: null,
+      balanceSnapshot: null,
     },
     global: {
       stubs: {
@@ -61,7 +63,7 @@ function mountList() {
 function renderedRowKeys(wrapper: ReturnType<typeof mountList>): string[] {
   return wrapper
     .findAll('[data-testid^="account-transaction-list-row-"]')
-    .map((row) => row.attributes('data-testid').replace('account-transaction-list-row-', ''))
+    .map((row) => (row.attributes('data-testid') ?? '').replace('account-transaction-list-row-', ''))
 }
 
 describe('AccountTransactionList', () => {
