@@ -62,6 +62,12 @@
       </p>
     </div>
 
+    <!-- Example CSV picker -->
+    <div class="settings-column-mappings__csv-picker">
+      <p class="settings-column-mappings__csv-label">{{ t('examples.label') }}</p>
+      <ExampleCsvPicker @file-selected="loadCsvFile" />
+    </div>
+
     <!-- Column mapping component -->
     <CsvColumnMapping
       v-if="localParsedJson"
@@ -108,6 +114,7 @@
   import { computed, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import CsvColumnMapping from '@engineTestApp/components/csv-column-mapping/csv-column-mapping.vue'
+  import ExampleCsvPicker from '@engineTestApp/components/example-csv-picker/example-csv-picker.vue'
   import { CsvContentExtractor } from '@engine/modules/csv-import/csv-content-extractor'
   import type { CsvContentExtractionResult } from '@engine/modules/csv-import/csv-content-extractor'
 
@@ -127,6 +134,19 @@
   })
 
 
+  async function loadCsvFile(file: File): Promise<void> {
+    try {
+      const csvText = await file.text()
+      localParsedJson.value = csvContentExtractor.extract(csvText)
+      localFileName.value = file.name
+      parseError.value = ''
+    } catch {
+      parseError.value = t('settings.columnMappings.localCsv.parseError')
+      localParsedJson.value = null
+      localFileName.value = null
+    }
+  }
+
   async function onFileSelected(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement
     const file = input.files?.[0]
@@ -143,16 +163,7 @@
       return
     }
 
-    try {
-      const csvText = await file.text()
-      localParsedJson.value = csvContentExtractor.extract(csvText)
-      localFileName.value = file.name
-      parseError.value = ''
-    } catch {
-      parseError.value = t('settings.columnMappings.localCsv.parseError')
-      localParsedJson.value = null
-      localFileName.value = null
-    }
+    await loadCsvFile(file)
   }
 
   function clearLocalCsv(): void {

@@ -1,4 +1,6 @@
 import { fileURLToPath, URL } from 'node:url'
+import fs from 'node:fs'
+import path from 'node:path'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -7,10 +9,40 @@ import sassDts from 'vite-plugin-sass-dts'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { VitePWA } from 'vite-plugin-pwa'
 
+function examplesManifestPlugin() {
+    return {
+        name: 'examples-manifest',
+        buildStart() {
+            const examplesDir = path.resolve(__dirname, 'public/examples')
+            if (!fs.existsSync(examplesDir)) return
+
+            type ManifestEntry = { group: string; label: string; path: string }
+            const entries: ManifestEntry[] = []
+
+            for (const group of fs.readdirSync(examplesDir)) {
+                const groupDir = path.join(examplesDir, group)
+                if (!fs.statSync(groupDir).isDirectory()) continue
+                for (const file of fs.readdirSync(groupDir)) {
+                    if (!file.toLowerCase().endsWith('.csv')) continue
+                    entries.push({
+                        group,
+                        label: file,
+                        path: `/examples/${group}/${file}`,
+                    })
+                }
+            }
+
+            fs.writeFileSync(
+                path.join(examplesDir, 'manifest.json'),
+                JSON.stringify(entries, null, 2),
+            )
+        },
+    }
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
     server: {
-        port: 8000,
         host: '0.0.0.0'
     },
     build: {
@@ -36,6 +68,7 @@ export default defineConfig({
         }
     },
     plugins: [
+        examplesManifestPlugin(),
         vue(),
         sassDts(),
         vueJsx(),

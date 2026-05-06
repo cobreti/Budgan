@@ -87,5 +87,8 @@
   "workspaceInfoHeader.saveError": "Save failed",
   "languageSwitcher.label": "Language",
   "languageSwitcher.english": "English",
-  "languageSwitcher.french": "French"
+  "languageSwitcher.french": "French",
+  "examples.select": "Load an example…",
+  "examples.loading": "Loading examples…",
+  "examples.error": "Could not load examples"
 }

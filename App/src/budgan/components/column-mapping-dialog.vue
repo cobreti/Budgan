@@ -57,6 +57,7 @@
               >
                 {{ t('columnMapping.clearCsv') }}
               </button>
+              <ExampleCsvPicker @file-selected="loadCsvFile" />
             </div>
 
             <input
@@ -219,6 +220,7 @@ import { IdGenerator } from '@engine/services/IdGenerator'
 import container from '@inversify/setup-inversify'
 import { useSettingsStore } from '@budgan/stores/settings-store.ts'
 import { useWorkspaceStore } from '@budgan/stores/workspace-store.ts'
+import ExampleCsvPicker from '@budgan/components/example-csv-picker.vue'
 
 const props = defineProps<{
   modelValue: boolean
@@ -289,11 +291,7 @@ const canSave = computed(() =>
   mappingName.value.trim() !== '' && missingRequiredFields.value.length === 0
 )
 
-async function onFileSelected(event: Event): Promise<void> {
-  const input = event.target as HTMLInputElement
-  const file = input.files?.[0]
-  if (!file) { clearCsv(); return }
-
+async function loadCsvFile(file: File): Promise<void> {
   try {
     const text = await file.text()
     const result = new CsvContentExtractor().extract(text)
@@ -306,6 +304,13 @@ async function onFileSelected(event: Event): Promise<void> {
     csvHeaders.value = []
     csvFilename.value = null
   }
+}
+
+async function onFileSelected(event: Event): Promise<void> {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) { clearCsv(); return }
+  await loadCsvFile(file)
   input.value = ''
 }
 

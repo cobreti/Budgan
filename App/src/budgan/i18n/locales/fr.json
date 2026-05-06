@@ -87,5 +87,8 @@
   "workspaceInfoHeader.saveError": "Échec de l'enregistrement",
   "languageSwitcher.label": "Langue",
   "languageSwitcher.english": "Anglais",
-  "languageSwitcher.french": "Français"
+  "languageSwitcher.french": "Français",
+  "examples.select": "Charger un exemple…",
+  "examples.loading": "Chargement des exemples…",
+  "examples.error": "Impossible de charger les exemples"
 }
