@@ -48,16 +48,16 @@
               >
                 {{ t('columnMapping.openCsv') }}
               </button>
+              <ExampleCsvPicker @file-selected="loadCsvFile" />
               <button
                 v-if="csvFilename"
-                class="column-mapping-dialog__button column-mapping-dialog__button--secondary"
+                class="column-mapping-dialog__button column-mapping-dialog__button--secondary column-mapping-dialog__button--clear"
                 type="button"
                 data-testid="column-mapping-clear-csv"
                 @click="clearCsv"
               >
                 {{ t('columnMapping.clearCsv') }}
               </button>
-              <ExampleCsvPicker @file-selected="loadCsvFile" />
             </div>
 
             <input
@@ -446,6 +446,11 @@ function onDelete(): void {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+  align-items: center;
+}
+
+.column-mapping-dialog__button--clear {
+  margin-left: auto;
 }
 
 .column-mapping-dialog__file-input {
