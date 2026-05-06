@@ -46,6 +46,9 @@ export default defineConfig({
         tsconfigPaths(),
         VitePWA({
             registerType: 'autoUpdate',
+            devOptions: {
+                enabled: false,
+            },
             manifest: {
                 name: 'Budgan',
                 short_name: 'Budgan',
