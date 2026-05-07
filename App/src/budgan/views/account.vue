@@ -53,6 +53,7 @@
             <v-icon class="account-view__import-btn-icon" icon="mdi-upload" size="18" />
             <span>{{ importing ? t('account.importCsvLoading') : t('account.importCsv') }}</span>
           </button>
+          <ExampleCsvPicker :disabled="importing" @file-selected="importFile" />
         </div>
       </div>
 
@@ -82,6 +83,7 @@ import { computed, ref } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useWorkspaceStore } from '@budgan/stores/workspace-store.ts'
+import ExampleCsvPicker from '@budgan/components/example-csv-picker.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -117,6 +119,24 @@ function triggerFileInput(): void {
   importError.value = null
   importSuccess.value = null
   fileInputRef.value?.click()
+}
+
+async function importFile(file: File): Promise<void> {
+  if (!account.value) return
+
+  importing.value = true
+  importError.value = null
+  importSuccess.value = null
+
+  const result = await workspaceStore.importSegment(account.value.id, file)
+
+  importing.value = false
+
+  if (result.success) {
+    importSuccess.value = t('account.importSuccess', { name: result.value.name })
+  } else {
+    importError.value = result.error ?? 'Unknown error'
+  }
 }
 
 async function onFileSelected(event: Event): Promise<void> {

@@ -24,6 +24,7 @@
         data-testid="segments-file-input"
         @change="onFileSelected"
       />
+      <ExampleCsvPicker :disabled="isImporting" @file-selected="importFile" />
     </div>
 
     <p
@@ -72,6 +73,7 @@
   import { ref, computed } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useWorkspaceStore } from '@engineTestApp/stores/workspace-store'
+  import ExampleCsvPicker from '@engineTestApp/components/example-csv-picker/example-csv-picker.vue'
 
   const { t } = useI18n()
   const workspaceStore = useWorkspaceStore()
@@ -89,10 +91,7 @@
 
   const segments = computed(() => selectedAccount.value?.segments ?? [])
 
-  async function onFileSelected(event: Event): Promise<void> {
-    const file = (event.target as HTMLInputElement).files?.[0]
-    if (!file) return
-
+  async function importFile(file: File): Promise<void> {
     importSuccess.value = null
     importError.value = null
     isImporting.value = true
@@ -106,10 +105,13 @@
     } else {
       importError.value = result.error ?? 'Unknown error'
     }
+  }
 
-    if (fileInput.value) {
-      fileInput.value.value = ''
-    }
+  async function onFileSelected(event: Event): Promise<void> {
+    const file = (event.target as HTMLInputElement).files?.[0]
+    if (!file) return
+    await importFile(file)
+    if (fileInput.value) fileInput.value.value = ''
   }
 </script>
 
