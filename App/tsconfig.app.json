@@ -8,6 +8,14 @@
         "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
         "baseUrl": ".",
         "paths": {
+            "@/*": ["./src/*"],
+            "@engine/*": ["./src/engine/*"],
+            "@inversify/*": ["./src/inversify/*"],
+            "@engineTestApp/*": ["./src/engine-testapp/*"],
+            "@engineTestAppViews/*": ["./src/engine-testapp/views/*"],
+            "@engineTestAppRouter/*": ["./src/engine-testapp/router/*"],
+            "@budgan/*": ["./src/budgan/*"],
+            "@budganI18n/*": ["./src/budgan/i18n/*"]
         },
         "types": ["reflect-metadata"],
         "experimentalDecorators": true,
