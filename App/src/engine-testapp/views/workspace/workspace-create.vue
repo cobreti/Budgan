@@ -76,7 +76,6 @@
   import { ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useWorkspaceStore } from '@engineTestApp/stores/workspace-store'
-  import { useSettingsStore } from '@engineTestApp/stores/settings-store'
   import container from '@inversify/setup-inversify'
   import { BdgWorkspaceFactory } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
   import { BdgWorkspaceExporter } from '@engine/modules/bdg-workspace/bdg-workspace-exporter'
@@ -85,7 +84,6 @@
 
   const { t } = useI18n()
   const workspaceStore = useWorkspaceStore()
-  const settingsStore = useSettingsStore()
 
   const workspaceName = ref('')
   const createdWorkspaceId = ref<string | null>(null)
@@ -128,9 +126,9 @@
         suggestedName: filename,
         types: [{ description: 'Workspace file', accept: { 'application/zip': ['.zip'] } }],
       })
-      await workspaceExporter.saveToHandle(fileHandle, workspace, settingsStore.settings)
+      await workspaceExporter.saveToHandle(fileHandle, workspace)
     } else {
-      const zip = workspaceExporter.buildZipBytes(workspace, settingsStore.settings)
+      const zip = workspaceExporter.buildZipBytes(workspace)
       const blob = new Blob([zip.buffer as ArrayBuffer], { type: 'application/zip' })
       const url = URL.createObjectURL(blob)
       const anchor = document.createElement('a')

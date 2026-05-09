@@ -1,9 +1,6 @@
-import { InversifyUtils } from '@inversify/inversify-utils.ts'
 import type { BdgColumnMapping } from '@engine/modules/bdg-settings/bdg-column-mapping.ts'
 
 export abstract class BdgSettings {
-  static readonly bindingTypeId: string = InversifyUtils.createBindingId('BdgSettings')
-
   abstract get columnMappings(): BdgColumnMapping[]
   abstract updateColumnMapping(mapping: BdgColumnMapping): void
   abstract addColumnMapping(mapping: BdgColumnMapping): void

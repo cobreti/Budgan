@@ -34,18 +34,20 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { useSettingsStore } from '@engineTestApp/stores/settings-store'
+  import { useWorkspaceStore } from '@engineTestApp/stores/workspace-store'
   import { BdgSettingsExporter } from '@engine/modules/bdg-settings/bdg-settings-exporter'
 
   const { t } = useI18n()
-  const settingsStore = useSettingsStore()
+  const workspaceStore = useWorkspaceStore()
   const exporter = new BdgSettingsExporter()
 
   const copied = ref(false)
 
-  const jsonOutput = computed(() =>
-    JSON.stringify(exporter.export(settingsStore.settings), null, 2)
-  )
+  const jsonOutput = computed(() => {
+    const settings = workspaceStore.currentWorkspace?.settings
+    if (!settings) return '{}'
+    return JSON.stringify(exporter.export(settings), null, 2)
+  })
 
   const jsonSizeBytes = computed(() => new Blob([jsonOutput.value]).size)
 

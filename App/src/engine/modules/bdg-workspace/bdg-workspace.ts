@@ -1,10 +1,12 @@
 import type { IdGenerator } from '@engine/services/IdGenerator'
 import { BdgAccountImpl, type BdgAccount } from './bdg-account'
 import type { Result } from '@engine/types/result-pattern'
+import { BdgSettingsImpl, type BdgSettings } from '@engine/modules/bdg-settings/bdg-settings'
 
 export interface BdgWorkspace {
   id: string
   name: string
+  settings: BdgSettings
   accounts: BdgAccount[]
   createAccount(name: string, columnMappingId: string): BdgAccount
   getAccount(accountId: string): Result<BdgAccount> | undefined
@@ -17,6 +19,7 @@ export class BdgWorkspaceImpl implements BdgWorkspace {
   private readonly _id: string
   private _accounts: { [key: string]: BdgAccount } = {}
   private _name: string = ''
+  private _settings: BdgSettings = new BdgSettingsImpl()
 
   constructor(idGenerator: IdGenerator, id: string) {
     this._id = id
@@ -29,6 +32,10 @@ export class BdgWorkspaceImpl implements BdgWorkspace {
 
   get name(): string {
     return this._name
+  }
+
+  get settings(): BdgSettings {
+    return this._settings
   }
 
   get accounts(): BdgAccount[] {

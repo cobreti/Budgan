@@ -3,12 +3,18 @@ import { InversifyUtils } from '@inversify/inversify-utils'
 import { BdgWorkspaceImpl, type BdgWorkspace } from './bdg-workspace'
 import type { BdgAccount } from './bdg-account'
 import { IdGenerator } from '@engine/services/IdGenerator'
+import type { BdgColumnMapping } from '@engine/modules/bdg-settings/bdg-column-mapping'
 
 export abstract class BdgWorkspaceFactory {
   static readonly bindingTypeId: string = InversifyUtils.createBindingId('WorkspaceFactory')
 
   abstract createWorkspace(): BdgWorkspace
-  abstract reconstructWorkspace(id: string, name: string, accounts: BdgAccount[]): BdgWorkspace
+  abstract reconstructWorkspace(
+    id: string,
+    name: string,
+    accounts: BdgAccount[],
+    columnMappings?: BdgColumnMapping[],
+  ): BdgWorkspace
 }
 
 export class BdgWorkspaceFactoryImpl extends BdgWorkspaceFactory {
@@ -23,11 +29,19 @@ export class BdgWorkspaceFactoryImpl extends BdgWorkspaceFactory {
     return new BdgWorkspaceImpl(this.idGenerator, this.idGenerator.generateId())
   }
 
-  reconstructWorkspace(id: string, name: string, accounts: BdgAccount[]): BdgWorkspace {
+  reconstructWorkspace(
+    id: string,
+    name: string,
+    accounts: BdgAccount[],
+    columnMappings: BdgColumnMapping[] = [],
+  ): BdgWorkspace {
     const workspace = new BdgWorkspaceImpl(this.idGenerator, id)
     workspace.name = name
     for (const account of accounts) {
       workspace.loadAccount(account)
+    }
+    for (const mapping of columnMappings) {
+      workspace.settings.addColumnMapping(mapping)
     }
     return workspace
   }

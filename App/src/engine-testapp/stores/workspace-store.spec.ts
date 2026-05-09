@@ -3,7 +3,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useWorkspaceStore } from './workspace-store'
 import { BdgWorkspaceFactory, BdgWorkspaceFactoryImpl } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
 import { IdGeneratorImpl } from '@engine/services/IdGenerator'
-import { BdgSettings } from '@engine/modules/bdg-settings/bdg-settings'
 import { CsvContentImporter } from '@engine/modules/csv-import/csv-content-importer'
 import { BdgAccountSegmentImpl } from '@engine/modules/bdg-workspace/bdg-account-segment'
 
@@ -30,6 +29,7 @@ describe('useWorkspaceStore — segment persistence', () => {
     store.workspaceSnapshot = {
       id: 'ws-1',
       name: 'Test Workspace',
+      columnMappings: [],
       accounts: [
         {
           id: 'acc-1',
@@ -75,6 +75,7 @@ describe('useWorkspaceStore — segment persistence', () => {
     store.workspaceSnapshot = {
       id: 'ws-1',
       name: 'Test Workspace',
+      columnMappings: [],
       accounts: [
         {
           id: 'acc-1',
@@ -112,6 +113,7 @@ describe('useWorkspaceStore — segment persistence', () => {
     store.workspaceSnapshot = {
       id: 'ws-1',
       name: 'Test Workspace',
+      columnMappings: [],
       accounts: [{ id: 'acc-1', name: 'Test Account', columnMappingId: 'mapping-1', segments: [] }],
     }
 
@@ -154,6 +156,7 @@ describe('useWorkspaceStore — segment persistence', () => {
 
     const workspace = factory.createWorkspace()
     workspace.name = 'My Workspace'
+    workspace.settings.addColumnMapping({ id: 'mapping-1', name: 'Mapping 1', columnMapping: {} as never })
     const account = workspace.createAccount('My Account', 'mapping-1')
 
     const mockSegment = new BdgAccountSegmentImpl('seg-imported', 'march', [
@@ -165,12 +168,8 @@ describe('useWorkspaceStore — segment persistence', () => {
         value: { segment: mockSegment, csvSource: { filename: 'march.csv', content: '' } },
       }),
     } as unknown as CsvContentImporter
-    const mockSettings = {
-      columnMappings: [{ id: 'mapping-1', columnMapping: {} }],
-    } as unknown as InstanceType<typeof BdgSettings>
 
     vi.mocked(container.get as (id: string) => unknown).mockImplementation((bindingTypeId: string) => {
-      if (bindingTypeId === BdgSettings.bindingTypeId) return mockSettings
       if (bindingTypeId === CsvContentImporter.bindingTypeId) return mockImporter
       if (bindingTypeId === BdgWorkspaceFactory.bindingTypeId) return factory
       return undefined
@@ -197,6 +196,7 @@ describe('useWorkspaceStore — segment persistence', () => {
     store.workspaceSnapshot = {
       id: 'ws-1',
       name: 'Round-trip',
+      columnMappings: [],
       accounts: [
         {
           id: 'acc-1',

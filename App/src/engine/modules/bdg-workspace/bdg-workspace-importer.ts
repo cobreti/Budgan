@@ -15,13 +15,11 @@ import type {
   BdgWorkspaceExportSegmentEntry,
   BdgWorkspaceExportWorkspaceEntry,
 } from '@engine/modules/bdg-workspace/bdg-workspace-exporter'
-import type { BdgColumnMapping } from '@engine/modules/bdg-settings/bdg-column-mapping'
 import type { BdgSettingsExport } from '@engine/modules/bdg-settings/bdg-settings-exporter'
 import type { ResultWithError } from '@engine/types/result-pattern'
 
 export type BdgWorkspaceImportResult = {
   workspace: BdgWorkspace
-  columnMappings: BdgColumnMapping[]
   csvSources: Array<{ segmentId: string; filename: string; content: string }>
 }
 
@@ -145,17 +143,18 @@ export class BdgWorkspaceImporterImpl extends BdgWorkspaceImporter {
       return account
     })
 
-    const workspace = this.workspaceFactory.reconstructWorkspace(
-      workspaceEntry.id,
-      workspaceEntry.name,
-      accounts,
-    )
-
-    const columnMappings: BdgColumnMapping[] = Object.values(settingsExport).map((entry) => ({
+    const columnMappings = Object.values(settingsExport).map((entry) => ({
       id: entry.id,
       name: entry.name,
       columnMapping: entry.columnMapping,
     }))
+
+    const workspace = this.workspaceFactory.reconstructWorkspace(
+      workspaceEntry.id,
+      workspaceEntry.name,
+      accounts,
+      columnMappings,
+    )
 
     const csvSources = Object.entries(csvSourcesMap).map(([segmentId, source]) => ({
       segmentId,
@@ -163,6 +162,6 @@ export class BdgWorkspaceImporterImpl extends BdgWorkspaceImporter {
       content: source.content,
     }))
 
-    return { success: true, value: { workspace, columnMappings, csvSources } }
+    return { success: true, value: { workspace, csvSources } }
   }
 }

@@ -5,7 +5,6 @@ import { InversifyUtils } from '@inversify/inversify-utils.ts'
 import { FileSaveService, ZipEntry, CSV_SOURCES_PREFIX } from '@engine/services/FileSaveService'
 import { BdgSettingsExporter } from '@engine/modules/bdg-settings/bdg-settings-exporter'
 import type { BdgWorkspace } from '@engine/modules/bdg-workspace/bdg-workspace'
-import type { BdgSettings } from '@engine/modules/bdg-settings/bdg-settings'
 import type { BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-account-segment'
 
 export type BdgWorkspaceExportWorkspaceEntry = {
@@ -48,13 +47,9 @@ export abstract class BdgWorkspaceExporter {
 
   abstract export(workspace: BdgWorkspace): BdgWorkspaceExport
 
-  abstract saveToHandle(
-    handle: FileSystemFileHandle,
-    workspace: BdgWorkspace,
-    settings: BdgSettings,
-  ): Promise<void>
+  abstract saveToHandle(handle: FileSystemFileHandle, workspace: BdgWorkspace): Promise<void>
 
-  abstract buildZipBytes(workspace: BdgWorkspace, settings: BdgSettings): Uint8Array
+  abstract buildZipBytes(workspace: BdgWorkspace): Uint8Array
 }
 
 @injectable()
@@ -107,20 +102,16 @@ export class BdgWorkspaceExporterImpl extends BdgWorkspaceExporter {
     return result
   }
 
-  async saveToHandle(
-    handle: FileSystemFileHandle,
-    workspace: BdgWorkspace,
-    settings: BdgSettings,
-  ): Promise<void> {
+  async saveToHandle(handle: FileSystemFileHandle, workspace: BdgWorkspace): Promise<void> {
     const workspaceExport = this.export(workspace)
-    const settingsExport = new BdgSettingsExporter().export(settings)
+    const settingsExport = new BdgSettingsExporter().export(workspace.settings)
     const csvSources = this._collectCsvSources(workspace)
     await this.fileSaveService.saveWorkspace(handle, workspaceExport, settingsExport, csvSources)
   }
 
-  buildZipBytes(workspace: BdgWorkspace, settings: BdgSettings): Uint8Array {
+  buildZipBytes(workspace: BdgWorkspace): Uint8Array {
     const workspaceExport = this.export(workspace)
-    const settingsExport = new BdgSettingsExporter().export(settings)
+    const settingsExport = new BdgSettingsExporter().export(workspace.settings)
     const csvSources = this._collectCsvSources(workspace)
     const encoder = new TextEncoder()
     const entries: Record<string, Uint8Array> = {

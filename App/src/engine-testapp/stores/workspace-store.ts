@@ -6,7 +6,6 @@ import type { BdgWorkspace } from '@engine/modules/bdg-workspace/bdg-workspace'
 import type { BdgAccount } from '@engine/modules/bdg-workspace/bdg-account'
 import { BdgAccountImpl } from '@engine/modules/bdg-workspace/bdg-account'
 import { BdgWorkspaceFactory } from '@engine/modules/bdg-workspace/bdg-workspace-factory'
-import { BdgSettings } from '@engine/modules/bdg-settings/bdg-settings'
 import { CsvContentImporter } from '@engine/modules/csv-import/csv-content-importer'
 import { BdgWorkspaceImporter } from '@engine/modules/bdg-workspace/bdg-workspace-importer'
 import { BdgAccountSegmentImpl, type BdgAccountSegment } from '@engine/modules/bdg-workspace/bdg-account-segment'
@@ -14,7 +13,6 @@ import type { BdgAccountSegmentRow } from '@engine/modules/bdg-workspace/bdg-acc
 import type { ResultWithError } from '@engine/types/result-pattern'
 import container from '@inversify/setup-inversify'
 import { useCsvSourcesStore } from '@engineTestApp/stores/csv-sources-store'
-import { useSettingsStore } from '@engineTestApp/stores/settings-store'
 
 type SegmentRowSnapshot = {
   key: string
@@ -32,9 +30,16 @@ type SegmentSnapshot = {
   rows: SegmentRowSnapshot[]
 }
 
+type ColumnMappingSnapshot = {
+  id: string
+  name: string
+  columnMapping: import('@engine/modules/csv-import/csv-column-content').CsvColumnMapping
+}
+
 type WorkspaceSnapshot = {
   id: string
   name: string
+  columnMappings: ColumnMappingSnapshot[]
   accounts: Array<{
     id: string
     name: string
@@ -76,6 +81,11 @@ export const useWorkspaceStore = defineStore(
       workspaceSnapshot.value = {
         id: currentWorkspace.value.id,
         name: currentWorkspace.value.name,
+        columnMappings: currentWorkspace.value.settings.columnMappings.map((m) => ({
+          id: m.id,
+          name: m.name,
+          columnMapping: m.columnMapping,
+        })),
         accounts: currentWorkspace.value.accounts.map((a) => ({
           id: a.id,
           name: a.name,
@@ -135,6 +145,7 @@ export const useWorkspaceStore = defineStore(
         workspaceSnapshot.value.id,
         workspaceSnapshot.value.name,
         accounts,
+        workspaceSnapshot.value.columnMappings ?? [],
       )
     }
 
@@ -234,8 +245,9 @@ export const useWorkspaceStore = defineStore(
       }
 
       const account = accountResult.value
-      const bdgSettings = container.get<BdgSettings>(BdgSettings.bindingTypeId)
-      const bdgMapping = bdgSettings.columnMappings.find((m) => m.id === account.columnMappingId)
+      const bdgMapping = currentWorkspace.value.settings.columnMappings.find(
+        (m) => m.id === account.columnMappingId,
+      )
 
       if (!bdgMapping) {
         return { success: false, error: 'Column mapping not found for this account' }
@@ -268,17 +280,7 @@ export const useWorkspaceStore = defineStore(
       const result = await importer.import(handle)
       if (!result.success) return result
 
-      const { workspace, columnMappings, csvSources } = result.value
-
-      const settingsStore = useSettingsStore()
-      const existingIds = new Set(settingsStore.columnMappings.map((m) => m.id))
-      for (const mapping of columnMappings) {
-        if (existingIds.has(mapping.id)) {
-          settingsStore.updateMapping(mapping)
-        } else {
-          settingsStore.insertMapping(mapping)
-        }
-      }
+      const { workspace, csvSources } = result.value
 
       const csvSourcesStore = useCsvSourcesStore()
       csvSourcesStore.clear()
@@ -291,6 +293,10 @@ export const useWorkspaceStore = defineStore(
 
       setCurrentWorkspace(workspace)
       return { success: true, value: undefined }
+    }
+
+    function syncSnapshot(): void {
+      _syncWorkspaceSnapshot()
     }
 
     return {
@@ -317,6 +323,7 @@ export const useWorkspaceStore = defineStore(
       clearAccountBalanceSnapshot,
       importSegmentToSelectedAccount,
       importWorkspaceFromZip,
+      syncSnapshot,
     }
   },
   {
