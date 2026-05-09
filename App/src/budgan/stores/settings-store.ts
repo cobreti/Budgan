@@ -4,6 +4,8 @@ import type { PiniaPluginContext } from 'pinia'
 import 'pinia-plugin-persistedstate'
 import { BdgSettings, BdgSettingsImpl } from '@engine/modules/bdg-settings/bdg-settings'
 import type { BdgColumnMapping } from '@engine/modules/bdg-settings/bdg-column-mapping'
+import container from '@inversify/setup-inversify.ts'
+import { BdgStorageService } from '@engine/modules/bdg-storage/bdg-storage.services.ts'
 
 /** Shape of the persisted + rehydrated state used in afterHydrate. */
 type SettingsStoreHydrationState = {
@@ -23,6 +25,11 @@ export type SettingsStore = {
 }
 
 export const useSettingsStore = defineStore('budgan-settings', () => {
+
+  const bdgStorageService: BdgStorageService = container.get<BdgStorageService>(
+    BdgStorageService.bindingTypeId
+  )
+
   const settings = ref<BdgSettings>(new BdgSettingsImpl())
   const columnMappingsSnapshot = ref<BdgColumnMapping[]>([])
 
@@ -43,6 +50,9 @@ export const useSettingsStore = defineStore('budgan-settings', () => {
   }
 
   function addColumnMapping(mapping: BdgColumnMapping): void {
+
+    const storageService = bdgStorageService.getSettingsService().saveColumnMapping(mapping);
+
     settings.value.addColumnMapping(mapping)
     _syncSnapshot()
   }

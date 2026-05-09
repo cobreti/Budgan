@@ -19,6 +19,7 @@ import {
   BdgWorkspaceImporter,
   BdgWorkspaceImporterImpl,
 } from '@engine/modules/bdg-workspace/bdg-workspace-importer'
+import { setupIndexDbInversify } from '@engine/modules/bdg-storage/indexdb/indexdb-setup-inversify.ts'
 
 export const engineModule = new ContainerModule((options: ContainerModuleLoadOptions) => {
   options.bind<ReaderFactory>(ReaderFactory.bindingTypeId).to(FileReaderFactoryImpl)
@@ -32,4 +33,6 @@ export const engineModule = new ContainerModule((options: ContainerModuleLoadOpt
   options.bind<FileReadService>(FileReadService.bindingTypeId).to(FileReadServiceImpl)
   options.bind<BdgWorkspaceExporter>(BdgWorkspaceExporter.bindingTypeId).to(BdgWorkspaceExporterImpl)
   options.bind<BdgWorkspaceImporter>(BdgWorkspaceImporter.bindingTypeId).to(BdgWorkspaceImporterImpl)
+
+  setupIndexDbInversify(options);
 })
