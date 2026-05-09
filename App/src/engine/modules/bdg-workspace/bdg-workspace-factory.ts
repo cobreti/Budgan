@@ -4,6 +4,7 @@ import { BdgWorkspaceImpl, type BdgWorkspace } from './bdg-workspace'
 import type { BdgAccount } from './bdg-account'
 import { IdGenerator } from '@engine/services/IdGenerator'
 import type { BdgColumnMapping } from '@engine/modules/bdg-settings/bdg-column-mapping'
+import { BdgStorageService } from '@engine/modules/bdg-storage/bdg-storage.services.ts'
 
 export abstract class BdgWorkspaceFactory {
   static readonly bindingTypeId: string = InversifyUtils.createBindingId('WorkspaceFactory')
@@ -19,14 +20,17 @@ export abstract class BdgWorkspaceFactory {
 
 export class BdgWorkspaceFactoryImpl extends BdgWorkspaceFactory {
   private idGenerator: IdGenerator
+  private storageService: BdgStorageService
 
-  constructor(@inject(IdGenerator.bindingTypeId) idGenerator: IdGenerator) {
+  constructor(@inject(IdGenerator.bindingTypeId) idGenerator: IdGenerator,
+              @inject(BdgStorageService.bindingTypeId) storageService: BdgStorageService) {
     super()
     this.idGenerator = idGenerator
+    this.storageService = storageService
   }
 
   createWorkspace(): BdgWorkspace {
-    return new BdgWorkspaceImpl(this.idGenerator, this.idGenerator.generateId())
+    return new BdgWorkspaceImpl(this.idGenerator, this.storageService, this.idGenerator.generateId())
   }
 
   reconstructWorkspace(
@@ -35,7 +39,7 @@ export class BdgWorkspaceFactoryImpl extends BdgWorkspaceFactory {
     accounts: BdgAccount[],
     columnMappings: BdgColumnMapping[] = [],
   ): BdgWorkspace {
-    const workspace = new BdgWorkspaceImpl(this.idGenerator, id)
+    const workspace = new BdgWorkspaceImpl(this.idGenerator, this.storageService, id)
     workspace.name = name
     for (const account of accounts) {
       workspace.loadAccount(account)

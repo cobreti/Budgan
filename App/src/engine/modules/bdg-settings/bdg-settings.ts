@@ -1,47 +1,62 @@
 import type { BdgColumnMapping } from '@engine/modules/bdg-settings/bdg-column-mapping.ts'
+import type { BdgSettingsService } from '@engine/modules/bdg-storage/bdg-settings.service.ts'
 
 export abstract class BdgSettings {
-  abstract get columnMappings(): BdgColumnMapping[]
-  abstract updateColumnMapping(mapping: BdgColumnMapping): void
-  abstract addColumnMapping(mapping: BdgColumnMapping): void
-  abstract removeColumnMapping(id: string): void
+  abstract getColumnMappings(): Promise<BdgColumnMapping[]>
+  abstract updateColumnMapping(mapping: BdgColumnMapping): Promise<void>
+  abstract addColumnMapping(mapping: BdgColumnMapping): Promise<void>
+  abstract removeColumnMapping(id: string): Promise<void>
 }
 
 export class BdgSettingsImpl extends BdgSettings {
 
-  private _columnMappings: BdgColumnMapping[] = []
+  // private _columnMappings: BdgColumnMapping[] = []
+  private _settingsService: BdgSettingsService
+  private readonly _workspaceId: string
 
-  constructor() {
+  constructor(workspaceId: string, settingsService: BdgSettingsService) {
     super()
+
+    this._workspaceId = workspaceId
+    this._settingsService = settingsService
   }
 
-  get columnMappings(): BdgColumnMapping[] {
-    return this._columnMappings
+  getColumnMappings(): Promise<BdgColumnMapping[]> {
+    return this._settingsService.get(this._workspaceId)
   }
 
-  updateColumnMapping(mapping: BdgColumnMapping): void {
-    const index = this._columnMappings.findIndex((m) => m.id === mapping.id)
-    if (index !== -1) {
-      this._columnMappings[index] = mapping
-    } else {
-      throw new Error(`Mapping with id ${mapping.id} not found`)
-    }
+  async updateColumnMapping(mapping: BdgColumnMapping): Promise<void> {
+
+    await this._settingsService.update(this._workspaceId, mapping)
+
+    // const index = this._columnMappings.findIndex((m) => m.id === mapping.id)
+    // if (index !== -1) {
+    //   this._columnMappings[index] = mapping
+    // } else {
+    //   throw new Error(`Mapping with id ${mapping.id} not found`)
+    // }
   }
 
-  addColumnMapping(mapping: BdgColumnMapping): void {
-    const exists = this._columnMappings.some((m) => m.id === mapping.id)
-    if (exists) {
-      throw new Error(`Mapping with id ${mapping.id} already exists`)
-    }
-    this._columnMappings.push(mapping)
+  async addColumnMapping(mapping: BdgColumnMapping): Promise<void> {
+
+    await this._settingsService.save(this._workspaceId, mapping)
+
+    // const exists = this._columnMappings.some((m) => m.id === mapping.id)
+    // if (exists) {
+    //   throw new Error(`Mapping with id ${mapping.id} already exists`)
+    // }
+    // this._columnMappings.push(mapping)
   }
 
-  removeColumnMapping(id: string): void {
-    const index = this._columnMappings.findIndex((m) => m.id === id)
-    if (index !== -1) {
-      this._columnMappings.splice(index, 1)
-    } else {
-      throw new Error(`Mapping with id ${id} not found`)
-    }
+  async removeColumnMapping(id: string): Promise<void> {
+
+    await this._settingsService.remove(this._workspaceId, id)
+
+    // const index = this._columnMappings.findIndex((m) => m.id === id)
+    // if (index !== -1) {
+    //   this._columnMappings.splice(index, 1)
+    // } else {
+    //   throw new Error(`Mapping with id ${id} not found`)
+    // }
   }
 }

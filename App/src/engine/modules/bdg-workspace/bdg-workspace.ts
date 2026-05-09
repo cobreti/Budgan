@@ -2,6 +2,7 @@ import type { IdGenerator } from '@engine/services/IdGenerator'
 import { BdgAccountImpl, type BdgAccount } from './bdg-account'
 import type { Result } from '@engine/types/result-pattern'
 import { BdgSettingsImpl, type BdgSettings } from '@engine/modules/bdg-settings/bdg-settings'
+import type { BdgStorageService } from '@engine/modules/bdg-storage/bdg-storage.services.ts'
 
 export interface BdgWorkspace {
   id: string
@@ -19,11 +20,15 @@ export class BdgWorkspaceImpl implements BdgWorkspace {
   private readonly _id: string
   private _accounts: { [key: string]: BdgAccount } = {}
   private _name: string = ''
-  private _settings: BdgSettings = new BdgSettingsImpl()
+  private _settings: BdgSettings
+  private _storageService: BdgStorageService
 
-  constructor(idGenerator: IdGenerator, id: string) {
+  constructor(idGenerator: IdGenerator, storageService: BdgStorageService, id: string) {
     this._id = id
     this._idGenerator = idGenerator
+    this._storageService = storageService
+
+    this._settings = new BdgSettingsImpl(this._id, this._storageService.getSettingsService())
   }
 
   get id(): string {

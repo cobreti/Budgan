@@ -6,6 +6,7 @@ import { BdgSettings, BdgSettingsImpl } from '@engine/modules/bdg-settings/bdg-s
 import type { BdgColumnMapping } from '@engine/modules/bdg-settings/bdg-column-mapping'
 import container from '@inversify/setup-inversify.ts'
 import { BdgStorageService } from '@engine/modules/bdg-storage/bdg-storage.services.ts'
+import { useWorkspaceStore } from '@budgan/stores/workspace-store.ts'
 
 /** Shape of the persisted + rehydrated state used in afterHydrate. */
 type SettingsStoreHydrationState = {
@@ -15,79 +16,91 @@ type SettingsStoreHydrationState = {
 
 export type SettingsStore = {
   settings: Ref<BdgSettings>
-  columnMappings: ComputedRef<BdgColumnMapping[]>
-  columnMappingsSnapshot: Ref<BdgColumnMapping[]>
-  reinitialize(): void
-  setSettings(settings: BdgSettings): void
-  addColumnMapping(mapping: BdgColumnMapping): void
-  updateColumnMapping(mapping: BdgColumnMapping): void
-  removeColumnMapping(id: string): void
+  columnMappings: Ref<BdgColumnMapping[]>
+  // columnMappingsSnapshot: Ref<BdgColumnMapping[]>
+  // reinitialize(): void
+  // setSettings(settings: BdgSettings): void
+  addColumnMapping(mapping: BdgColumnMapping): Promise<void>
+  updateColumnMapping(mapping: BdgColumnMapping): Promise<void>
+  removeColumnMapping(id: string): Promise<void>
 }
 
 export const useSettingsStore = defineStore('budgan-settings', () => {
 
-  const bdgStorageService: BdgStorageService = container.get<BdgStorageService>(
-    BdgStorageService.bindingTypeId
-  )
+  const workspaceStore = useWorkspaceStore();
 
-  const settings = ref<BdgSettings>(new BdgSettingsImpl())
-  const columnMappingsSnapshot = ref<BdgColumnMapping[]>([])
+  // if (!workspaceStore.workspace) {
+  //   throw new Error('Workspace not initialized')
+  // }
 
-  const columnMappings = computed(() => settings.value.columnMappings)
+  let settings: Ref<BdgSettings> = ref(workspaceStore.workspace.settings);
+  // const columnMappingsSnapshot = ref<BdgColumnMapping[]>([])
+  let columnMappings: Ref<BdgColumnMapping[]> = ref([]);
 
-  function _syncSnapshot(): void {
-    columnMappingsSnapshot.value = [...settings.value.columnMappings]
-  }
+  // if (settings != null) {
+  //   settings.getColumnMappings().then((mappings) => {
+  //     columnsMappingCache = mappings
+  //   })
+  // }
+
+  // const columnMappings = computed(() => settings.value.columnMappings)
+
+  // function _syncSnapshot(): void {
+  //   columnMappingsSnapshot.value = [...settings.value.columnMappings]
+  // }
 
   function reinitialize(): void {
-    settings.value = new BdgSettingsImpl()
-    columnMappingsSnapshot.value = []
+    // settings.value = new BdgSettingsImpl()
+    // columnMappingsSnapshot.value = []
   }
 
-  function setSettings(value: BdgSettings): void {
-    settings.value = value
-    _syncSnapshot()
+  // function setSettings(value: BdgSettings): void {
+  //   settings.= value
+  //   // _syncSnapshot()
+  // }
+
+  async function addColumnMapping(mapping: BdgColumnMapping): Promise<void> {
+    if (settings.value) {
+      await settings.value.addColumnMapping(mapping)
+    }
+    // _syncSnapshot()
   }
 
-  function addColumnMapping(mapping: BdgColumnMapping): void {
-
-    const storageService = bdgStorageService.getSettingsService().saveColumnMapping(mapping);
-
-    settings.value.addColumnMapping(mapping)
-    _syncSnapshot()
+  async function updateColumnMapping(mapping: BdgColumnMapping): Promise<void> {
+    if (settings.value) {
+      await settings.value.updateColumnMapping(mapping)
+    }
+    // _syncSnapshot()
   }
 
-  function updateColumnMapping(mapping: BdgColumnMapping): void {
-    settings.value.updateColumnMapping(mapping)
-    _syncSnapshot()
-  }
-
-  function removeColumnMapping(id: string): void {
-    settings.value.removeColumnMapping(id)
-    _syncSnapshot()
+  async function removeColumnMapping(id: string): Promise<void> {
+    if (settings.value) {
+      await settings.value.removeColumnMapping(id)
+    }
+    // _syncSnapshot()
   }
 
   return {
     settings,
     columnMappings,
-    columnMappingsSnapshot,
-    reinitialize,
-    setSettings,
+    // columnMappingsSnapshot,
+    // reinitialize,
+    // setSettings,
     addColumnMapping,
     updateColumnMapping,
     removeColumnMapping,
   }
 }, {
-  persist: {
-    key: 'budgan-settings',
-    storage: localStorage,
-    pick: ['columnMappingsSnapshot'],
-    afterHydrate: (ctx: PiniaPluginContext) => {
-      const state = ctx.store.$state as SettingsStoreHydrationState
-      for (const mapping of state.columnMappingsSnapshot) {
-        state.settings.addColumnMapping(mapping)
-      }
-    },
-  },
+  // persist: {
+  //   key: 'budgan-settings',
+  //   storage: localStorage,
+  //   pick: ['columnMappingsSnapshot'],
+  //   afterHydrate: (ctx: PiniaPluginContext) => {
+  //     const state = ctx.store.$state as SettingsStoreHydrationState
+  //     for (const mapping of state.columnMappingsSnapshot) {
+  //       state.settings.addColumnMapping(mapping)
+  //     }
+  //   },
+  // },
 })
 

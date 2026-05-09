@@ -61,7 +61,7 @@ export type WorkspaceStore = {
 }
 
 export const useWorkspaceStore = defineStore('budgan-workspace', () => {
-  const workspace = ref<BdgWorkspace | null>(null)
+  const workspace = ref<BdgWorkspace>(createWorkspace('default'))
   const workspacePath = ref<string | null>(null)
   const workspaceSnapshot = ref<WorkspaceSnapshot | null>(null)
 
@@ -98,34 +98,34 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
     }
   }
 
-  function rebuildWorkspaceFromSnapshot(): void {
-    if (!workspaceSnapshot.value) {
-      workspace.value = null
-      return
-    }
-    const accounts = workspaceSnapshot.value.accounts.map((a) => {
-      const account = new BdgAccountImpl(a.id, a.name, a.columnMappingId)
-      for (const s of a.segments ?? []) {
-        account.addSegment(new BdgAccountSegmentImpl(s.id, s.name, s.rows))
-      }
-      if (a.balanceSnapshot) {
-        account.setBalanceSnapshot(a.balanceSnapshot.amount, a.balanceSnapshot.dateAsString)
-      }
-      return account
-    })
-    workspace.value = factory.reconstructWorkspace(
-      workspaceSnapshot.value.id,
-      workspaceSnapshot.value.name,
-      accounts,
-    )
-  }
+  // function rebuildWorkspaceFromSnapshot(): void {
+  //   // if (!workspaceSnapshot.value) {
+  //   //   // workspace.value = null
+  //   //   return
+  //   // }
+  //   const accounts = workspaceSnapshot.value.accounts.map((a) => {
+  //     const account = new BdgAccountImpl(a.id, a.name, a.columnMappingId)
+  //     for (const s of a.segments ?? []) {
+  //       account.addSegment(new BdgAccountSegmentImpl(s.id, s.name, s.rows))
+  //     }
+  //     if (a.balanceSnapshot) {
+  //       account.setBalanceSnapshot(a.balanceSnapshot.amount, a.balanceSnapshot.dateAsString)
+  //     }
+  //     return account
+  //   })
+  //   workspace.value = factory.reconstructWorkspace(
+  //     workspaceSnapshot.value.id,
+  //     workspaceSnapshot.value.name,
+  //     accounts,
+  //   )
+  // }
 
   function createWorkspace(name: string): BdgWorkspace {
     const newWorkspace = factory.createWorkspace()
     newWorkspace.name = name
     workspace.value = newWorkspace
     workspacePath.value = null
-    useSettingsStore().reinitialize()
+    // useSettingsStore().reinitialize()
     _syncWorkspaceSnapshot()
     return newWorkspace
   }
@@ -197,7 +197,6 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
     if (!workspace.value) return { success: false, error: 'No workspace' }
 
     const exporter = container.get<BdgWorkspaceExporter>(BdgWorkspaceExporter.bindingTypeId)
-    const settings = useSettingsStore().settings
 
     try {
       if ('showSaveFilePicker' in window) {
@@ -207,10 +206,10 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
           suggestedName: `${workspace.value.name}.bdg`,
           types: [{ description: 'Budgan file', accept: { 'application/zip': ['.bdg'] } }],
         })
-        await exporter.saveToHandle(handle, workspace.value, settings)
+        await exporter.saveToHandle(handle, workspace.value)
         return { success: true, value: handle.name }
       } else {
-        const bytes = exporter.buildZipBytes(workspace.value, settings)
+        const bytes = exporter.buildZipBytes(workspace.value)
         const blob = new Blob([bytes.buffer as ArrayBuffer], { type: 'application/zip' })
         const url = URL.createObjectURL(blob)
         const anchor = document.createElement('a')
@@ -267,17 +266,17 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
       const result = await importer.import(handle)
       if (!result.success) return result
 
-      const { workspace: importedWorkspace, columnMappings } = result.value
+      const { workspace: importedWorkspace } = result.value
 
       const settingsStore = useSettingsStore()
       const existingIds = new Set(settingsStore.columnMappings.map((m) => m.id))
-      for (const mapping of columnMappings) {
-        if (existingIds.has(mapping.id)) {
-          settingsStore.updateColumnMapping(mapping)
-        } else {
-          settingsStore.addColumnMapping(mapping)
-        }
-      }
+      // for (const mapping of columnMappings) {
+      //   if (existingIds.has(mapping.id)) {
+      //     settingsStore.updateColumnMapping(mapping)
+      //   } else {
+      //     settingsStore.addColumnMapping(mapping)
+      //   }
+      // }
 
       setWorkspace(importedWorkspace)
       return { success: true, value: undefined }
@@ -297,10 +296,10 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
   }
 
   function clearWorkspace(): void {
-    workspace.value = null
+    // workspace.value = null
     workspacePath.value = null
     workspaceSnapshot.value = null
-    useSettingsStore().reinitialize()
+    // useSettingsStore().reinitialize()
     localStorage.removeItem('budgan-workspace')
     localStorage.removeItem('budgan-settings')
   }
@@ -321,7 +320,7 @@ export const useWorkspaceStore = defineStore('budgan-workspace', () => {
     setWorkspace,
     setWorkspacePath,
     clearWorkspace,
-    rebuildWorkspaceFromSnapshot,
+    // rebuildWorkspaceFromSnapshot,
   }
 }, {
   persist: {

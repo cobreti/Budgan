@@ -3,6 +3,7 @@ import type { CsvColumnMapping } from '@engine/modules/csv-import/csv-column-con
 
 export interface ColumnMappingEntry {
   id: string
+  workspaceId: string
   name: string
   columnMapping: CsvColumnMapping
 }
@@ -19,17 +20,11 @@ export class IndexdbDatabaseImpl extends Dexie implements IndexDBDatabase {
   constructor() {
     super('bdg-database')
     this.version(1).stores({
-      columnMapping: 'id, name, columnMapping'
+      columnMapping: '&id, workspaceId, name'
     })
 
     this.columnMapping = this.table('columnMapping');
     this.open();
-
-    // this.columnMapping.add({
-    //   id: '1',
-    //   name: 'Default',
-    //   columnMapping: {}
-    // });
   }
 }
 
