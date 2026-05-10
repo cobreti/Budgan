@@ -3,6 +3,7 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
+import { MainMenuService } from '../../services/main-menu.service';
 
 @Component({
   selector: 'app-header',
@@ -13,4 +14,10 @@ import { MatIconButton } from '@angular/material/button';
 })
 export class HeaderComponent {
 
+  constructor(private mainMenuService: MainMenuService) {
+  }
+
+  onMenuBtnClick() {
+    this.mainMenuService.toggleMenu();
+  }
 }
