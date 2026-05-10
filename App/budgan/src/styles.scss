@@ -6,10 +6,11 @@
 
 @include mat.core();
 
+// Blue palette for light (closest to #1E3A8A), violet for dark (closest to #6366F1)
 $light-theme: mat.define-theme((
   color: (
     theme-type: light,
-    primary: mat.$azure-palette,
+    primary: mat.$blue-palette,
   ),
   typography: (
     brand-family: 'Roboto, sans-serif',
@@ -23,7 +24,7 @@ $light-theme: mat.define-theme((
 $dark-theme: mat.define-theme((
   color: (
     theme-type: dark,
-    primary: mat.$azure-palette,
+    primary: mat.$violet-palette,
   ),
   typography: (
     brand-family: 'Roboto, sans-serif',
@@ -34,23 +35,53 @@ $dark-theme: mat.define-theme((
   ),
 ));
 
+@mixin apply-light-colors() {
+  --mat-sys-primary: #1E3A8A;
+  --mat-sys-on-primary: #FFFFFF;
+  --mat-sys-secondary: #3B82F6;
+  --mat-sys-on-secondary: #FFFFFF;
+  --mat-sys-background: #F8FAFC;
+  --mat-sys-on-background: #0F172A;
+  --mat-sys-surface: #FFFFFF;
+  --mat-sys-on-surface: #0F172A;
+  --mat-sys-error: #EF4444;
+  --mat-sys-on-error: #FFFFFF;
+  // Custom semantic tokens (no M3 equivalent)
+  --color-success: #10B981;
+}
+
+@mixin apply-dark-colors() {
+  --mat-sys-primary: #6366F1;
+  --mat-sys-on-primary: #FFFFFF;
+  --mat-sys-background: #0F172A;
+  --mat-sys-on-background: #E2E8F0;
+  --mat-sys-surface: #1E293B;
+  --mat-sys-on-surface: #E2E8F0;
+  // Custom semantic tokens
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+}
+
 // Default light theme
 html {
   @include mat.all-component-themes($light-theme);
+  @include apply-light-colors();
   color-scheme: light;
 }
 
 // Automatic dark theme via OS preference (unless .light-theme class is present)
-@media (prefers-color-scheme: dark) {
-  html:not(.light-theme) {
-    @include mat.all-component-themes($dark-theme);
-    color-scheme: dark;
-  }
-}
+//@media (prefers-color-scheme: dark) {
+//  html:not(.light-theme) {
+//    @include mat.all-component-themes($dark-theme);
+//    @include apply-dark-colors();
+//    color-scheme: dark;
+//  }
+//}
 
 // Explicit dark theme override via class
 html.dark-theme {
   @include mat.all-component-themes($dark-theme);
+  @include apply-dark-colors();
   color-scheme: dark;
 }
 
@@ -61,4 +92,6 @@ html.dark-theme {
 body {
   margin: 0;
   font-family: Roboto, sans-serif;
+  background-color: var(--mat-sys-background);
+  color: var(--mat-sys-on-background);
 }
