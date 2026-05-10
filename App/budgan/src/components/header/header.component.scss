@@ -1,5 +1,27 @@
 .header {
   background-color: var(--mat-sys-primary);
-  height: 3rem;
+  height: 4rem;
   width: 100%;
+
+  .title {
+    margin-left: 2rem;
+    color: var(--mat-sys-on-primary);
+    user-select: none;
+
+    &:hover {
+      cursor: default;
+    }
+  }
+
+  .menu-icon {
+    color: var(--mat-sys-on-primary);
+  }
+
+
+  [mat-button]:not([disabled]),
+  [mat-icon-button]:not([disabled]),
+  [mat-raised-button]:not([disabled]),
+  [mat-fab]:not([disabled]) {
+    cursor: pointer;
+  }
 }
