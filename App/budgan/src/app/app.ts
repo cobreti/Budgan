@@ -1,14 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject, ViewEncapsulation } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { HeaderComponent } from '../components/header/header.component';
+import { HeaderComponent } from '../header/header.component';
+import { MainComponent } from '../main/main.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrls: ['./app.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, HeaderComponent],
+  imports: [
+    HeaderComponent,
+    MainComponent
+  ],
   encapsulation: ViewEncapsulation.None
 })
 export class App {
