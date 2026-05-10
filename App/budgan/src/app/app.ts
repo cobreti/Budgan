@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from '../components/header/header.component'
+import { TranslateService } from '@ngx-translate/core';
+import { HeaderComponent } from '../components/header/header.component';
 
 @Component({
   selector: 'app-root',
@@ -10,5 +11,7 @@ import { HeaderComponent } from '../components/header/header.component'
   imports: [RouterOutlet, HeaderComponent],
 })
 export class App {
-  protected readonly title = signal('budgan');
+  constructor() {
+    inject(TranslateService).use('en');
+  }
 }
