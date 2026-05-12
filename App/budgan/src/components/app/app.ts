@@ -4,6 +4,7 @@ import { HeaderComponent } from '../header/header.component';
 import { MainComponent } from '../main/main.component';
 import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav';
 import { MainMenuService } from '../../services/main-menu.service';
+import { MainMenuComponent } from '../main-menu/main-menu.component';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,8 @@ import { MainMenuService } from '../../services/main-menu.service';
     HeaderComponent,
     MainComponent,
     MatSidenavContainer,
-    MatSidenav
+    MatSidenav,
+    MainMenuComponent
   ],
   encapsulation: ViewEncapsulation.None
 })
