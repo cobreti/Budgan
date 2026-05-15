@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
+import { MainMenuButtonComponent } from './main-menu-button/main-menu-button.component';
 
 @Component({
   selector: 'app-main-menu',
   templateUrl: './main-menu.component.html',
   styleUrls: ['./main-menu.component.scss'],
-  imports: [MatIconModule]
+  imports: [MainMenuButtonComponent]
 })
 export class MainMenuComponent { }
