@@ -1,5 +1,8 @@
 {
   "app": {
     "title": "Budgan"
+  },
+  "menu": {
+    "newJournal": "New Journal"
   }
 }
