@@ -5,5 +5,11 @@
   "menu": {
     "newJournal": "New Journal",
     "openJournal": "Open Journal"
+  },
+  "newJournal": {
+    "title": "New Journal",
+    "namePlaceholder": "Journal name",
+    "create": "Create",
+    "cancel": "Cancel"
   }
 }

@@ -14,4 +14,8 @@ export class MainMenuService {
   toggleMenu() {
     this._isOpen.update(value => !value);
   }
+
+  close(): void {
+    this._isOpen.set(false);
+  }
 }

@@ -1,6 +1,6 @@
 <div class="main-menu">
   <div class="main-menu__section">
-    <app-main-menu-button icon="library_add" [label]="'menu.newJournal' | translate" />
+    <app-main-menu-button icon="library_add" [label]="'menu.newJournal' | translate" (clicked)="onNewJournal()" />
     <app-main-menu-button icon="folder_open" [label]="'menu.openJournal' | translate" />
   </div>
 </div>
