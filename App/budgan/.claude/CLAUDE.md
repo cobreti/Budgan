@@ -70,3 +70,8 @@ export class MyFeatureServiceImpl implements MyFeatureService {
 
 - Inject by the interface token using an `InjectionToken`, not the concrete class
 - The `Impl` class is the only place that knows about implementation details
+- Register every service token in `src/components/app/app.config.ts` by adding a provider entry to the `providers` array:
+
+```typescript
+{ provide: MY_FEATURE_SERVICE, useClass: MyFeatureServiceImpl }
+```
