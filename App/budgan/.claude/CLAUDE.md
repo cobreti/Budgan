@@ -53,3 +53,20 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+- Always define a TypeScript interface for the service contract, then implement it in a separate class with the `Impl` suffix
+
+```typescript
+// my-feature.service.ts
+export interface MyFeatureService {
+  doThing(): void;
+}
+
+// my-feature.service.impl.ts
+@Injectable({ providedIn: 'root' })
+export class MyFeatureServiceImpl implements MyFeatureService {
+  doThing(): void { /* ... */ }
+}
+```
+
+- Inject by the interface token using an `InjectionToken`, not the concrete class
+- The `Impl` class is the only place that knows about implementation details
