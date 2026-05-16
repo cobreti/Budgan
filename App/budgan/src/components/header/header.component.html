@@ -3,4 +3,14 @@
     <mat-icon>menu</mat-icon>
   </button>
   <span class="title">{{ 'app.title' | translate }}</span>
+  <span class="spacer"></span>
+
+  <button mat-icon-button [matMenuTriggerFor]="localeMenu" class="locale-trigger">
+    <mat-icon>language</mat-icon>
+  </button>
+
+  <mat-menu #localeMenu="matMenu">
+    <button mat-menu-item (click)="switchLocale('en')">English</button>
+    <button mat-menu-item (click)="switchLocale('fr')">Français</button>
+  </mat-menu>
 </mat-toolbar>

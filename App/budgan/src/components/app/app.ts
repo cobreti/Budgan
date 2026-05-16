@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, ViewEncapsulation } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
 import { MainComponent } from '../main/main.component';
 import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav';
@@ -21,7 +20,5 @@ import { MainMenuComponent } from '../main-menu/main-menu.component';
   encapsulation: ViewEncapsulation.None
 })
 export class App {
-  constructor(public mainMenuService: MainMenuService) {
-    inject(TranslateService).use('en');
-  }
+  constructor(public mainMenuService: MainMenuService) {}
 }

@@ -24,4 +24,12 @@
   [mat-fab]:not([disabled]) {
     cursor: pointer;
   }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .locale-trigger {
+    color: var(--mat-sys-on-primary);
+  }
 }

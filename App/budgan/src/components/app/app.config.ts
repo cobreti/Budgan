@@ -6,6 +6,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { routes } from './app.routes';
 import { ID_GENERATOR_SERVICE, IdGeneratorServiceImpl } from '../../services/id-generator.service';
+import { LOCALE_SERVICE, LocaleServiceImpl } from '../../services/locale.service';
 import { WORKSPACE_STORE_SERVICE, WorkspaceStoreServiceImpl } from '../../services/workspace-store.service';
 
 export const appConfig: ApplicationConfig = {
@@ -21,6 +22,7 @@ export const appConfig: ApplicationConfig = {
       suffix: '.json',
     }),
     { provide: ID_GENERATOR_SERVICE, useClass: IdGeneratorServiceImpl },
+    { provide: LOCALE_SERVICE, useClass: LocaleServiceImpl },
     { provide: WORKSPACE_STORE_SERVICE, useClass: WorkspaceStoreServiceImpl },
   ]
 };
