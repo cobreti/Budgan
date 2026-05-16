@@ -6,7 +6,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { routes } from './app.routes';
 import { ID_GENERATOR_SERVICE, IdGeneratorServiceImpl } from '../../services/id-generator.service';
-import { WORKSPACE_FACTORY_SERVICE, WorkspaceFactoryServiceImpl } from '../../services/workspace-factory.service';
+import { WORKSPACE_STORE_SERVICE, WorkspaceStoreServiceImpl } from '../../services/workspace-store.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,6 +21,6 @@ export const appConfig: ApplicationConfig = {
       suffix: '.json',
     }),
     { provide: ID_GENERATOR_SERVICE, useClass: IdGeneratorServiceImpl },
-    { provide: WORKSPACE_FACTORY_SERVICE, useClass: WorkspaceFactoryServiceImpl },
+    { provide: WORKSPACE_STORE_SERVICE, useClass: WorkspaceStoreServiceImpl },
   ]
 };
