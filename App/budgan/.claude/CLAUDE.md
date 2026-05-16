@@ -75,3 +75,19 @@ export class MyFeatureServiceImpl implements MyFeatureService {
 ```typescript
 { provide: MY_FEATURE_SERVICE, useClass: MyFeatureServiceImpl }
 ```
+
+## i18n
+
+Localization uses `@ngx-translate/core` with an HTTP loader. Translation files are served as static assets and must live in:
+
+```
+public/assets/i18n/en.json
+public/assets/i18n/fr.json
+```
+
+> **Do NOT place translation files under `src/assets/`** — `angular.json` serves assets from `public/` only, so files in `src/assets/` are never reachable at runtime.
+
+- All user-visible strings must use `{{ 'some.key' | translate }}` in templates.
+- Nested dot-notation keys are supported: `{ "menu": { "newJournal": "New Journal" } }` → `'menu.newJournal' | translate`.
+- Every key must be present in **both** `en.json` and `fr.json`.
+- Add `TranslatePipe` to the `imports` array of any standalone component that uses the pipe.
