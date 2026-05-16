@@ -3,6 +3,7 @@
     "title": "Budgan"
   },
   "menu": {
-    "newJournal": "Nouveau journal"
+    "newJournal": "Nouveau journal",
+    "openJournal": "Ouvrir un journal"
   }
 }

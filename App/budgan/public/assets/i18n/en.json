@@ -3,6 +3,7 @@
     "title": "Budgan"
   },
   "menu": {
-    "newJournal": "New Journal"
+    "newJournal": "New Journal",
+    "openJournal": "Open Journal"
   }
 }
