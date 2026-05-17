@@ -1,2 +1,11 @@
 <div class="home">
+  <div class="home__toolbar" role="toolbar" aria-label="Main actions">
+    <app-main-menu-button
+      icon="library_add"
+      [label]="'menu.newJournal' | translate"
+      (clicked)="onNewJournal()" />
+    <app-main-menu-button
+      icon="folder_open"
+      [label]="'menu.openJournal' | translate" />
+  </div>
 </div>
