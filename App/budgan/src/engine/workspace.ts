@@ -11,6 +11,10 @@ export class Workspace {
     this._indexDb = IndexDb;
   }
 
+  async create(): Promise<void> {
+    await this._indexDb.workspaceTable.add({ id: this._id, name: this._name });
+  }
+
   get indexDb(): IndexDB { return this._indexDb; }
   get id(): string { return this._id; }
   get name(): string { return this._name; }

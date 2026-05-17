@@ -22,10 +22,10 @@ export class NewJournalComponent {
 
   readonly nameControl = new FormControl('', { nonNullable: true, validators: [Validators.required] });
 
-  onCreate(): void {
+  async onCreate(): Promise<void> {
     if (this.nameControl.invalid) return;
-    this._store.createWorkspace(this.nameControl.value);
-    this._router.navigate([this._locale.currentLocale()]);
+    await this._store.createWorkspace(this.nameControl.value);
+    await this._router.navigate([this._locale.currentLocale()]);
   }
 
   onCancel(): void {

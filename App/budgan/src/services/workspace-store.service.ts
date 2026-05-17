@@ -1,10 +1,11 @@
 import { inject, Injectable, InjectionToken, Signal, signal, WritableSignal } from '@angular/core';
 import { Workspace } from '../engine/workspace';
 import { ID_GENERATOR_SERVICE, IdGeneratorService } from './id-generator.service';
+import { IndexDB } from '../engine/indexdb';
 
 export interface WorkspaceStoreService {
   readonly workspace: Signal<Workspace | null>;
-  createWorkspace(name: string): void;
+  createWorkspace(name: string): Promise<void>;
   renameWorkspace(id: string, name: string): void;
   deleteWorkspace(id: string): void;
 }
@@ -15,19 +16,28 @@ export const WORKSPACE_STORE_SERVICE =
 @Injectable({ providedIn: 'root' })
 export class WorkspaceStoreServiceImpl implements WorkspaceStoreService {
   private readonly _idGenerator = inject<IdGeneratorService>(ID_GENERATOR_SERVICE);
+  private readonly _indexdb = inject(IndexDB);
   private readonly _workspace: WritableSignal<Workspace | null> = signal(null);
 
   get workspace(): Signal<Workspace | null> { return this._workspace; }
 
-  createWorkspace(name: string): void {
-    this._workspace.set(new Workspace(this._idGenerator.generateId(), name));
+  async createWorkspace(name: string): Promise<void> {
+    let newWorkspace = new Workspace(this._indexdb, this._idGenerator.generateId(), name);
+
+    try {
+      await newWorkspace.create();
+      this._workspace.set(newWorkspace);
+    }
+    catch (e) {
+      this._workspace.set(null);
+    }
   }
 
   renameWorkspace(id: string, name: string): void {
     const current = this._workspace();
     if (current?.id === id) {
       // New Workspace instance required: Angular Signals use reference equality.
-      this._workspace.set(new Workspace(id, name));
+      this._workspace.set(new Workspace(this._indexdb, id, name));
     }
   }
 
