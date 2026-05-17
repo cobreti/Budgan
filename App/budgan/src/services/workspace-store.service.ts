@@ -5,6 +5,7 @@ import { IndexdbService } from './indexdb.service';
 
 export interface WorkspaceStoreService {
   readonly workspace: Signal<Workspace | null>;
+  loadWorkspaceById(id: string): Promise<boolean>;
   createWorkspace(name: string): Promise<void>;
   renameWorkspace(id: string, name: string): void;
   deleteWorkspace(id: string): void;
@@ -20,6 +21,13 @@ export class WorkspaceStoreServiceImpl implements WorkspaceStoreService {
   private readonly _workspace: WritableSignal<Workspace | null> = signal(null);
 
   get workspace(): Signal<Workspace | null> { return this._workspace; }
+
+  async loadWorkspaceById(id: string): Promise<boolean> {
+    const entry = await this._indexdb.workspaceTable.get(id);
+    if (!entry) return false;
+    this._workspace.set(new Workspace(this._indexdb, entry.id, entry.name));
+    return true;
+  }
 
   async createWorkspace(name: string): Promise<void> {
     let newWorkspace = new Workspace(this._indexdb, this._idGenerator.generateId(), name);

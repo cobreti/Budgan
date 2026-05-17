@@ -1,0 +1,10 @@
+.journal {
+  width: 100%;
+  padding: 1em;
+
+  &__title {
+    margin: 0;
+    font-size: 1.5em;
+    color: var(--mat-sys-on-background);
+  }
+}

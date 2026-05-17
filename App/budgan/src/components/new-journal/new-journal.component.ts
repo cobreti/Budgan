@@ -25,7 +25,8 @@ export class NewJournalComponent {
   async onCreate(): Promise<void> {
     if (this.nameControl.invalid) return;
     await this._store.createWorkspace(this.nameControl.value);
-    await this._router.navigate([this._locale.currentLocale()]);
+    const id = this._store.workspace()!.id;
+    await this._router.navigate([this._locale.currentLocale(), 'journal', id]);
   }
 
   onCancel(): void {
