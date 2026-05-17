@@ -1,0 +1,9 @@
+.page-menu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 5em;
+  background-color: var(--mat-sys-surface);
+  border-radius: 0.5em;
+}

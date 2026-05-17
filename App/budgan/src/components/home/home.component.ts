@@ -1,15 +1,16 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { PageMenuComponent } from '../page-menu/page-menu.component';
 import { Router } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
 import { LOCALE_SERVICE, LocaleService } from '../../services/locale.service';
-import { MainMenuButtonComponent } from '../main-menu/main-menu-button/main-menu-button.component';
+import { PageMenuButtonComponent } from '../page-menu/page-menu-button/page-menu-button.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'home',
   templateUrl: 'home.component.html',
   styleUrls: ['home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MainMenuButtonComponent, TranslatePipe],
+  imports: [PageMenuComponent, PageMenuButtonComponent, TranslatePipe],
 })
 export class HomeComponent {
   private readonly _router = inject(Router);
