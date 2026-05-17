@@ -1,7 +1,7 @@
 import { inject, Injectable, InjectionToken, Signal, signal, WritableSignal } from '@angular/core';
 import { Workspace } from '../engine/workspace';
 import { ID_GENERATOR_SERVICE, IdGeneratorService } from './id-generator.service';
-import { IndexDB } from '../engine/indexdb';
+import { IndexdbService } from './indexdb.service';
 
 export interface WorkspaceStoreService {
   readonly workspace: Signal<Workspace | null>;
@@ -16,7 +16,7 @@ export const WORKSPACE_STORE_SERVICE =
 @Injectable({ providedIn: 'root' })
 export class WorkspaceStoreServiceImpl implements WorkspaceStoreService {
   private readonly _idGenerator = inject<IdGeneratorService>(ID_GENERATOR_SERVICE);
-  private readonly _indexdb = inject(IndexDB);
+  private readonly _indexdb = inject(IndexdbService);
   private readonly _workspace: WritableSignal<Workspace | null> = signal(null);
 
   get workspace(): Signal<Workspace | null> { return this._workspace; }

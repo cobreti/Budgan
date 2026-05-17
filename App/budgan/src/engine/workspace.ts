@@ -1,11 +1,11 @@
-import { IndexDB } from './indexdb';
+import { IndexdbService } from '../services/indexdb.service';
 
 export class Workspace {
   private _id: string;
   private _name: string;
-  private _indexDb: IndexDB;
+  private _indexDb: IndexdbService;
 
-  constructor(IndexDb: IndexDB, id: string, name: string) {
+  constructor(IndexDb: IndexdbService, id: string, name: string) {
     this._id = id;
     this._name = name;
     this._indexDb = IndexDb;
@@ -15,7 +15,7 @@ export class Workspace {
     await this._indexDb.workspaceTable.add({ id: this._id, name: this._name });
   }
 
-  get indexDb(): IndexDB { return this._indexDb; }
+  get indexDb(): IndexdbService { return this._indexDb; }
   get id(): string { return this._id; }
   get name(): string { return this._name; }
 }

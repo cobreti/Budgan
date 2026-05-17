@@ -1,13 +1,13 @@
 import Dexie, { EntityTable } from 'dexie';
 import { Injectable } from '@angular/core';
-import { WorkspaceEntry } from './types';
+import { WorkspaceModel } from '../Models/workspace.model';
 
-export type WorkspaceEntity = EntityTable<WorkspaceEntry, 'id'>;
+export type WorkspaceEntity = EntityTable<WorkspaceModel, 'id'>;
 
 @Injectable({
   providedIn: 'root',
 })
-export class IndexDB extends Dexie {
+export class IndexdbService extends Dexie {
   workspaceTable!: WorkspaceEntity;
 
   constructor() {
