@@ -31,4 +31,8 @@ export class HeaderComponent {
   switchLocale(locale: string): void {
     this._router.navigate([locale]);
   }
+
+  async onHome(): Promise<void> {
+    await this._router.navigate([this._localeService.currentLocale()]);
+  }
 }

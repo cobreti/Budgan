@@ -2,7 +2,7 @@
   <button mat-icon-button class="menu-icon" (click)="onMenuBtnClick()">
     <mat-icon>menu</mat-icon>
   </button>
-  <span class="title">{{ 'app.title' | translate }}</span>
+  <span class="title" (click)="onHome()">{{ 'app.title' | translate }}</span>
 
   @if (workspaceName()) {
     <span class="workspace-name">{{ workspaceName() }}</span>
