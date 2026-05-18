@@ -1,20 +1,20 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { PageMenuComponent } from '../page-menu/page-menu.component';
+import { PageMenuComponent } from '../../components/page-menu/page-menu.component';
 import { MatCard } from '@angular/material/card';
-import { WorkspaceListComponent } from '../workspace-list/workspace-list.component';
+import { WorkspaceListComponent } from '../../components/workspace-list/workspace-list.component';
 import { Router } from '@angular/router';
 import { LOCALE_SERVICE, LocaleService } from '../../services/locale.service';
-import { PageMenuButtonComponent } from '../page-menu/page-menu-button/page-menu-button.component';
+import { PageMenuButtonComponent } from '../../components/page-menu/page-menu-button/page-menu-button.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'home',
-  templateUrl: 'home.component.html',
-  styleUrls: ['home.component.scss'],
+  selector: 'app-workspaces',
+  templateUrl: 'workspaces.component.html',
+  styleUrls: ['workspaces.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [PageMenuComponent, PageMenuButtonComponent, TranslatePipe, MatCard, WorkspaceListComponent],
 })
-export class HomeComponent {
+export class WorkspacesComponent {
   private readonly _router = inject(Router);
   private readonly _locale = inject<LocaleService>(LOCALE_SERVICE);
 
