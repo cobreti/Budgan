@@ -6,28 +6,28 @@ import { JOURNAL_SERVICE, JournalService } from '../../services/journal.service'
 import { JournalModel } from '../../Models/journalModel';
 
 @Component({
-  selector: 'app-workspace-list',
-  templateUrl: './workspace-list.component.html',
-  styleUrl: './workspace-list.component.scss',
+  selector: 'app-journal-list',
+  templateUrl: './journal-list.component.html',
+  styleUrl: './journal-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslatePipe],
 })
-export class WorkspaceListComponent {
-  private readonly _workspaceService = inject<JournalService>(JOURNAL_SERVICE);
+export class JournalListComponent {
+  private readonly _journalService = inject<JournalService>(JOURNAL_SERVICE);
   private readonly _router = inject(Router);
   private readonly _locale = inject<LocaleService>(LOCALE_SERVICE);
 
-  readonly workspaces = signal<JournalModel[]>([]);
+  readonly journals = signal<JournalModel[]>([]);
 
   constructor() {
     this._load();
   }
 
   private async _load(): Promise<void> {
-    this.workspaces.set(await this._workspaceService.getList());
+    this.journals.set(await this._journalService.getList());
   }
 
-  openWorkspace(id: string): void {
+  open(id: string): void {
     this._router.navigate([this._locale.currentLocale(), 'journal', id]);
   }
 }
