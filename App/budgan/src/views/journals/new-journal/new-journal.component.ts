@@ -5,8 +5,8 @@ import { MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { TranslatePipe } from '@ngx-translate/core';
-import { LOCALE_SERVICE, LocaleService } from '../../services/locale.service';
-import { WORKSPACE_STORE_SERVICE, WorkspaceStoreService } from '../../services/workspace-store.service';
+import { LOCALE_SERVICE, LocaleService } from '../../../services/locale.service';
+import { WORKSPACE_STORE_SERVICE, WorkspaceStoreService } from '../../../services/workspace-store.service';
 
 @Component({
   selector: 'app-new-journal',

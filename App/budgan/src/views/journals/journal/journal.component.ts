@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { WORKSPACE_STORE_SERVICE } from '../../services/workspace-store.service';
+import { WORKSPACE_STORE_SERVICE } from '../../../services/workspace-store.service';
 
 @Component({
   selector: 'app-journal',
