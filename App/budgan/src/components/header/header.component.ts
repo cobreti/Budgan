@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatIconButton } from '@angular/material/button';
@@ -7,7 +7,6 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MainMenuService } from '../../services/main-menu.service';
 import { LOCALE_SERVICE } from '../../services/locale.service';
-import { WORKSPACE_STORE_SERVICE, WorkspaceStoreService } from '../../services/workspace-store.service';
 
 @Component({
   selector: 'app-header',
@@ -20,9 +19,6 @@ export class HeaderComponent {
   private readonly _mainMenuService = inject(MainMenuService);
   private readonly _localeService = inject(LOCALE_SERVICE);
   private readonly _router = inject(Router);
-  private readonly _store = inject<WorkspaceStoreService>(WORKSPACE_STORE_SERVICE);
-
-  readonly workspaceName = computed(() => this._store.workspace()?.name ?? null);
 
   onMenuBtnClick(): void {
     this._mainMenuService.toggleMenu();

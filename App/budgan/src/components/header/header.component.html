@@ -4,10 +4,6 @@
   </button>
   <span class="title" (click)="onHome()">{{ 'app.title' | translate }}</span>
 
-  @if (workspaceName()) {
-    <span class="workspace-name">{{ workspaceName() }}</span>
-  }
-
   <span class="spacer"></span>
 
   <button mat-icon-button [matMenuTriggerFor]="localeMenu" class="locale-trigger">

@@ -1,4 +1,4 @@
-import { inject, Injectable, InjectionToken, Signal, signal } from '@angular/core';
+import { Injectable, InjectionToken, Signal, signal } from '@angular/core';
 
 export interface LocaleService {
   readonly currentLocale: Signal<string>;
