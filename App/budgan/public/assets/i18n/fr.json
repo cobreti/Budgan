@@ -13,6 +13,7 @@
     "title": "Nouveau journal",
     "namePlaceholder": "Nom du journal",
     "create": "Créer",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "nameExists": "Un journal avec ce nom existe déjà."
   }
 }

@@ -13,6 +13,7 @@
     "title": "New Journal",
     "namePlaceholder": "Journal name",
     "create": "Create",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "nameExists": "A journal with this name already exists."
   }
 }

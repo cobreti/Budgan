@@ -3,10 +3,12 @@ import { Workspace } from '../engine/workspace';
 import { ID_GENERATOR_SERVICE, IdGeneratorService } from './id-generator.service';
 import { IndexdbService } from './indexdb.service';
 
+export type CreateWorkspaceResult = 'ok' | 'name-exists';
+
 export interface WorkspaceStoreService {
   readonly workspace: Signal<Workspace | null>;
   loadWorkspaceById(id: string): Promise<boolean>;
-  createWorkspace(name: string): Promise<void>;
+  createWorkspace(name: string): Promise<CreateWorkspaceResult>;
   renameWorkspace(id: string, name: string): void;
   deleteWorkspace(id: string): void;
 }
@@ -29,16 +31,14 @@ export class WorkspaceStoreServiceImpl implements WorkspaceStoreService {
     return true;
   }
 
-  async createWorkspace(name: string): Promise<void> {
-    let newWorkspace = new Workspace(this._indexdb, this._idGenerator.generateId(), name);
+  async createWorkspace(name: string): Promise<CreateWorkspaceResult> {
+    const existing = await this._indexdb.workspaceTable.where('name').equals(name).count();
+    if (existing > 0) return 'name-exists';
 
-    try {
-      await newWorkspace.create();
-      this._workspace.set(newWorkspace);
-    }
-    catch (e) {
-      this._workspace.set(null);
-    }
+    const newWorkspace = new Workspace(this._indexdb, this._idGenerator.generateId(), name);
+    await newWorkspace.create();
+    this._workspace.set(newWorkspace);
+    return 'ok';
   }
 
   renameWorkspace(id: string, name: string): void {

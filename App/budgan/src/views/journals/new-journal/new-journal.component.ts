@@ -7,13 +7,14 @@ import { MatInput } from '@angular/material/input';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LOCALE_SERVICE, LocaleService } from '../../../services/locale.service';
 import { WORKSPACE_STORE_SERVICE, WorkspaceStoreService } from '../../../services/workspace-store.service';
+import { MatError } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-new-journal',
   templateUrl: './new-journal.component.html',
   styleUrl: './new-journal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, TranslatePipe],
+  imports: [ReactiveFormsModule, MatFormField, MatLabel, MatError, MatInput, MatButton, TranslatePipe],
 })
 export class NewJournalComponent {
   private readonly _store = inject<WorkspaceStoreService>(WORKSPACE_STORE_SERVICE);
@@ -24,7 +25,11 @@ export class NewJournalComponent {
 
   async onCreate(): Promise<void> {
     if (this.nameControl.invalid) return;
-    await this._store.createWorkspace(this.nameControl.value);
+    const result = await this._store.createWorkspace(this.nameControl.value);
+    if (result === 'name-exists') {
+      this.nameControl.setErrors({ nameExists: true });
+      return;
+    }
     const id = this._store.workspace()!.id;
     await this._router.navigate([this._locale.currentLocale(), 'journal', id]);
   }

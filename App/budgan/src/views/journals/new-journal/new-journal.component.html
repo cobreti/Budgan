@@ -3,6 +3,9 @@
   <mat-form-field>
     <mat-label>{{ 'newJournal.namePlaceholder' | translate }}</mat-label>
     <input matInput [formControl]="nameControl" />
+    @if (nameControl.hasError('nameExists')) {
+      <mat-error>{{ 'newJournal.nameExists' | translate }}</mat-error>
+    }
   </mat-form-field>
   <div class="new-journal__actions">
     <button mat-button (click)="onCancel()">{{ 'newJournal.cancel' | translate }}</button>
