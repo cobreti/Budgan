@@ -8,6 +8,7 @@ export interface JournalService {
   getList(): Promise<JournalModel[]>;
   create(name: string): Promise<Result<string>>;
   getById(id: string): Promise<JournalModel>;
+  delete(id: string): Promise<void>;
 }
 
 export const JOURNAL_SERVICE = new InjectionToken<JournalService>('JournalService');
@@ -36,5 +37,9 @@ export class JournalServiceImpl implements JournalService {
       throw new Error('Workspace not found');
     }
     return entry;
+  }
+
+  async delete(id: string): Promise<void> {
+    await this._indexDb.workspaceTable.delete(id);
   }
 }

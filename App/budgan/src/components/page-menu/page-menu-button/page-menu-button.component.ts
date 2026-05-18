@@ -6,10 +6,12 @@ import { MatIcon } from '@angular/material/icon';
   templateUrl: './page-menu-button.component.html',
   styleUrl: './page-menu-button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '[class.page-menu-button--danger]': 'variant() === "danger"' },
   imports: [MatIcon],
 })
 export class PageMenuButtonComponent {
   icon = input.required<string>();
   label = input.required<string>();
+  variant = input<'default' | 'danger'>('default');
   clicked = output<void>();
 }

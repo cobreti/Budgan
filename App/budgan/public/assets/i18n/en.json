@@ -10,7 +10,8 @@
     "empty": "No journals yet."
   },
   "journal": {
-    "loading": "Loading journal..."
+    "loading": "Loading journal...",
+    "delete": "Delete"
   },
   "newJournal": {
     "title": "New Journal",

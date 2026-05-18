@@ -38,3 +38,7 @@
     border-radius: 4px;
   }
 }
+
+:host(.page-menu-button--danger) {
+  color: var(--mat-sys-error);
+}
