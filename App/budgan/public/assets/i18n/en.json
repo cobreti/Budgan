@@ -9,6 +9,9 @@
   "workspaceList": {
     "empty": "No journals yet."
   },
+  "journal": {
+    "loading": "Loading journal..."
+  },
   "newJournal": {
     "title": "New Journal",
     "namePlaceholder": "Journal name",

@@ -9,6 +9,9 @@
   "workspaceList": {
     "empty": "Aucun journal pour l'instant."
   },
+  "journal": {
+    "loading": "Chargement du journal..."
+  },
   "newJournal": {
     "title": "Nouveau journal",
     "namePlaceholder": "Nom du journal",

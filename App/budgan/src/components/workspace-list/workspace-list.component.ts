@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LOCALE_SERVICE, LocaleService } from '../../services/locale.service';
-import { WORKSPACE_SERVICE, WorkspaceService } from '../../services/workspace.service';
-import { WorkspaceModel } from '../../Models/workspace.model';
+import { JOURNAL_SERVICE, JournalService } from '../../services/journal.service';
+import { JournalModel } from '../../Models/journalModel';
 
 @Component({
   selector: 'app-workspace-list',
@@ -13,18 +13,18 @@ import { WorkspaceModel } from '../../Models/workspace.model';
   imports: [TranslatePipe],
 })
 export class WorkspaceListComponent {
-  private readonly _workspaceService = inject<WorkspaceService>(WORKSPACE_SERVICE);
+  private readonly _workspaceService = inject<JournalService>(JOURNAL_SERVICE);
   private readonly _router = inject(Router);
   private readonly _locale = inject<LocaleService>(LOCALE_SERVICE);
 
-  readonly workspaces = signal<WorkspaceModel[]>([]);
+  readonly workspaces = signal<JournalModel[]>([]);
 
   constructor() {
     this._load();
   }
 
   private async _load(): Promise<void> {
-    this.workspaces.set(await this._workspaceService.getWorkspaces());
+    this.workspaces.set(await this._workspaceService.getList());
   }
 
   openWorkspace(id: string): void {

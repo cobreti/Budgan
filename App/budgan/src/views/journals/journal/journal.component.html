@@ -1,3 +1,7 @@
 <div class="journal">
-  <h1 class="journal__title">{{ workspace()!.name }}</h1>
+  @if (journal(); as j) {
+    <h1 class="journal__title">{{ j.name }}</h1>
+  } @else {
+    <h1 class="journal__title">{{ 'journal.loading' | translate }}</h1>
+  }
 </div>

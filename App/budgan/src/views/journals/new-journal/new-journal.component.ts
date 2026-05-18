@@ -6,8 +6,8 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LOCALE_SERVICE, LocaleService } from '../../../services/locale.service';
-import { WORKSPACE_STORE_SERVICE, WorkspaceStoreService } from '../../../services/workspace-store.service';
 import { MatError } from '@angular/material/form-field';
+import { JOURNAL_SERVICE, JournalService } from '../../../services/journal.service';
 
 @Component({
   selector: 'app-new-journal',
@@ -17,7 +17,7 @@ import { MatError } from '@angular/material/form-field';
   imports: [ReactiveFormsModule, MatFormField, MatLabel, MatError, MatInput, MatButton, TranslatePipe],
 })
 export class NewJournalComponent {
-  private readonly _store = inject<WorkspaceStoreService>(WORKSPACE_STORE_SERVICE);
+  private readonly _journalService = inject<JournalService>(JOURNAL_SERVICE);
   private readonly _router = inject(Router);
   private readonly _locale = inject<LocaleService>(LOCALE_SERVICE);
 
@@ -25,13 +25,12 @@ export class NewJournalComponent {
 
   async onCreate(): Promise<void> {
     if (this.nameControl.invalid) return;
-    const result = await this._store.createWorkspace(this.nameControl.value);
-    if (result === 'name-exists') {
+    const result = await this._journalService.create(this.nameControl.value);
+    if (!result.success) {
       this.nameControl.setErrors({ nameExists: true });
       return;
     }
-    const id = this._store.workspace()!.id;
-    await this._router.navigate([this._locale.currentLocale(), 'journal', id]);
+    await this._router.navigate([this._locale.currentLocale(), 'journal', result.value]);
   }
 
   onCancel(): void {

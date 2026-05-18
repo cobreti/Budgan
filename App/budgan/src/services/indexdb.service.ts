@@ -1,8 +1,8 @@
 import Dexie, { EntityTable } from 'dexie';
 import { Injectable } from '@angular/core';
-import { WorkspaceModel } from '../Models/workspace.model';
+import { JournalModel } from '../Models/journalModel';
 
-export type WorkspaceEntity = EntityTable<WorkspaceModel, 'id'>;
+export type WorkspaceEntity = EntityTable<JournalModel, 'id'>;
 
 @Injectable({
   providedIn: 'root',

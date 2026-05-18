@@ -8,7 +8,7 @@ import { routes } from './app.routes';
 import { ID_GENERATOR_SERVICE, IdGeneratorServiceImpl } from '../../services/id-generator.service';
 import { LOCALE_SERVICE, LocaleServiceImpl } from '../../services/locale.service';
 import { WORKSPACE_STORE_SERVICE, WorkspaceStoreServiceImpl } from '../../services/workspace-store.service';
-import { WORKSPACE_SERVICE, WorkspaceServiceImpl } from '../../services/workspace.service';
+import { JOURNAL_SERVICE, JournalServiceImpl } from '../../services/journal.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,6 +25,6 @@ export const appConfig: ApplicationConfig = {
     { provide: ID_GENERATOR_SERVICE, useClass: IdGeneratorServiceImpl },
     { provide: LOCALE_SERVICE, useClass: LocaleServiceImpl },
     { provide: WORKSPACE_STORE_SERVICE, useClass: WorkspaceStoreServiceImpl },
-    { provide: WORKSPACE_SERVICE, useClass: WorkspaceServiceImpl },
+    { provide: JOURNAL_SERVICE, useClass: JournalServiceImpl },
   ]
 };
