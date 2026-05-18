@@ -6,6 +6,9 @@
     "newJournal": "Nouveau journal",
     "openJournal": "Ouvrir un journal"
   },
+  "workspaceList": {
+    "empty": "Aucun journal pour l'instant."
+  },
   "newJournal": {
     "title": "Nouveau journal",
     "namePlaceholder": "Nom du journal",

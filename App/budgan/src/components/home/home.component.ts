@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { PageMenuComponent } from '../page-menu/page-menu.component';
 import { MatCard } from '@angular/material/card';
+import { WorkspaceListComponent } from '../workspace-list/workspace-list.component';
 import { Router } from '@angular/router';
 import { LOCALE_SERVICE, LocaleService } from '../../services/locale.service';
 import { PageMenuButtonComponent } from '../page-menu/page-menu-button/page-menu-button.component';
@@ -11,7 +12,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: 'home.component.html',
   styleUrls: ['home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PageMenuComponent, PageMenuButtonComponent, TranslatePipe, MatCard],
+  imports: [PageMenuComponent, PageMenuButtonComponent, TranslatePipe, MatCard, WorkspaceListComponent],
 })
 export class HomeComponent {
   private readonly _router = inject(Router);

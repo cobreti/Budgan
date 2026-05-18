@@ -6,6 +6,9 @@
     "newJournal": "New Journal",
     "openJournal": "Open Journal"
   },
+  "workspaceList": {
+    "empty": "No journals yet."
+  },
   "newJournal": {
     "title": "New Journal",
     "namePlaceholder": "Journal name",
