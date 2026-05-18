@@ -8,13 +8,13 @@ import { PageMenuButtonComponent } from '../../components/page-menu/page-menu-bu
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-workspaces',
-  templateUrl: 'workspaces.component.html',
-  styleUrls: ['workspaces.component.scss'],
+  selector: 'app-journals',
+  templateUrl: 'journals.component.html',
+  styleUrls: ['journals.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [PageMenuComponent, PageMenuButtonComponent, TranslatePipe, MatCard, WorkspaceListComponent],
 })
-export class WorkspacesComponent {
+export class JournalsComponent {
   private readonly _router = inject(Router);
   private readonly _locale = inject<LocaleService>(LOCALE_SERVICE);
 

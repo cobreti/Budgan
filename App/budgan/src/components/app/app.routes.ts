@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { WorkspacesComponent } from '../../views/workspaces/workspaces.component';
+import { JournalsComponent } from '../../views/journals/journals.component';
 import { NewJournalComponent } from '../new-journal/new-journal.component';
 import { JournalComponent } from '../journal/journal.component';
 import { defaultLocaleGuard, localeGuard } from './locale.guard';
@@ -10,14 +10,14 @@ export const routes: Routes = [
     path: '',
     pathMatch: 'full',
     canActivate: [defaultLocaleGuard],
-    component: WorkspacesComponent,
+    component: JournalsComponent,
   },
   {
     path: ':locale',
     canActivate: [localeGuard],
     children: [
       { path: '', redirectTo: 'journals', pathMatch: 'full' },
-      { path: 'journals', component: WorkspacesComponent },
+      { path: 'journals', component: JournalsComponent },
       { path: 'journal/new', component: NewJournalComponent },
       { path: 'journal/:journalId', component: JournalComponent, canActivate: [journalGuard] },
     ],
