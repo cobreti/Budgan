@@ -1,0 +1,20 @@
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  gap: 4em;
+}
+
+.column-50 {
+  flex: 1;
+  width: 50%;
+}
+
+.section-title {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
+  color: var(--mat-sys-on-background);
+  text-align: center;
+  text-transform: uppercase;
+  cursor: default;
+}

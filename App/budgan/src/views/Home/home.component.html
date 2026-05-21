@@ -1,4 +1,4 @@
-<div class="workspace">
+<app-page>
   <app-page-menu>
     <app-page-menu-button
       icon="library_add"
@@ -6,15 +6,16 @@
       (clicked)="onNewJournal()" />
   </app-page-menu>
 
-  <mat-card class="workspace__content">
+
+  <h1>Home</h1>
+
     <div class="flex-row">
-      <div class="column-50">
-        <span>Journals</span>
+      <mat-card class="column-50">
+        <span class="section-title">Journals</span>
         <app-journal-list class="journal-list"/>
-      </div>
-      <div class="column-50">
+      </mat-card>
+      <mat-card class="column-50">
         <app-journal-list class="journal-list"/>
-      </div>
+      </mat-card>
     </div>
-  </mat-card>
-</div>
+ </app-page>
