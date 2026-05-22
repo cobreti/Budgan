@@ -17,6 +17,22 @@
     margin: 0;
   }
 
+  &__file-picker {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__file-name {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.9em;
+  }
+
+  &__file-error {
+    color: var(--mat-sys-error);
+    font-size: 0.85em;
+  }
+
   &__columns {
     display: flex;
     flex-direction: row;

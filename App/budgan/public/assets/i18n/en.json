@@ -33,6 +33,9 @@
     "descriptionColumn": "Description column",
     "create": "Create",
     "cancel": "Cancel",
-    "nameExists": "A column mapping with this name already exists."
+    "nameExists": "A column mapping with this name already exists.",
+    "chooseFile": "Choose CSV file",
+    "noFileChosen": "No file chosen",
+    "csvParseError": "Failed to parse the CSV file."
   }
 }
