@@ -9,6 +9,9 @@
   "journalList": {
     "empty": "No journals yet."
   },
+  "columnsMappingList": {
+    "empty": "No column mappings yet."
+  },
   "journal": {
     "loading": "Loading journal...",
     "delete": "Delete"

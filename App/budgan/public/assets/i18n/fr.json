@@ -9,6 +9,9 @@
   "journalList": {
     "empty": "Aucun journal pour l'instant."
   },
+  "columnsMappingList": {
+    "empty": "Aucun mappage de colonnes pour l'instant."
+  },
   "journal": {
     "loading": "Chargement du journal...",
     "delete": "Supprimer"
