@@ -8,6 +8,7 @@ import { routes } from './app.routes';
 import { ID_GENERATOR_SERVICE, IdGeneratorServiceImpl } from '../../services/id-generator.service';
 import { LOCALE_SERVICE, LocaleServiceImpl } from '../../services/locale.service';
 import { JOURNAL_SERVICE, JournalServiceImpl } from '../../services/journal.service';
+import { COLUMNS_MAPPING_SERVICE, ColumnsMappingServiceImpl } from '../../services/columns-mapping.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,5 +25,6 @@ export const appConfig: ApplicationConfig = {
     { provide: ID_GENERATOR_SERVICE, useClass: IdGeneratorServiceImpl },
     { provide: LOCALE_SERVICE, useClass: LocaleServiceImpl },
     { provide: JOURNAL_SERVICE, useClass: JournalServiceImpl },
+    { provide: COLUMNS_MAPPING_SERVICE, useClass: ColumnsMappingServiceImpl },
   ]
 };
