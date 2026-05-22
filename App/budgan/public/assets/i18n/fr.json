@@ -4,7 +4,8 @@
   },
   "menu": {
     "newJournal": "Nouveau journal",
-    "openJournal": "Ouvrir un journal"
+    "openJournal": "Ouvrir un journal",
+    "newColumnsMapping": "Nouveau mappage de colonnes"
   },
   "journalList": {
     "empty": "Aucun journal pour l'instant."
@@ -22,5 +23,16 @@
     "create": "Créer",
     "cancel": "Annuler",
     "nameExists": "Un journal avec ce nom existe déjà."
+  },
+  "newColumnsMapping": {
+    "title": "Nouveau mappage de colonnes",
+    "namePlaceholder": "Nom du mappage",
+    "cardNumberColumn": "Colonne numéro de carte",
+    "dateInscriptionColumn": "Colonne date d'inscription",
+    "amountColumn": "Colonne montant",
+    "descriptionColumn": "Colonne description",
+    "create": "Créer",
+    "cancel": "Annuler",
+    "nameExists": "Un mappage de colonnes avec ce nom existe déjà."
   }
 }

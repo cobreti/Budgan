@@ -28,4 +28,8 @@ export class HomeComponent {
   async onNewJournal(): Promise<void> {
     await this._router.navigate([this._locale.currentLocale(), 'journal', 'new']);
   }
+
+  async onNewColumnsMapping(): Promise<void> {
+    await this._router.navigate([this._locale.currentLocale(), 'columns-mapping', 'new']);
+  }
 }

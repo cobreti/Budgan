@@ -1,0 +1,34 @@
+<div class="new-columns-mapping">
+  <h1 class="new-columns-mapping__title">{{ 'newColumnsMapping.title' | translate }}</h1>
+  <form [formGroup]="form" (ngSubmit)="onCreate()">
+    <mat-form-field>
+      <mat-label>{{ 'newColumnsMapping.namePlaceholder' | translate }}</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError('nameExists')) {
+        <mat-error>{{ 'newColumnsMapping.nameExists' | translate }}</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>{{ 'newColumnsMapping.cardNumberColumn' | translate }}</mat-label>
+      <input matInput type="number" formControlName="cardNumberColumn" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>{{ 'newColumnsMapping.dateInscriptionColumn' | translate }}</mat-label>
+      <input matInput type="number" formControlName="dateInscriptionColumn" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>{{ 'newColumnsMapping.amountColumn' | translate }}</mat-label>
+      <input matInput type="number" formControlName="amountColumn" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>{{ 'newColumnsMapping.descriptionColumn' | translate }}</mat-label>
+      <input matInput type="number" formControlName="descriptionColumn" />
+    </mat-form-field>
+    <div class="new-columns-mapping__actions">
+      <button mat-button type="button" (click)="onCancel()">{{ 'newColumnsMapping.cancel' | translate }}</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+        {{ 'newColumnsMapping.create' | translate }}
+      </button>
+    </div>
+  </form>
+</div>

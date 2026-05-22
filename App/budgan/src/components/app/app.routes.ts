@@ -5,6 +5,7 @@ import { defaultLocaleGuard, localeGuard } from './locale.guard';
 import { JournalDetailsComponent } from '../../views/journals/journal-details/journal-details.component';
 import { HomeComponent } from '../../views/Home/home.component';
 import { ColumnsMappingDetailsComponent } from '../../views/columns-mapping/columns-mapping-details.component';
+import { NewColumnsMappingComponent } from '../../views/columns-mapping/new-columns-mapping/new-columns-mapping.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,7 @@ export const routes: Routes = [
       { path: 'journals', component: JournalsComponent },
       { path: 'journal/new', component: NewJournalComponent },
       { path: 'journal/:journalId', component: JournalDetailsComponent },
+      { path: 'columns-mapping/new', component: NewColumnsMappingComponent },
       { path: 'columns-mapping/:columnsMappingId', component: ColumnsMappingDetailsComponent },
     ],
   },

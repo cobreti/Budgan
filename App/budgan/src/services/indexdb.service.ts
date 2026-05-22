@@ -25,6 +25,10 @@ export class IndexdbService extends Dexie {
       workspaces: '&id, &name',
       columnMappings: '&id, &name, journalId'
     });
+    this.version(4).stores({
+      workspaces: '&id, &name',
+      columnMappings: '&id, &name'
+    });
 
     this.workspaceTable = this.table('workspaces');
     this.columnsMappingTable = this.table('columnMappings');

@@ -4,7 +4,8 @@
   },
   "menu": {
     "newJournal": "New Journal",
-    "openJournal": "Open Journal"
+    "openJournal": "Open Journal",
+    "newColumnsMapping": "New Columns Mapping"
   },
   "journalList": {
     "empty": "No journals yet."
@@ -22,5 +23,16 @@
     "create": "Create",
     "cancel": "Cancel",
     "nameExists": "A journal with this name already exists."
+  },
+  "newColumnsMapping": {
+    "title": "New Columns Mapping",
+    "namePlaceholder": "Mapping name",
+    "cardNumberColumn": "Card number column",
+    "dateInscriptionColumn": "Date inscription column",
+    "amountColumn": "Amount column",
+    "descriptionColumn": "Description column",
+    "create": "Create",
+    "cancel": "Cancel",
+    "nameExists": "A column mapping with this name already exists."
   }
 }
