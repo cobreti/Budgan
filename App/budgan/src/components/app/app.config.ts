@@ -9,6 +9,7 @@ import { ID_GENERATOR_SERVICE, IdGeneratorServiceImpl } from '../../services/id-
 import { LOCALE_SERVICE, LocaleServiceImpl } from '../../services/locale.service';
 import { JOURNAL_SERVICE, JournalServiceImpl } from '../../services/journal.service';
 import { COLUMNS_MAPPING_SERVICE, ColumnsMappingServiceImpl } from '../../services/columns-mapping.service';
+import { CSV_CONTENT_EXTRACTOR_SERVICE, CsvContentExtractorServiceImpl } from '../../services/csv-content-extractor.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,5 +27,6 @@ export const appConfig: ApplicationConfig = {
     { provide: LOCALE_SERVICE, useClass: LocaleServiceImpl },
     { provide: JOURNAL_SERVICE, useClass: JournalServiceImpl },
     { provide: COLUMNS_MAPPING_SERVICE, useClass: ColumnsMappingServiceImpl },
+    { provide: CSV_CONTENT_EXTRACTOR_SERVICE, useClass: CsvContentExtractorServiceImpl },
   ]
 };
