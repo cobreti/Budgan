@@ -13,10 +13,12 @@
 
 .section-title {
   font-weight: bold;
-  font-size: 1.2em;
-  margin-bottom: 0.5em;
+  font-size: 1.1em;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  margin-left: 3em;
   color: var(--mat-sys-on-background);
-  text-align: center;
+  //text-align: center;
   text-transform: uppercase;
   cursor: default;
 }

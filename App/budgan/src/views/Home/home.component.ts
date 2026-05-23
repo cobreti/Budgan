@@ -7,6 +7,7 @@ import { LOCALE_SERVICE, LocaleService } from '../../services/locale.service';
 import { PageComponent } from '../../components/page/page.component';
 import { JournalListComponent } from '../../components/journal-list/journal-list.component';
 import { MatCard } from '@angular/material/card';
+import { ColumnsMappingListComponent } from '../../components/columns-mapping-list/columns-mapping-list.component';
 
 @Component({
   templateUrl: 'home.component.html',
@@ -18,6 +19,7 @@ import { MatCard } from '@angular/material/card';
     TranslatePipe,
     PageComponent,
     JournalListComponent,
+    ColumnsMappingListComponent,
     MatCard,
   ],
 })

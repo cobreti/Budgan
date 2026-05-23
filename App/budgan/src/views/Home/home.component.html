@@ -3,11 +3,13 @@
     <app-page-menu-button
       icon="library_add"
       [label]="'menu.newJournal' | translate"
-      (clicked)="onNewJournal()" />
+      (clicked)="onNewJournal()"
+    />
     <app-page-menu-button
       icon="table_chart"
       [label]="'menu.newColumnsMapping' | translate"
-      (clicked)="onNewColumnsMapping()" />
+      (clicked)="onNewColumnsMapping()"
+    />
   </app-page-menu>
 
   <div class="menu-page-divider"></div>
@@ -15,10 +17,11 @@
   <div class="flex-row">
     <mat-card class="column-50">
       <span class="section-title">Journals</span>
-      <app-journal-list class="journal-list"/>
+      <app-journal-list class="journal-list" />
     </mat-card>
     <mat-card class="column-50">
-      <app-journal-list class="journal-list"/>
+      <span class="section-title">Columns Mapping</span>
+      <app-columns-mapping-list class="columns-mapping-list" />
     </mat-card>
   </div>
- </app-page>
+</app-page>
