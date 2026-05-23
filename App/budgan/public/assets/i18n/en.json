@@ -14,6 +14,7 @@
     "empty": "No column mappings yet."
   },
   "journal": {
+    "title": "Journal Details",
     "loading": "Loading journal...",
     "delete": "Delete"
   },
@@ -29,6 +30,7 @@
     "columnsMapping": "Columns Mapping"
   },
   "columnsMapping": {
+    "title": "Columns Mapping Details",
     "loading": "Loading...",
     "delete": "Delete",
     "cardNumberColumn": "Card Number Column",
