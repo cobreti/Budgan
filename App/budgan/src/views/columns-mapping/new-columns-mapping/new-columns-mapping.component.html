@@ -25,7 +25,7 @@
     <div class="new-columns-mapping__columns">
       <mat-form-field>
         <mat-label>{{ 'newColumnsMapping.cardNumberColumn' | translate }}</mat-label>
-        <mat-select formControlName="cardNumberColumn">
+        <mat-select formControlName="cardNumberColumnIndex">
           @for (header of csvHeaders(); track $index) {
             <mat-option [value]="$index">{{ header }}</mat-option>
           }
@@ -33,7 +33,7 @@
       </mat-form-field>
       <mat-form-field>
         <mat-label>{{ 'newColumnsMapping.dateInscriptionColumn' | translate }}</mat-label>
-        <mat-select formControlName="dateInscriptionColumn">
+        <mat-select formControlName="dateInscriptionColumnIndex">
           @for (header of csvHeaders(); track $index) {
             <mat-option [value]="$index">{{ header }}</mat-option>
           }
@@ -41,7 +41,7 @@
       </mat-form-field>
       <mat-form-field>
         <mat-label>{{ 'newColumnsMapping.amountColumn' | translate }}</mat-label>
-        <mat-select formControlName="amountColumn">
+        <mat-select formControlName="amountColumnIndex">
           @for (header of csvHeaders(); track $index) {
             <mat-option [value]="$index">{{ header }}</mat-option>
           }
@@ -49,7 +49,7 @@
       </mat-form-field>
       <mat-form-field>
         <mat-label>{{ 'newColumnsMapping.descriptionColumn' | translate }}</mat-label>
-        <mat-select formControlName="descriptionColumn">
+        <mat-select formControlName="descriptionColumnIndex">
           @for (header of csvHeaders(); track $index) {
             <mat-option [value]="$index">{{ header }}</mat-option>
           }

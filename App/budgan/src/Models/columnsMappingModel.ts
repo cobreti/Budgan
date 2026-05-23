@@ -1,8 +1,12 @@
 export interface ColumnsMapping {
   id?: string;
   name: string;
-  cardNumberColumn: number;
-  dateInscriptionColumn: number;
-  amountColumn: number;
-  descriptionColumn: number;
+  cardNumberColumnIndex: number;
+  cardNumberColumnText?: string;
+  dateInscriptionColumnIndex: number;
+  dateInscriptionColumnText?: string;
+  amountColumnIndex: number;
+  amountColumnText?: string;
+  descriptionColumnIndex: number;
+  descriptionColumnText?: string;
 }

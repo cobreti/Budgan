@@ -30,10 +30,10 @@ export class NewColumnsMappingComponent {
 
   readonly form = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    cardNumberColumn: new FormControl<number | null>(null, [Validators.required]),
-    dateInscriptionColumn: new FormControl<number | null>(null, [Validators.required]),
-    amountColumn: new FormControl<number | null>(null, [Validators.required]),
-    descriptionColumn: new FormControl<number | null>(null, [Validators.required]),
+    cardNumberColumnIndex: new FormControl<number | null>(null, [Validators.required]),
+    dateInscriptionColumnIndex: new FormControl<number | null>(null, [Validators.required]),
+    amountColumnIndex: new FormControl<number | null>(null, [Validators.required]),
+    descriptionColumnIndex: new FormControl<number | null>(null, [Validators.required]),
   });
 
   async onFileSelected(event: Event): Promise<void> {
@@ -54,21 +54,26 @@ export class NewColumnsMappingComponent {
     this.csvHeaders.set(result.value.header);
     this.selectedFileName.set(file.name);
     this.csvParseError.set('');
-    this.form.controls.cardNumberColumn.reset();
-    this.form.controls.dateInscriptionColumn.reset();
-    this.form.controls.amountColumn.reset();
-    this.form.controls.descriptionColumn.reset();
+    this.form.controls.cardNumberColumnIndex.reset();
+    this.form.controls.dateInscriptionColumnIndex.reset();
+    this.form.controls.amountColumnIndex.reset();
+    this.form.controls.descriptionColumnIndex.reset();
   }
 
   async onCreate(): Promise<void> {
     if (this.form.invalid) return;
-    const { name, cardNumberColumn, dateInscriptionColumn, amountColumn, descriptionColumn } = this.form.getRawValue();
+    const { name, cardNumberColumnIndex, dateInscriptionColumnIndex, amountColumnIndex, descriptionColumnIndex } = this.form.getRawValue();
+    const headers = this.csvHeaders();
     const result = await this._columnsMappingService.save({
       name,
-      cardNumberColumn: cardNumberColumn!,
-      dateInscriptionColumn: dateInscriptionColumn!,
-      amountColumn: amountColumn!,
-      descriptionColumn: descriptionColumn!,
+      cardNumberColumnIndex: cardNumberColumnIndex!,
+      cardNumberColumnText: headers[cardNumberColumnIndex!],
+      dateInscriptionColumnIndex: dateInscriptionColumnIndex!,
+      dateInscriptionColumnText: headers[dateInscriptionColumnIndex!],
+      amountColumnIndex: amountColumnIndex!,
+      amountColumnText: headers[amountColumnIndex!],
+      descriptionColumnIndex: descriptionColumnIndex!,
+      descriptionColumnText: headers[descriptionColumnIndex!],
     });
     if (!result.success) {
       this.form.controls.name.setErrors({ nameExists: true });
