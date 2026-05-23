@@ -2,276 +2,211 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Before writing any code
-
-Read **`.github/ARCHITECTURE.md`** — it is the single source of truth for naming conventions, mandatory patterns, routing, CSS, i18n, and testing rules.
-
 ## Project overview
 
-**Budgan** is a Vue 3 + TypeScript financial application for CSV bank statement import and workspace management. The repo contains two apps under `App/src/`:
+**Budgan** is an Angular + TypeScript financial application for CSV bank statement import and journal management. The active app lives in `App/Budgan/`.
 
-- `engine-testapp/` — the active app (port 8001)
-- `budgan/` — scaffolded, not yet active (port 8000)
-
-All commands are run from the `App/` directory.
+All commands are run from the `App/Budgan/` directory.
 
 ## Commands
 
 ```bash
 # Development
-npm run dev:engine-testapp     # Start active app on port 8001
+ng serve                # Start dev server (default port 4200)
 
 # Build
-npm run build:engine-testapp   # Vite build
-npm run build                  # Full build with type-check
+ng build               # Angular CLI build
 
 # Unit tests
-npm run test:unit:engine-testapp
-npm run coverage:engine-testapp
-
-# E2E tests
-npm run test:e2e               # Cypress headless
-npm run test:e2e:dev           # Cypress interactive
+ng test                # Vitest unit tests
 
 # Code quality
-npm run lint                   # ESLint + autofix
-npm run format                 # Prettier (src/ only)
-npm run type-check:engine-testapp
+npx prettier --write . # Format with Prettier
 ```
 
 ## Architecture
 
-The codebase enforces **unidirectional dependency flow**:
-
 ```
-src/engine/          ← Pure TypeScript — NEVER import Vue or Pinia here
-src/inversify/       ← Shared DI container
-src/engine-testapp/  ← Vue 3 app (stores, components, views, router, i18n)
+App/Budgan/src/
+├── components/         # Reusable Angular components
+│   ├── app/            # Root component, routing config, app config, locale guards
+│   ├── columns-mapping-list/
+│   ├── header/
+│   ├── journal-list/
+│   ├── main-menu/
+│   │   └── main-menu-button/
+│   ├── main/
+│   ├── page-menu/
+│   │   └── page-menu-button/
+│   └── page/
+├── Models/             # Plain TypeScript interfaces (data shapes)
+├── services/           # Injectable services (interface + Impl pattern)
+├── types/              # Shared utility types (Result<T>)
+└── views/              # Routed page components
+    ├── Home/
+    ├── columns-mapping/
+    └── journals/
 ```
 
 **Data flow for CSV import:**
-1. User loads a file → Pinia store captures it
-2. `CsvContentExtractor` (pure TS) detects delimiter, finds header row, parses to typed rows
-3. Column mapping UI lets user map CSV columns to semantic fields (`card-number`, `date-transaction`, `amount`, etc.)
-4. `BdgWorkspaceFactory` creates a workspace domain aggregate with accounts
-5. Pinia store persists a snapshot to localStorage; on reload, hydrates via factory
+1. User loads a file → component calls `CsvContentExtractorService`
+2. `CsvContentExtractorServiceImpl` detects delimiter, finds header row, parses to typed rows
+3. Column mapping UI lets user assign CSV columns to semantic fields
+4. `ColumnsMappingService` persists the mapping to IndexedDB via `IndexdbService` (Dexie)
 
 ## Mandatory patterns
 
-### Dependency Injection (InversifyJS)
+### Services (Angular DI)
 
-Use abstract class as both the token and interface:
+Always define a TypeScript interface for the contract, an `InjectionToken`, and an `Impl` class:
 
 ```typescript
-export abstract class MyService {
-  static readonly bindingTypeId = InversifyUtils.createBindingId('MyService')
-  abstract doThing(): void
+// my-feature.service.ts
+export interface MyFeatureService {
+  doThing(): void;
 }
 
-@injectable()
-export class MyServiceImpl extends MyService {
+export const MY_FEATURE_SERVICE = new InjectionToken<MyFeatureService>('MyFeatureService');
+
+@Injectable({ providedIn: 'root' })
+export class MyFeatureServiceImpl implements MyFeatureService {
   doThing(): void { /* ... */ }
 }
-
-// In setup-inversify.module.ts:
-options.bind<MyService>(MyService.bindingTypeId).to(MyServiceImpl).inSingletonScope()
 ```
 
-**Current DI bindings:**
+- Use `inject()` inside the `Impl` class — never constructor injection.
+- Register every new token in `src/components/app/app.config.ts`:
 
-| Token | Impl | Scope |
-|---|---|---|
-| `IdGenerator` | `IdGeneratorImpl` | transient |
-| `ReaderFactory` | `FileReaderFactoryImpl` | transient |
-| `BdgWorkspaceFactory` | `BdgWorkspaceFactoryImpl` | singleton |
-| `BdgSettings` | `BdgSettingsImpl` | singleton |
-| `CsvContentImporter` | `CsvContentImporterImpl` | transient |
-| `FileSaveService` | `FileSaveServiceImpl` | transient |
-| `FileReadService` | `FileReadServiceImpl` | transient |
-| `BdgWorkspaceExporter` | `BdgWorkspaceExporterImpl` | transient |
-| `BdgWorkspaceImporter` | `BdgWorkspaceImporterImpl` | transient |
+```typescript
+{ provide: MY_FEATURE_SERVICE, useClass: MyFeatureServiceImpl }
+```
+
+**Current service tokens registered in `app.config.ts`:**
+
+| Token | Impl |
+|---|---|
+| `ID_GENERATOR_SERVICE` | `IdGeneratorServiceImpl` |
+| `LOCALE_SERVICE` | `LocaleServiceImpl` |
+| `JOURNAL_SERVICE` | `JournalServiceImpl` |
+| `COLUMNS_MAPPING_SERVICE` | `ColumnsMappingServiceImpl` |
+| `CSV_CONTENT_EXTRACTOR_SERVICE` | `CsvContentExtractorServiceImpl` |
+
+`IndexdbService` is used directly (no token) — it extends Dexie and is `providedIn: 'root'`.
 
 ### Result pattern (no throwing for expected errors)
 
 ```typescript
-import type { Result } from '@engine/types/result-pattern'
+import { Result } from '../types/result';
 
-getAccount(id: string): Result<BdgAccount> {
-  const a = this._accounts.get(id)
-  return a ? { success: true, value: a } : { success: false }
+save(item: MyModel): Promise<Result<MyModel>> {
+  // ...
+  return { success: true, value: item };
+  return { success: false, error: 'name-exists' };
 }
 
 // Caller
-const result = workspace.getAccount(id)
+const result = await service.save(item);
 if (result.success) { /* result.value is typed */ }
 ```
 
-Use `ResultWithError<T, E>` when the caller needs the error type.
+`Result<T>` is defined as `{ success: true; value: T } | { success: false; error: string }`.
 
-### Factory pattern
+### Angular component rules
 
-Use for domain aggregates that need injected services:
+- **Standalone components only** — do NOT set `standalone: true` (it is the default in Angular v20+).
+- Set `changeDetection: ChangeDetectionStrategy.OnPush` in every `@Component` decorator.
+- Use signals (`signal()`, `computed()`) for all local state.
+- Use `input()` and `output()` functions instead of `@Input`/`@Output` decorators.
+- Use native control flow (`@if`, `@for`, `@switch`) — never `*ngIf`, `*ngFor`, `*ngSwitch`.
+- Do NOT use `ngClass` or `ngStyle` — use `class` and `style` bindings instead.
+- Do NOT use `@HostBinding` / `@HostListener` — put host bindings in the `host` object of `@Component`.
+- Use `inject()` in the component body, not constructor parameters.
+- Add `TranslatePipe` to the `imports` array of any component that uses `| translate`.
 
-```typescript
-export abstract class BdgWorkspaceFactory {
-  static readonly bindingTypeId = InversifyUtils.createBindingId('WorkspaceFactory')
-  abstract createWorkspace(): BdgWorkspace
-}
+### Persistence — IndexedDB via Dexie
 
-@injectable()
-export class BdgWorkspaceFactoryImpl extends BdgWorkspaceFactory {
-  constructor(@inject(IdGenerator.bindingTypeId) private idGenerator: IdGenerator) { super() }
-  createWorkspace(): BdgWorkspace {
-    return new BdgWorkspaceImpl(this.idGenerator, this.idGenerator.generateId())
-  }
-}
-```
+`IndexdbService` (extends `Dexie`) owns all database access:
 
-### ID Generation
+| Table | Schema | Entity type |
+|---|---|---|
+| `workspaces` | `&id, &name` | `JournalModel` |
+| `columnMappings` | `&id, &name` | `ColumnsMapping` |
 
-Always inject `IdGenerator` — **never call `crypto.randomUUID()` directly**:
-
-```typescript
-const idGenerator = container.get<IdGenerator>(IdGenerator.bindingTypeId)
-const newId = idGenerator.generateId()
-```
-
-### Pinia stores
-
-Stores act as the bridge between the engine and Vue. They hold references to engine services via the DI container and persist state to localStorage. Live object references (class instances) are excluded from persistence via `omit`; they are reconstructed from factory methods on hydration.
-
-### Path aliases — never use `../` across directories
-
-| Alias | Resolves to |
-|---|---|
-| `@engine/` | `src/engine/` |
-| `@inversify/` | `src/inversify/` |
-| `@engineTestApp/` | `src/engine-testapp/` |
-| `@engineTestAppViews/` | `src/engine-testapp/views/` |
-| `@engineTestAppRouter/` | `src/engine-testapp/router/` |
-| `@/` | App-specific root (`src/engine-testapp/` or `src/budgan/`) |
-
-Same-directory relative imports (`./types`) are allowed. Note: TypeScript `paths` in a child tsconfig **replaces** (does not merge) the parent's — all required aliases must be explicitly listed in `tsconfig.engine-testapp.json`.
+Services inject `IndexdbService` directly to read/write their respective tables.
 
 ### Naming conventions
 
 | Entity | Convention |
 |---|---|
-| Files | `kebab-case` |
-| Abstract/token class | `PascalCase` (no prefix) |
-| Concrete DI implementation | `PascalCase` + `Impl` suffix |
-| Domain entities | `Bdg` prefix (e.g. `BdgWorkspace`, `BdgAccount`) |
-| Pinia store function | `use{Name}Store` |
-| Pinia store ID | `kebab-case` string |
-| CSS classes | BEM (`workspace-view__menu-item--active`) |
-| CSS values | Always `var(--token-name)` from `colors-def.scss`, never hardcoded |
-| i18n keys | Dot-namespaced (`workspace.mapping.cardNumber`) |
+| Files | `kebab-case` (e.g. `journal.service.ts`, `journal-list.component.ts`) |
+| Service interface | `PascalCase` (e.g. `JournalService`) |
+| Service token | `SCREAMING_SNAKE_CASE` (e.g. `JOURNAL_SERVICE`) |
+| Service implementation | `PascalCase` + `Impl` suffix (e.g. `JournalServiceImpl`) |
+| Components | `PascalCase` + `Component` suffix |
+| i18n keys | Dot-namespaced (`menu.newJournal`) |
 | Test selectors | `data-testid="kebab-case"` on all interactive/testable elements |
-| CsvColumns values | `kebab-case` string literal (`'card-number'`, `'date-transaction'`) |
 
 ### Routing
 
-All routes are locale-prefixed: `/:locale(en|fr)/...`. Current route tree:
+Routes are locale-prefixed. Current route tree:
 
 ```
+/                           → redirects to browser locale (defaultLocaleGuard)
 /:locale
-  /                       home
-  /zip-file               zip-file (load workspace from zip)
-  /settings
-    /column-mappings      settings-column-mappings
-  /workspace              workspace layout (sidebar nav)
-    /create               workspace-create
-    /accounts             workspace-accounts
-    /segments             workspace-segments (menu item disabled when no account selected)
+  /                         home
+  /journals                 journal list
+  /journal/new              new journal
+  /journal/:journalId       journal details
+  /columns-mapping/new      new columns mapping
+  /columns-mapping/:id      columns mapping details
+/**                         → redirects to /en
 ```
 
-Construct links in templates as:
+`localeGuard` validates the locale param (must be `en` or `fr`), calls `LocaleService.setLocale()`, and calls `TranslateService.use()`. `defaultLocaleGuard` redirects `/` to the browser's detected locale.
 
-```vue
-<RouterLink :to="{ name: 'workspace-accounts', params: { locale: localeParam } }">
-```
+Construct links using the Angular Router:
 
 ```typescript
-const localeParam = computed(() => {
-  const l = route.params.locale
-  return typeof l === 'string' ? l : 'en'
-})
+this.router.navigate([locale, 'journals']);
 ```
-
-Route guard in `i18n.ts` lazily loads locale JSON and redirects to `/en` if locale is invalid.
 
 ### i18n
 
-All user-visible strings use `{{ t('key') }}`. Keys must be added to **both** `i18n/locales/en.json` and `i18n/locales/fr.json`.
+Localization uses `@ngx-translate/core` with an HTTP loader.
 
-### CSS
+- Translation files: `public/assets/i18n/en.json` and `public/assets/i18n/fr.json`  
+  **Do NOT place them under `src/assets/`** — Angular CLI only serves from `public/`.
+- All user-visible strings: `{{ 'some.key' | translate }}` in templates.
+- Nested keys: `{ "menu": { "newJournal": "New Journal" } }` → `'menu.newJournal' | translate`.
+- Every key must be present in **both** `en.json` and `fr.json`.
 
-Each component uses scoped BEM styles with CSS custom properties:
-
-```scss
-<style scoped>
-  @use 'colors-def';  /* required for CSS custom properties */
-
-  .my-component { ... }
-  .my-component__title { ... }
-  .my-component__button--danger { ... }
-</style>
-```
-
-Never hardcode colors — always use `var(--token-name)`. Mobile breakpoint: `@media (max-width: 640px)`.
-
-## Engine domain key types
+## Domain key types
 
 ```typescript
-// Workspace
-BdgWorkspace      { id, name, accounts: BdgAccount[], createAccount(name), getAccount(id) }
-BdgAccount        { id, name, columnMappingId, segments: BdgAccountSegment[], addSegment(segment) }
-BdgAccountSegment { id, name, dateStart, dateEnd, dateStartAsString, dateEndAsString, rows: BdgAccountSegmentRow[] }
-BdgAccountSegmentRow { cardNumber, description, dateTransactionAsString, dateInscriptionAsString?,
-                       dateTransaction?, dateInscription?, amount }
+// Models
+JournalModel   { id: string; name: string }
+ColumnsMapping { id?: string; name: string; cardNumberColumn: number;
+                 dateInscriptionColumn: number; amountColumn: number;
+                 descriptionColumn: number }
 
-// Settings
-BdgSettings         { columnMappings: BdgColumnMapping[], add/update/removeColumnMapping() }
-BdgColumnMapping    { id, name, columnMapping: CsvColumnMapping }
+// CSV extraction
+CsvContentExtractionResult { delimiter: string; headerRowIndex: number;
+                             header: string[]; rows: CsvJsonRecord[] }
+CsvJsonRecord              Record<string, string>
 
-// CSV Import
-CsvContentExtractionResult  { delimiter, headerRowIndex, header: string[], rows: CsvJsonRecord[] }
-CsvColumnMapping            { 'card-number'?: number, 'date-transaction'?: number, 'amount'?: number,
-                              'description'?: number, 'date-inscription'?: number }
-CsvContentImporter          import(file, columnMapping): Promise<ResultWithError<CsvImportSuccess, string>>
-
-// Zip Export / Import
-BdgWorkspaceExporter        export(workspace): BdgWorkspaceExport
-                            saveToHandle(handle, workspace, settings): Promise<void>
-                            buildZipBytes(workspace, settings): Uint8Array
-BdgWorkspaceImporter        import(handle: FileSystemFileHandle): Promise<ResultWithError<BdgWorkspaceImportResult, string>>
-BdgWorkspaceImportResult    { workspace: BdgWorkspace, columnMappings: BdgColumnMapping[],
-                              csvSources: Array<{ segmentId, filename, content }> }
-
-// Zip format (fflate)
-//   Workspace.json  → flat Record<id, BdgWorkspaceExportEntry>  (type: 'Workspace' | 'Account' | 'Segment')
-//   Settings.json   → flat Record<"ColumnMapping:{id}", BdgSettingsExportColumnMappingEntry>
-//   CsvSources/{segmentId} → raw UTF-8 CSV text
-
-// File I/O services
-FileSaveService             saveWorkspace(handle, workspaceContent, settingsContent, csvSources?): Promise<void>
-FileReadService             readAsBytes(handle: FileSystemFileHandle): Promise<Uint8Array>
+// Result
+Result<T>  { success: true; value: T } | { success: false; error: string }
 ```
-
-> **Date parsing:** `BdgAccountSegment` uses `moment` (production dependency) to parse date strings in **local time**. Never use `new Date("YYYY-MM-DD")` directly — it parses as UTC and causes an off-by-one day in timezones west of UTC.
-
-**Note:** `src/engine/models/` contains legacy types (`BankAccount`, `Statement`, etc.) — for engine-testapp new code, use the `csv-import/` types above instead.
 
 ## Checklist for new features
 
-1. **Engine logic** → `src/engine/modules/<feature>/` — pure TS, no framework imports
-2. **New service** → abstract class + `Impl`, register in `setup-inversify.module.ts`
-3. **New entity needing an ID** → use `IdGenerator` from DI
+1. **New service** → interface + `InjectionToken` + `Impl` class; register token in `app.config.ts`
+2. **New entity needing an ID** → inject `ID_GENERATOR_SERVICE` and call `generateId()`
+3. **Persistence** → add a table to `IndexdbService` (new Dexie version entry)
 4. **Fallible operation** → return `Result<T>`, not `throw`
-5. **Expose to UI** → Pinia store in `engine-testapp/stores/`, persist if stateful
-6. **New route** → add under `/:locale(en|fr)/`, lazy-load with `() => import(...)`
-7. **New Vue component** → scoped BEM styles, `@use 'colors-def'`, `data-testid` on all interactive elements
-8. **New i18n text** → add to both `en.json` and `fr.json`
+5. **New component** → standalone, `OnPush`, signals for state, `data-testid` on all interactive elements
+6. **New route** → add to `app.routes.ts` under `/:locale`, lazy-load with `() => import(...)`
+7. **New i18n text** → add key to both `en.json` and `fr.json`
 
 ## Tools directory
 
