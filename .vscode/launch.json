@@ -6,17 +6,10 @@
   "configurations": [
     {
       "type": "node-terminal",
-      "name": "Run Script: dev:engine (Engine)",
+      "name": "Run Script: start",
       "request": "launch",
-      "command": "npm run dev:engine-testapp",
-      "cwd": "${workspaceFolder}/App"
-    },
-    {
-      "type": "node-terminal",
-      "name": "Run Script: dev:Budgan",
-      "request": "launch",
-      "command": "npm run dev:budgan",
-      "cwd": "${workspaceFolder}/App"
+      "command": "npm run start",
+      "cwd": "${workspaceFolder}/App/Budgan"
     }
   ]
 }
