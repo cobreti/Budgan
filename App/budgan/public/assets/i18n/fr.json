@@ -28,6 +28,14 @@
     "journals": "Journaux",
     "columnsMapping": "Mappage de colonnes"
   },
+  "columnsMapping": {
+    "loading": "Chargement...",
+    "delete": "Supprimer",
+    "cardNumberColumn": "Colonne numéro de carte",
+    "dateInscriptionColumn": "Colonne date d'inscription",
+    "amountColumn": "Colonne montant",
+    "descriptionColumn": "Colonne description"
+  },
   "newColumnsMapping": {
     "title": "Nouveau mappage de colonnes",
     "namePlaceholder": "Nom du mappage",

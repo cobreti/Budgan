@@ -28,6 +28,14 @@
     "journals": "Journals",
     "columnsMapping": "Columns Mapping"
   },
+  "columnsMapping": {
+    "loading": "Loading...",
+    "delete": "Delete",
+    "cardNumberColumn": "Card Number Column",
+    "dateInscriptionColumn": "Date Inscription Column",
+    "amountColumn": "Amount Column",
+    "descriptionColumn": "Description Column"
+  },
   "newColumnsMapping": {
     "title": "New Columns Mapping",
     "namePlaceholder": "Mapping name",
