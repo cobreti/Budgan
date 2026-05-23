@@ -24,6 +24,10 @@
     "cancel": "Cancel",
     "nameExists": "A journal with this name already exists."
   },
+  "home": {
+    "journals": "Journals",
+    "columnsMapping": "Columns Mapping"
+  },
   "newColumnsMapping": {
     "title": "New Columns Mapping",
     "namePlaceholder": "Mapping name",

@@ -24,6 +24,10 @@
     "cancel": "Annuler",
     "nameExists": "Un journal avec ce nom existe déjà."
   },
+  "home": {
+    "journals": "Journaux",
+    "columnsMapping": "Mappage de colonnes"
+  },
   "newColumnsMapping": {
     "title": "Nouveau mappage de colonnes",
     "namePlaceholder": "Nom du mappage",
