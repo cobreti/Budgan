@@ -38,6 +38,10 @@
     "amountColumn": "Amount Column",
     "descriptionColumn": "Description Column"
   },
+  "header": {
+    "switchToDark": "Switch to dark theme",
+    "switchToLight": "Switch to light theme"
+  },
   "newColumnsMapping": {
     "title": "New Columns Mapping",
     "namePlaceholder": "Mapping name",

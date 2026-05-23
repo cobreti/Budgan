@@ -6,6 +6,15 @@
 
   <span class="spacer"></span>
 
+  <button
+    mat-icon-button
+    class="theme-toggle"
+    (click)="toggleTheme()"
+    [attr.aria-label]="(isDark() ? 'header.switchToLight' : 'header.switchToDark') | translate"
+    data-testid="theme-toggle-btn">
+    <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+
   <button mat-icon-button [matMenuTriggerFor]="localeMenu" class="locale-trigger">
     <mat-icon>language</mat-icon>
   </button>

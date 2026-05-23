@@ -38,6 +38,10 @@
     "amountColumn": "Colonne montant",
     "descriptionColumn": "Colonne description"
   },
+  "header": {
+    "switchToDark": "Passer au thème sombre",
+    "switchToLight": "Passer au thème clair"
+  },
   "newColumnsMapping": {
     "title": "Nouveau mappage de colonnes",
     "namePlaceholder": "Nom du mappage",
