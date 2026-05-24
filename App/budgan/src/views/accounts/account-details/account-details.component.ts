@@ -6,13 +6,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { PageMenuComponent } from '@components/page-menu/page-menu.component';
 import { PageMenuButtonComponent } from '@components/page-menu/page-menu-button/page-menu-button.component';
 import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
+import { AccountTransactionsTableComponent } from '@components/account-transactions-table/account-transactions-table.component';
 
 @Component({
   selector: 'app-account-details',
   templateUrl: './account-details.component.html',
   styleUrl: './account-details.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, PageMenuComponent, PageMenuButtonComponent],
+  imports: [TranslatePipe, PageMenuComponent, PageMenuButtonComponent, AccountTransactionsTableComponent],
 })
 export class AccountDetailsComponent implements OnInit {
   private readonly _route = inject(ActivatedRoute);

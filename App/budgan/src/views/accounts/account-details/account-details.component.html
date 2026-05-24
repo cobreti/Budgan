@@ -14,6 +14,7 @@
   </app-page-menu>
   @if (account(); as a) {
     <h1 class="account__title">{{ a.name }}</h1>
+    <app-account-transactions-table [accountId]="a.id" />
   } @else {
     <h1 class="account__title">{{ 'account.loading' | translate }}</h1>
   }

@@ -1,0 +1,53 @@
+<div class="transaction-table">
+  <table mat-table [dataSource]="transactions()" class="transaction-table__table">
+
+    <ng-container matColumnDef="cardNumber">
+      <th mat-header-cell *matHeaderCellDef>{{ 'transactionTable.cardNumber' | translate }}</th>
+      <td mat-cell *matCellDef="let row">{{ row.cardNumber }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="dateInscription">
+      <th mat-header-cell *matHeaderCellDef>{{ 'transactionTable.dateInscription' | translate }}</th>
+      <td mat-cell *matCellDef="let row">{{ row.dateInscriptionAsString }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef>{{ 'transactionTable.description' | translate }}</th>
+      <td mat-cell *matCellDef="let row">{{ row.description }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef>{{ 'transactionTable.amount' | translate }}</th>
+      <td mat-cell *matCellDef="let row">{{ row.amount }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <tr class="mat-mdc-no-data-row" *matNoDataRow>
+      <td class="transaction-table__empty" [attr.colspan]="displayedColumns.length">
+        {{ 'transactionTable.empty' | translate }}
+      </td>
+    </tr>
+  </table>
+
+  @if (totalPages() > 0) {
+    <div class="transaction-table__pagination" role="navigation" aria-label="Pagination">
+      <span class="transaction-table__page-info">
+        {{ 'transactionTable.page' | translate }} {{ displayPage() }} {{ 'transactionTable.of' | translate }} {{ totalPages() }}
+      </span>
+      <label class="transaction-table__go-to-label" for="go-to-page">
+        {{ 'transactionTable.goToPage' | translate }}
+      </label>
+      <input
+        id="go-to-page"
+        class="transaction-table__page-input"
+        type="number"
+        [value]="displayPage()"
+        min="1"
+        [max]="totalPages()"
+        data-testid="go-to-page-input"
+        (change)="onGoToPage($event)" />
+    </div>
+  }
+</div>

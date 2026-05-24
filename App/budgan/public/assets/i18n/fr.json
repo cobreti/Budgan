@@ -69,6 +69,16 @@
     "cancel": "Annuler",
     "nameExists": "Un compte avec ce nom existe déjà."
   },
+  "transactionTable": {
+    "cardNumber": "Numéro de carte",
+    "dateInscription": "Date d'inscription",
+    "description": "Description",
+    "amount": "Montant",
+    "empty": "Aucune transaction.",
+    "page": "Page",
+    "of": "sur",
+    "goToPage": "Aller à la page"
+  },
   "newColumnsMapping": {
     "title": "Nouveau mappage de colonnes",
     "namePlaceholder": "Nom du mappage",

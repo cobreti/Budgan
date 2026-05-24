@@ -69,6 +69,16 @@
     "cancel": "Cancel",
     "nameExists": "An account with this name already exists."
   },
+  "transactionTable": {
+    "cardNumber": "Card Number",
+    "dateInscription": "Date",
+    "description": "Description",
+    "amount": "Amount",
+    "empty": "No transactions.",
+    "page": "Page",
+    "of": "of",
+    "goToPage": "Go to page"
+  },
   "newColumnsMapping": {
     "title": "New Columns Mapping",
     "namePlaceholder": "Mapping name",
