@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ACCOUNT_TRANSACTION_SERVICE, AccountTransactionService } from '@services/account-transaction.service';
 import { AccountTransactionModel } from '@models/accountTransactionModel';
@@ -9,7 +11,7 @@ import { AccountTransactionModel } from '@models/accountTransactionModel';
   templateUrl: './account-transactions-table.component.html',
   styleUrl: './account-transactions-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTableModule, TranslatePipe],
+  imports: [MatTableModule, MatIconButton, MatIcon, TranslatePipe],
 })
 export class AccountTransactionsTableComponent {
   private readonly _transactionService = inject<AccountTransactionService>(ACCOUNT_TRANSACTION_SERVICE);
@@ -20,6 +22,8 @@ export class AccountTransactionsTableComponent {
   readonly transactions = signal<AccountTransactionModel[]>([]);
   readonly totalPages = signal(0);
   readonly displayPage = computed(() => this._currentPage() + 1);
+  readonly isFirstPage = computed(() => this._currentPage() === 0);
+  readonly isLastPage = computed(() => this._currentPage() >= this.totalPages() - 1);
 
   readonly pageSize = 25;
   readonly displayedColumns = ['cardNumber', 'dateInscription', 'description', 'amount'];
@@ -36,6 +40,14 @@ export class AccountTransactionsTableComponent {
     const result = await this._transactionService.getPageByAccount(accountId, page, this.pageSize);
     this.transactions.set(result.transactions);
     this.totalPages.set(result.totalPages);
+  }
+
+  onPreviousPage(): void {
+    this._currentPage.update(p => p - 1);
+  }
+
+  onNextPage(): void {
+    this._currentPage.update(p => p + 1);
   }
 
   onGoToPage(event: Event): void {

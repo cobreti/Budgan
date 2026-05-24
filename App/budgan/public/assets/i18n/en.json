@@ -77,7 +77,9 @@
     "empty": "No transactions.",
     "page": "Page",
     "of": "of",
-    "goToPage": "Go to page"
+    "goToPage": "Go to page",
+    "previousPage": "Previous page",
+    "nextPage": "Next page"
   },
   "newColumnsMapping": {
     "title": "New Columns Mapping",

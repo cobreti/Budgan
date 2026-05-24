@@ -33,9 +33,26 @@
 
   @if (totalPages() > 0) {
     <div class="transaction-table__pagination" role="navigation" aria-label="Pagination">
+      <button mat-icon-button
+              [attr.aria-label]="'transactionTable.previousPage' | translate"
+              [disabled]="isFirstPage()"
+              data-testid="previous-page-button"
+              (click)="onPreviousPage()">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+
       <span class="transaction-table__page-info">
         {{ 'transactionTable.page' | translate }} {{ displayPage() }} {{ 'transactionTable.of' | translate }} {{ totalPages() }}
       </span>
+
+      <button mat-icon-button
+              [attr.aria-label]="'transactionTable.nextPage' | translate"
+              [disabled]="isLastPage()"
+              data-testid="next-page-button"
+              (click)="onNextPage()">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+
       <label class="transaction-table__go-to-label" for="go-to-page">
         {{ 'transactionTable.goToPage' | translate }}
       </label>
