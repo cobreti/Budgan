@@ -13,6 +13,9 @@
   "columnsMappingList": {
     "empty": "Aucun mappage de colonnes pour l'instant."
   },
+  "accountList": {
+    "empty": "Aucun compte pour l'instant."
+  },
   "journal": {
     "title": "Détails du journal",
     "loading": "Chargement du journal...",
@@ -27,7 +30,8 @@
   },
   "home": {
     "journals": "Journaux",
-    "columnsMapping": "Mappage de colonnes"
+    "columnsMapping": "Mappage de colonnes",
+    "accounts": "Comptes"
   },
   "columnsMapping": {
     "title": "Détails du mappage de colonnes",

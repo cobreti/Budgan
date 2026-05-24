@@ -13,6 +13,9 @@
   "columnsMappingList": {
     "empty": "No column mappings yet."
   },
+  "accountList": {
+    "empty": "No accounts yet."
+  },
   "journal": {
     "title": "Journal Details",
     "loading": "Loading journal...",
@@ -27,7 +30,8 @@
   },
   "home": {
     "journals": "Journals",
-    "columnsMapping": "Columns Mapping"
+    "columnsMapping": "Columns Mapping",
+    "accounts": "Accounts"
   },
   "columnsMapping": {
     "title": "Columns Mapping Details",

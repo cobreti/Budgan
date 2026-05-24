@@ -1,0 +1,27 @@
+.account-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  &__item {
+    border-bottom: 1px solid var(--mat-sys-outline-variant, rgba(0, 0, 0, 0.12));
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__item-name {
+    display: block;
+    width: 100%;
+    padding: 0.75em 1em;
+    color: var(--mat-sys-on-surface, inherit);
+    font-size: 1em;
+  }
+
+  &__empty {
+    padding: 1em;
+    color: var(--mat-sys-on-surface-variant, inherit);
+    font-style: italic;
+  }
+}

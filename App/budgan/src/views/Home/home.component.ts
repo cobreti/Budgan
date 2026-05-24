@@ -8,6 +8,7 @@ import { PageComponent } from '@components/page/page.component';
 import { JournalListComponent } from '@components/journal-list/journal-list.component';
 import { MatCard } from '@angular/material/card';
 import { ColumnsMappingListComponent } from '@components/columns-mapping-list/columns-mapping-list.component';
+import { AccountListComponent } from '@components/account-list/account-list.component';
 
 @Component({
   templateUrl: 'home.component.html',
@@ -20,6 +21,7 @@ import { ColumnsMappingListComponent } from '@components/columns-mapping-list/co
     PageComponent,
     JournalListComponent,
     ColumnsMappingListComponent,
+    AccountListComponent,
     MatCard,
   ],
 })
