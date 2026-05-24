@@ -12,6 +12,8 @@ import { COLUMNS_MAPPING_SERVICE, ColumnsMappingServiceImpl } from '@services/co
 import { CSV_CONTENT_EXTRACTOR_SERVICE, CsvContentExtractorServiceImpl } from '@services/csv-content-extractor.service';
 import { THEME_SERVICE, ThemeServiceImpl } from '@services/theme.service';
 import { ACCOUNT_SERVICE, AccountServiceImpl } from '@services/account.service';
+import { FILE_SERVICE, FileServiceImpl } from '@services/file.service';
+import { ACCOUNT_TRANSACTION_SERVICE, AccountTransactionServiceImpl } from '@services/account-transaction.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,5 +34,7 @@ export const appConfig: ApplicationConfig = {
     { provide: CSV_CONTENT_EXTRACTOR_SERVICE, useClass: CsvContentExtractorServiceImpl },
     { provide: THEME_SERVICE, useClass: ThemeServiceImpl },
     { provide: ACCOUNT_SERVICE, useClass: AccountServiceImpl },
+    { provide: FILE_SERVICE, useClass: FileServiceImpl },
+    { provide: ACCOUNT_TRANSACTION_SERVICE, useClass: AccountTransactionServiceImpl },
   ]
 };
