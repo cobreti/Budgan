@@ -70,7 +70,8 @@ export class ImportFileComponent {
       const amountStr = (row[header[mapping.amountColumnIndex]] ?? '').replace(',', '.');
       const amount = parseFloat(amountStr);
       if (isNaN(amount)) continue;
-      await this._transactionService.create(fileId, this._accountId, cardNumber, dateInscriptionAsString, amount);
+      const description = row[header[mapping.descriptionColumnIndex]] ?? '';
+      await this._transactionService.create(fileId, this._accountId, cardNumber, dateInscriptionAsString, amount, description);
     }
 
     await this._router.navigate([this._locale.currentLocale(), 'account', this._accountId]);

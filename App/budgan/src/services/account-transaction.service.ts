@@ -1,7 +1,6 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import { IndexdbService } from './indexdb.service';
 import { AccountTransactionModel } from '@models/accountTransactionModel';
-import { ID_GENERATOR_SERVICE, IdGeneratorService } from './id-generator.service';
 import { Result } from '@app-types/result';
 
 export interface AccountTransactionService {
@@ -12,6 +11,7 @@ export interface AccountTransactionService {
     cardNumber: string,
     dateInscriptionAsString: string,
     amount: number,
+    description: string,
     duplicateOf?: string
   ): Promise<Result<string>>;
   getById(id: string): Promise<AccountTransactionModel>;
@@ -23,7 +23,6 @@ export const ACCOUNT_TRANSACTION_SERVICE = new InjectionToken<AccountTransaction
 @Injectable({ providedIn: 'root' })
 export class AccountTransactionServiceImpl implements AccountTransactionService {
   private readonly _indexDb = inject(IndexdbService);
-  private readonly _idGenerator = inject<IdGeneratorService>(ID_GENERATOR_SERVICE);
 
   async getList(): Promise<AccountTransactionModel[]> {
     return this._indexDb.accountTransactionsTable.toArray();
@@ -35,11 +34,12 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
     cardNumber: string,
     dateInscriptionAsString: string,
     amount: number,
+    description: string,
     duplicateOf?: string
   ): Promise<Result<string>> {
-    const id = this._idGenerator.generateId();
+    const id = `${cardNumber}|${dateInscriptionAsString}|${amount}|${description}`;
     await this._indexDb.accountTransactionsTable.add({
-      id, fileId, accountId, cardNumber, dateInscriptionAsString, amount, duplicateOf,
+      id, fileId, accountId, cardNumber, dateInscriptionAsString, amount, description, duplicateOf,
     });
     return { success: true, value: id };
   }
