@@ -111,6 +111,15 @@ if (result.success) { /* result.value is typed */ }
 
 `Result<T>` is defined as `{ success: true; value: T } | { success: false; error: string }`.
 
+### Theming — light and dark mode
+
+All UI changes must work correctly in both light and dark mode.
+
+- Use Angular Material CSS variables (`--mat-sys-*`) for all colors — never hardcode color values.
+- When a fallback is needed, use `inherit` rather than a static color (e.g. `rgba(0,0,0,0.6)` breaks in dark mode).
+- Correct: `color: var(--mat-sys-on-surface-variant, inherit)`
+- Wrong: `color: var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.6))`
+
 ### Angular component rules
 
 - **Standalone components only** — do NOT set `standalone: true` (it is the default in Angular v20+).
