@@ -1,11 +1,6 @@
 <app-page>
   <app-page-menu>
     <app-page-menu-button
-      icon="library_add"
-      [label]="'menu.newJournal' | translate"
-      (clicked)="onNewJournal()"
-    />
-    <app-page-menu-button
       icon="table_chart"
       [label]="'menu.newColumnsMapping' | translate"
       (clicked)="onNewColumnsMapping()"
@@ -20,10 +15,6 @@
   <div class="menu-page-divider"></div>
 
   <div class="flex-row">
-    <mat-card class="column-50">
-      <span class="section-title">{{ 'home.journals' | translate }}</span>
-      <app-journal-list class="journal-list" />
-    </mat-card>
     <mat-card class="column-50">
       <span class="section-title">{{ 'home.columnsMapping' | translate }}</span>
       <app-columns-mapping-list class="columns-mapping-list" />

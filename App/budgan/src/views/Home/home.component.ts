@@ -5,7 +5,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
 import { PageComponent } from '@components/page/page.component';
-import { JournalListComponent } from '@components/journal-list/journal-list.component';
 import { MatCard } from '@angular/material/card';
 import { ColumnsMappingListComponent } from '@components/columns-mapping-list/columns-mapping-list.component';
 import { AccountListComponent } from '@components/account-list/account-list.component';
@@ -19,7 +18,6 @@ import { AccountListComponent } from '@components/account-list/account-list.comp
     PageMenuButtonComponent,
     TranslatePipe,
     PageComponent,
-    JournalListComponent,
     ColumnsMappingListComponent,
     AccountListComponent,
     MatCard,
@@ -28,10 +26,6 @@ import { AccountListComponent } from '@components/account-list/account-list.comp
 export class HomeComponent {
   private readonly _router = inject(Router);
   private readonly _locale = inject<LocaleService>(LOCALE_SERVICE);
-
-  async onNewJournal(): Promise<void> {
-    await this._router.navigate([this._locale.currentLocale(), 'journal', 'new']);
-  }
 
   async onNewColumnsMapping(): Promise<void> {
     await this._router.navigate([this._locale.currentLocale(), 'columns-mapping', 'new']);
