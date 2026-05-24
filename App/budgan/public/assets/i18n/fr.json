@@ -5,7 +5,8 @@
   "menu": {
     "newJournal": "Nouveau journal",
     "openJournal": "Ouvrir un journal",
-    "newColumnsMapping": "Nouveau mappage de colonnes"
+    "newColumnsMapping": "Nouveau mappage de colonnes",
+    "newAccount": "Nouveau compte"
   },
   "journalList": {
     "empty": "Aucun journal pour l'instant."
@@ -45,6 +46,14 @@
   "header": {
     "switchToDark": "Passer au thème sombre",
     "switchToLight": "Passer au thème clair"
+  },
+  "newAccount": {
+    "title": "Nouveau compte",
+    "namePlaceholder": "Nom du compte",
+    "columnsMappingPlaceholder": "Mappage de colonnes",
+    "create": "Créer",
+    "cancel": "Annuler",
+    "nameExists": "Un compte avec ce nom existe déjà."
   },
   "newColumnsMapping": {
     "title": "Nouveau mappage de colonnes",

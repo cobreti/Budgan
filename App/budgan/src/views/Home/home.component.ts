@@ -36,4 +36,8 @@ export class HomeComponent {
   async onNewColumnsMapping(): Promise<void> {
     await this._router.navigate([this._locale.currentLocale(), 'columns-mapping', 'new']);
   }
+
+  async onNewAccount(): Promise<void> {
+    await this._router.navigate([this._locale.currentLocale(), 'account', 'new']);
+  }
 }

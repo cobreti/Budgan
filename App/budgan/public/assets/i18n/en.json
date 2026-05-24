@@ -5,7 +5,8 @@
   "menu": {
     "newJournal": "New Journal",
     "openJournal": "Open Journal",
-    "newColumnsMapping": "New Columns Mapping"
+    "newColumnsMapping": "New Columns Mapping",
+    "newAccount": "New Account"
   },
   "journalList": {
     "empty": "No journals yet."
@@ -45,6 +46,14 @@
   "header": {
     "switchToDark": "Switch to dark theme",
     "switchToLight": "Switch to light theme"
+  },
+  "newAccount": {
+    "title": "New Account",
+    "namePlaceholder": "Account name",
+    "columnsMappingPlaceholder": "Columns mapping",
+    "create": "Create",
+    "cancel": "Cancel",
+    "nameExists": "An account with this name already exists."
   },
   "newColumnsMapping": {
     "title": "New Columns Mapping",
