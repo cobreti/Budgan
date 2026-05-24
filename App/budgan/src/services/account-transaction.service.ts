@@ -3,8 +3,16 @@ import { IndexdbService } from './indexdb.service';
 import { AccountTransactionModel } from '@models/accountTransactionModel';
 import { Result } from '@app-types/result';
 
+export type TransactionPage = {
+  transactions: AccountTransactionModel[];
+  totalPages: number;
+  page: number;
+};
+
 export interface AccountTransactionService {
   getList(): Promise<AccountTransactionModel[]>;
+  getCountByAccount(accountId: string): Promise<number>;
+  getPageByAccount(accountId: string, page: number, pageSize: number): Promise<TransactionPage>;
   create(
     fileId: string,
     accountId: string,
@@ -26,6 +34,28 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
 
   async getList(): Promise<AccountTransactionModel[]> {
     return this._indexDb.accountTransactionsTable.toArray();
+  }
+
+  async getCountByAccount(accountId: string): Promise<number> {
+    return this._indexDb.accountTransactionsTable
+      .where('accountId').equals(accountId)
+      .count();
+  }
+
+  async getPageByAccount(accountId: string, page: number, pageSize: number): Promise<TransactionPage> {
+    const total = await this._indexDb.accountTransactionsTable
+      .where('accountId').equals(accountId)
+      .count();
+
+    const totalPages = Math.ceil(total / pageSize);
+
+    const transactions = await this._indexDb.accountTransactionsTable
+      .where('accountId').equals(accountId)
+      .offset(page * pageSize)
+      .limit(pageSize)
+      .toArray();
+
+    return { transactions, totalPages, page };
   }
 
   async create(
