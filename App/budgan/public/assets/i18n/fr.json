@@ -58,7 +58,8 @@
     "chooseFile": "Choisir un fichier CSV",
     "noFileChosen": "Aucun fichier sélectionné",
     "import": "Importer",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "csvParseError": "Impossible d'analyser le fichier CSV."
   },
   "newAccount": {
     "title": "Nouveau compte",

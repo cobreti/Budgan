@@ -58,7 +58,8 @@
     "chooseFile": "Choose CSV file",
     "noFileChosen": "No file chosen",
     "import": "Import",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "csvParseError": "Failed to parse the CSV file."
   },
   "newAccount": {
     "title": "New Account",

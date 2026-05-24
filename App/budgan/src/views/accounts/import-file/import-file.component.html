@@ -8,6 +8,10 @@
   </app-page-menu>
 
   <div class="import-file__body">
+    @if (importError()) {
+      <p class="import-file__error" role="alert">{{ importError() | translate }}</p>
+    }
+
     <div class="import-file__picker">
       <button mat-stroked-button type="button" (click)="fileInput.click()">
         {{ 'importFile.chooseFile' | translate }}
