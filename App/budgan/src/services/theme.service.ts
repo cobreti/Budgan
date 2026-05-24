@@ -17,6 +17,10 @@ export class ThemeServiceImpl implements ThemeService {
 
   readonly isDark: Signal<boolean> = this._isDark;
 
+  constructor() {
+    document.documentElement.classList.toggle('dark-theme', this._isDark());
+  }
+
   toggle(): void {
     const next = !this._isDark();
     this._isDark.set(next);
