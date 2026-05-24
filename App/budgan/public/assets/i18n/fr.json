@@ -47,6 +47,11 @@
     "switchToDark": "Passer au thème sombre",
     "switchToLight": "Passer au thème clair"
   },
+  "account": {
+    "title": "Détails du compte",
+    "loading": "Chargement du compte...",
+    "delete": "Supprimer"
+  },
   "newAccount": {
     "title": "Nouveau compte",
     "namePlaceholder": "Nom du compte",

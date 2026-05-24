@@ -1,0 +1,16 @@
+<div class="account">
+  <h2 class="account__page-title">{{ 'account.title' | translate }}</h2>
+  <app-page-menu>
+    <span class="account__menu-spacer"></span>
+    <app-page-menu-button
+      icon="delete"
+      variant="danger"
+      [label]="'account.delete' | translate"
+      (clicked)="onDelete()" />
+  </app-page-menu>
+  @if (account(); as a) {
+    <h1 class="account__title">{{ a.name }}</h1>
+  } @else {
+    <h1 class="account__title">{{ 'account.loading' | translate }}</h1>
+  }
+</div>

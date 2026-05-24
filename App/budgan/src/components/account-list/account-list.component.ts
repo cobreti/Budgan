@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ACCOUNT_SERVICE, AccountService } from '@services/account.service';
+import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
 import { accountModel } from '@models/accountModel';
 
 @Component({
@@ -12,6 +14,8 @@ import { accountModel } from '@models/accountModel';
 })
 export class AccountListComponent {
   private readonly _accountService = inject<AccountService>(ACCOUNT_SERVICE);
+  private readonly _router = inject(Router);
+  private readonly _locale = inject<LocaleService>(LOCALE_SERVICE);
 
   readonly accounts = signal<accountModel[]>([]);
 
@@ -21,5 +25,9 @@ export class AccountListComponent {
 
   private async _load(): Promise<void> {
     this.accounts.set(await this._accountService.getList());
+  }
+
+  open(id: string): void {
+    this._router.navigate([this._locale.currentLocale(), 'account', id]);
   }
 }

@@ -11,12 +11,25 @@
     }
   }
 
-  &__item-name {
+  &__item-btn {
     display: block;
     width: 100%;
     padding: 0.75em 1em;
+    background: transparent;
+    border: none;
+    text-align: left;
+    cursor: pointer;
     color: var(--mat-sys-on-surface, inherit);
     font-size: 1em;
+
+    &:hover {
+      background-color: var(--mat-sys-surface-container-high);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--mat-sys-primary);
+      outline-offset: -2px;
+    }
   }
 
   &__empty {

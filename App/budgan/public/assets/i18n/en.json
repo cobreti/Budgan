@@ -47,6 +47,11 @@
     "switchToDark": "Switch to dark theme",
     "switchToLight": "Switch to light theme"
   },
+  "account": {
+    "title": "Account Details",
+    "loading": "Loading account...",
+    "delete": "Delete"
+  },
   "newAccount": {
     "title": "New Account",
     "namePlaceholder": "Account name",
