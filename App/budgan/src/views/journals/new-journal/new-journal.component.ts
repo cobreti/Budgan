@@ -5,9 +5,9 @@ import { MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { TranslatePipe } from '@ngx-translate/core';
-import { LOCALE_SERVICE, LocaleService } from '../../../services/locale.service';
+import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
 import { MatError } from '@angular/material/form-field';
-import { JOURNAL_SERVICE, JournalService } from '../../../services/journal.service';
+import { JOURNAL_SERVICE, JournalService } from '@services/journal.service';
 
 @Component({
   selector: 'app-new-journal',

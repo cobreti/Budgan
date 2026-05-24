@@ -1,8 +1,8 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import { IndexdbService } from './indexdb.service';
-import { JournalModel } from '../Models/journalModel';
+import { JournalModel } from '@models/journalModel';
 import { ID_GENERATOR_SERVICE, IdGeneratorService } from './id-generator.service';
-import { Result } from '../types/result';
+import { Result } from '@app-types/result';
 
 export interface JournalService {
   getList(): Promise<JournalModel[]>;

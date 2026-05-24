@@ -1,8 +1,8 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import { IndexdbService } from './indexdb.service';
-import { ColumnsMapping } from '../Models/columnsMappingModel';
+import { ColumnsMapping } from '@models/columnsMappingModel';
 import { ID_GENERATOR_SERVICE, IdGeneratorService } from './id-generator.service';
-import { Result } from '../types/result';
+import { Result } from '@app-types/result';
 
 export interface ColumnsMappingService {
   getList(): Promise<ColumnsMapping[]>;

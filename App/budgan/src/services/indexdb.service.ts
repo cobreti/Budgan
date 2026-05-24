@@ -1,7 +1,7 @@
 import Dexie, { EntityTable, Table } from 'dexie';
 import { Injectable } from '@angular/core';
-import { JournalModel } from '../Models/journalModel';
-import { ColumnsMapping } from '../Models/columnsMappingModel';
+import { JournalModel } from '@models/journalModel';
+import { ColumnsMapping } from '@models/columnsMappingModel';
 
 export type WorkspaceEntity = EntityTable<JournalModel, 'id'>;
 

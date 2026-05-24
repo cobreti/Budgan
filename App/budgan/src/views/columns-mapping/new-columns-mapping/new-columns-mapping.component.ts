@@ -7,9 +7,9 @@ import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { LOCALE_SERVICE, LocaleService } from '../../../services/locale.service';
-import { COLUMNS_MAPPING_SERVICE, ColumnsMappingService } from '../../../services/columns-mapping.service';
-import { CSV_CONTENT_EXTRACTOR_SERVICE, CsvContentExtractorService } from '../../../services/csv-content-extractor.service';
+import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
+import { COLUMNS_MAPPING_SERVICE, ColumnsMappingService } from '@services/columns-mapping.service';
+import { CSV_CONTENT_EXTRACTOR_SERVICE, CsvContentExtractorService } from '@services/csv-content-extractor.service';
 
 @Component({
   selector: 'app-new-columns-mapping',

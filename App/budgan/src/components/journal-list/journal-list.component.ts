@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { LOCALE_SERVICE, LocaleService } from '../../services/locale.service';
-import { JOURNAL_SERVICE, JournalService } from '../../services/journal.service';
-import { JournalModel } from '../../Models/journalModel';
+import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
+import { JOURNAL_SERVICE, JournalService } from '@services/journal.service';
+import { JournalModel } from '@models/journalModel';
 
 @Component({
   selector: 'app-journal-list',

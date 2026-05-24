@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { LOCALE_SERVICE } from '../../services/locale.service';
+import { LOCALE_SERVICE } from '@services/locale.service';
 
 export const defaultLocaleGuard: CanActivateFn = () => {
   const locale = inject(LOCALE_SERVICE).detectBrowserLocale();

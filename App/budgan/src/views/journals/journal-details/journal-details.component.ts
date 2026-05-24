@@ -6,13 +6,13 @@ import {
   signal,
   WritableSignal,
 } from '@angular/core';
-import { JOURNAL_SERVICE, JournalService } from '../../../services/journal.service';
+import { JOURNAL_SERVICE, JournalService } from '@services/journal.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JournalModel } from '../../../Models/journalModel';
+import { JournalModel } from '@models/journalModel';
 import { TranslatePipe } from '@ngx-translate/core';
-import { PageMenuComponent } from '../../../components/page-menu/page-menu.component';
-import { PageMenuButtonComponent } from '../../../components/page-menu/page-menu-button/page-menu-button.component';
-import { LOCALE_SERVICE, LocaleService } from '../../../services/locale.service';
+import { PageMenuComponent } from '@components/page-menu/page-menu.component';
+import { PageMenuButtonComponent } from '@components/page-menu/page-menu-button/page-menu-button.component';
+import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
 
 @Component({
   selector: 'app-journal-details',

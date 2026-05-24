@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { LOCALE_SERVICE, LocaleService } from '../../services/locale.service';
-import { MainMenuService } from '../../services/main-menu.service';
+import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
+import { MainMenuService } from '@services/main-menu.service';
 import { MainMenuButtonComponent } from './main-menu-button/main-menu-button.component';
 
 @Component({

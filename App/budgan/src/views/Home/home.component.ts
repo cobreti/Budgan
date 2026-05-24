@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { PageMenuComponent } from '../../components/page-menu/page-menu.component';
-import { PageMenuButtonComponent } from '../../components/page-menu/page-menu-button/page-menu-button.component';
+import { PageMenuComponent } from '@components/page-menu/page-menu.component';
+import { PageMenuButtonComponent } from '@components/page-menu/page-menu-button/page-menu-button.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
-import { LOCALE_SERVICE, LocaleService } from '../../services/locale.service';
-import { PageComponent } from '../../components/page/page.component';
-import { JournalListComponent } from '../../components/journal-list/journal-list.component';
+import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
+import { PageComponent } from '@components/page/page.component';
+import { JournalListComponent } from '@components/journal-list/journal-list.component';
 import { MatCard } from '@angular/material/card';
-import { ColumnsMappingListComponent } from '../../components/columns-mapping-list/columns-mapping-list.component';
+import { ColumnsMappingListComponent } from '@components/columns-mapping-list/columns-mapping-list.component';
 
 @Component({
   templateUrl: 'home.component.html',

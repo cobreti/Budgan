@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { JournalsComponent } from '../../views/journals/journals.component';
-import { NewJournalComponent } from '../../views/journals/new-journal/new-journal.component';
+import { JournalsComponent } from '@views/journals/journals.component';
+import { NewJournalComponent } from '@views/journals/new-journal/new-journal.component';
 import { defaultLocaleGuard, localeGuard } from './locale.guard';
-import { JournalDetailsComponent } from '../../views/journals/journal-details/journal-details.component';
-import { HomeComponent } from '../../views/Home/home.component';
-import { ColumnsMappingDetailsComponent } from '../../views/columns-mapping/columns-mapping-details/columns-mapping-details.component';
-import { NewColumnsMappingComponent } from '../../views/columns-mapping/new-columns-mapping/new-columns-mapping.component';
+import { JournalDetailsComponent } from '@views/journals/journal-details/journal-details.component';
+import { HomeComponent } from '@views/Home/home.component';
+import { ColumnsMappingDetailsComponent } from '@views/columns-mapping/columns-mapping-details/columns-mapping-details.component';
+import { NewColumnsMappingComponent } from '@views/columns-mapping/new-columns-mapping/new-columns-mapping.component';
 
 export const routes: Routes = [
   {

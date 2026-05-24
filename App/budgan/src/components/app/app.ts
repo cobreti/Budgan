@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
-import { HeaderComponent } from '../header/header.component';
-import { MainComponent } from '../main/main.component';
+import { HeaderComponent } from '@components/header/header.component';
+import { MainComponent } from '@components/main/main.component';
 import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav';
-import { MainMenuService } from '../../services/main-menu.service';
-import { MainMenuComponent } from '../main-menu/main-menu.component';
+import { MainMenuService } from '@services/main-menu.service';
+import { MainMenuComponent } from '@components/main-menu/main-menu.component';
 
 @Component({
   selector: 'app-root',

@@ -1,5 +1,5 @@
 import { Injectable, InjectionToken } from '@angular/core';
-import { Result } from '../types/result';
+import { Result } from '@app-types/result';
 
 export type CsvJsonRecord = Record<string, string>
 

@@ -5,9 +5,9 @@ import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { TranslatePipe } from '@ngx-translate/core';
-import { MainMenuService } from '../../services/main-menu.service';
-import { LOCALE_SERVICE } from '../../services/locale.service';
-import { THEME_SERVICE } from '../../services/theme.service';
+import { MainMenuService } from '@services/main-menu.service';
+import { LOCALE_SERVICE } from '@services/locale.service';
+import { THEME_SERVICE } from '@services/theme.service';
 
 @Component({
   selector: 'app-header',

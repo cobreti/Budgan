@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { LOCALE_SERVICE, LocaleService } from '../../services/locale.service';
+import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
 import {
   COLUMNS_MAPPING_SERVICE,
   ColumnsMappingService,
-} from '../../services/columns-mapping.service';
-import { ColumnsMapping } from '../../Models/columnsMappingModel';
+} from '@services/columns-mapping.service';
+import { ColumnsMapping } from '@models/columnsMappingModel';
 
 @Component({
   selector: 'app-columns-mapping-list',

@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ColumnsMapping } from '../../../Models/columnsMappingModel';
+import { ColumnsMapping } from '@models/columnsMappingModel';
 import {
   COLUMNS_MAPPING_SERVICE,
   ColumnsMappingService,
-} from '../../../services/columns-mapping.service';
-import { LOCALE_SERVICE, LocaleService } from '../../../services/locale.service';
-import { PageMenuComponent } from '../../../components/page-menu/page-menu.component';
-import { PageMenuButtonComponent } from '../../../components/page-menu/page-menu-button/page-menu-button.component';
+} from '@services/columns-mapping.service';
+import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
+import { PageMenuComponent } from '@components/page-menu/page-menu.component';
+import { PageMenuButtonComponent } from '@components/page-menu/page-menu-button/page-menu-button.component';
 
 @Component({
   selector: 'app-columns-mapping-details',

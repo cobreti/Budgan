@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { PageMenuComponent } from '../../components/page-menu/page-menu.component';
+import { PageMenuComponent } from '@components/page-menu/page-menu.component';
 import { MatCard } from '@angular/material/card';
-import { JournalListComponent } from '../../components/journal-list/journal-list.component';
+import { JournalListComponent } from '@components/journal-list/journal-list.component';
 import { Router } from '@angular/router';
-import { LOCALE_SERVICE, LocaleService } from '../../services/locale.service';
-import { PageMenuButtonComponent } from '../../components/page-menu/page-menu-button/page-menu-button.component';
+import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
+import { PageMenuButtonComponent } from '@components/page-menu/page-menu-button/page-menu-button.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
