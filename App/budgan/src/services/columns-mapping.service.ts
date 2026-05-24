@@ -1,6 +1,6 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import { IndexdbService } from './indexdb.service';
-import { ColumnsMapping } from '../Models/ColumnsMappingModel';
+import { ColumnsMapping } from '../Models/columnsMappingModel';
 import { ID_GENERATOR_SERVICE, IdGeneratorService } from './id-generator.service';
 import { Result } from '../types/result';
 
@@ -11,7 +11,9 @@ export interface ColumnsMappingService {
   delete(id: string): Promise<void>;
 }
 
-export const COLUMNS_MAPPING_SERVICE = new InjectionToken<ColumnsMappingService>('ColumnsMappingService');
+export const COLUMNS_MAPPING_SERVICE = new InjectionToken<ColumnsMappingService>(
+  'ColumnsMappingService',
+);
 
 @Injectable({ providedIn: 'root' })
 export class ColumnsMappingServiceImpl implements ColumnsMappingService {
@@ -25,15 +27,17 @@ export class ColumnsMappingServiceImpl implements ColumnsMappingService {
   async save(mapping: ColumnsMapping): Promise<Result<ColumnsMapping>> {
     if (mapping.id) {
       const conflict = await this._indexDb.columnsMappingTable
-        .where('name').equals(mapping.name)
-        .filter(r => r.id !== mapping.id)
+        .where('name')
+        .equals(mapping.name)
+        .filter((r) => r.id !== mapping.id)
         .count();
       if (conflict > 0) return { success: false, error: 'name-exists' };
       await this._indexDb.columnsMappingTable.put(mapping);
       return { success: true, value: mapping };
     } else {
       const existing = await this._indexDb.columnsMappingTable
-        .where('name').equals(mapping.name)
+        .where('name')
+        .equals(mapping.name)
         .count();
       if (existing > 0) return { success: false, error: 'name-exists' };
       const id = this._idGenerator.generateId();

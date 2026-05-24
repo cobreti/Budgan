@@ -1,7 +1,7 @@
 import Dexie, { EntityTable, Table } from 'dexie';
 import { Injectable } from '@angular/core';
 import { JournalModel } from '../Models/journalModel';
-import { ColumnsMapping } from '../Models/ColumnsMappingModel';
+import { ColumnsMapping } from '../Models/columnsMappingModel';
 
 export type WorkspaceEntity = EntityTable<JournalModel, 'id'>;
 
@@ -15,19 +15,19 @@ export class IndexdbService extends Dexie {
   constructor() {
     super('budgan');
     this.version(1).stores({
-      workspaces: '&id, &name'
+      workspaces: '&id, &name',
     });
     this.version(2).stores({
       workspaces: '&id, &name',
-      columnMappings: '&id, &name'
+      columnMappings: '&id, &name',
     });
     this.version(3).stores({
       workspaces: '&id, &name',
-      columnMappings: '&id, &name, journalId'
+      columnMappings: '&id, &name, journalId',
     });
     this.version(4).stores({
       workspaces: '&id, &name',
-      columnMappings: '&id, &name'
+      columnMappings: '&id, &name',
     });
 
     this.workspaceTable = this.table('workspaces');
