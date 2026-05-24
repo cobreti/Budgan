@@ -2,6 +2,10 @@
   width: 100%;
   padding: 1em;
 
+  &__page-title {
+    text-align: center;
+  }
+
   &__menu-spacer {
     flex: 1;
   }
@@ -10,6 +14,6 @@
     margin: 1.5em 0 0;
     font-size: 1.5em;
     color: var(--mat-sys-on-background);
-    text-align: center;
+    text-align: left;
   }
 }
