@@ -6,7 +6,7 @@ import { Result } from '@app-types/result';
 
 export interface FileService {
   getList(): Promise<fileModel[]>;
-  create(filename: string, content: string, insertionDate: Date): Promise<Result<string>>;
+  create(accountId: string, filename: string, content: string, insertionDate: Date): Promise<Result<string>>;
   getById(id: string): Promise<fileModel>;
   delete(id: string): Promise<void>;
 }
@@ -22,9 +22,9 @@ export class FileServiceImpl implements FileService {
     return this._indexDb.filesTable.toArray();
   }
 
-  async create(filename: string, content: string, insertionDate: Date): Promise<Result<string>> {
+  async create(accountId: string, filename: string, content: string, insertionDate: Date): Promise<Result<string>> {
     const id = this._idGenerator.generateId();
-    await this._indexDb.filesTable.add({ id, filename, content, insertionDate });
+    await this._indexDb.filesTable.add({ id, accountId, filename, content, insertionDate });
     return { success: true, value: id };
   }
 

@@ -53,6 +53,13 @@ export class IndexdbService extends Dexie {
       files: '&id, filename',
       accountTransactions: '&id, accountId, fileId',
     });
+    this.version(8).stores({
+      workspaces: '&id, &name',
+      columnMappings: '&id, &name',
+      accounts: '&id, &name',
+      files: '&id, filename, accountId',
+      accountTransactions: '&id, accountId, fileId',
+    });
 
     this.workspaceTable = this.table('workspaces');
     this.columnsMappingTable = this.table('columnMappings');

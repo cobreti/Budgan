@@ -1,6 +1,10 @@
 <div class="account">
   <h2 class="account__page-title">{{ 'account.title' | translate }}</h2>
   <app-page-menu>
+    <app-page-menu-button
+      icon="upload_file"
+      [label]="'account.importFile' | translate"
+      (clicked)="onImportFile()" />
     <span class="account__menu-spacer"></span>
     <app-page-menu-button
       icon="delete"

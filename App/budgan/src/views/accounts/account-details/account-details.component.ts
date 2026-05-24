@@ -22,6 +22,12 @@ export class AccountDetailsComponent implements OnInit {
 
   readonly account: WritableSignal<accountModel | undefined> = signal(undefined);
 
+  onImportFile(): void {
+    const account = this.account();
+    if (!account) return;
+    this._router.navigate([this._locale.currentLocale(), 'account', account.id, 'import-file']);
+  }
+
   async onDelete(): Promise<void> {
     const account = this.account();
     if (!account) throw new Error('Account is undefined');

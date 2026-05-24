@@ -1,0 +1,27 @@
+<div class="import-file">
+  <h2 class="import-file__page-title">{{ 'importFile.title' | translate }}</h2>
+  <app-page-menu>
+    <app-page-menu-button
+      icon="arrow_back"
+      [label]="'importFile.cancel' | translate"
+      (clicked)="onCancel()" />
+  </app-page-menu>
+
+  <div class="import-file__body">
+    <div class="import-file__picker">
+      <button mat-stroked-button type="button" (click)="fileInput.click()">
+        {{ 'importFile.chooseFile' | translate }}
+      </button>
+      <span class="import-file__file-name">
+        {{ selectedFileName() || ('importFile.noFileChosen' | translate) }}
+      </span>
+      <input #fileInput type="file" accept=".csv" hidden (change)="onFileSelected($event)" />
+    </div>
+
+    <div class="import-file__actions">
+      <button mat-raised-button color="primary" [disabled]="!selectedFileName()" (click)="onImport()">
+        {{ 'importFile.import' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

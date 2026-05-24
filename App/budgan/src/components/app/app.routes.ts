@@ -8,6 +8,7 @@ import { ColumnsMappingDetailsComponent } from '@views/columns-mapping/columns-m
 import { NewColumnsMappingComponent } from '@views/columns-mapping/new-columns-mapping/new-columns-mapping.component';
 import { NewAccountComponent } from '@views/accounts/new-account/new-account.component';
 import { AccountDetailsComponent } from '@views/accounts/account-details/account-details.component';
+import { ImportFileComponent } from '@views/accounts/import-file/import-file.component';
 
 export const routes: Routes = [
   {
@@ -28,6 +29,7 @@ export const routes: Routes = [
       { path: 'columns-mapping/:columnsMappingId', component: ColumnsMappingDetailsComponent },
       { path: 'account/new', component: NewAccountComponent },
       { path: 'account/:accountId', component: AccountDetailsComponent },
+      { path: 'account/:accountId/import-file', component: ImportFileComponent },
     ],
   },
   { path: '**', redirectTo: 'en' },

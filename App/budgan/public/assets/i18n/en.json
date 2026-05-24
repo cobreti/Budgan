@@ -50,7 +50,15 @@
   "account": {
     "title": "Account Details",
     "loading": "Loading account...",
-    "delete": "Delete"
+    "delete": "Delete",
+    "importFile": "Import File"
+  },
+  "importFile": {
+    "title": "Import File",
+    "chooseFile": "Choose CSV file",
+    "noFileChosen": "No file chosen",
+    "import": "Import",
+    "cancel": "Cancel"
   },
   "newAccount": {
     "title": "New Account",
