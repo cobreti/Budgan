@@ -51,7 +51,15 @@
     "title": "Détails du compte",
     "loading": "Chargement du compte...",
     "delete": "Supprimer",
+    "save": "Enregistrer",
     "importFile": "Importer un fichier"
+  },
+  "saveAccount": {
+    "title": "Enregistrer le compte",
+    "chooseFile": "Sélectionner un fichier",
+    "noFileChosen": "Aucun fichier sélectionné",
+    "save": "Enregistrer",
+    "cancel": "Annuler"
   },
   "importFile": {
     "title": "Importer un fichier",

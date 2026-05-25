@@ -23,6 +23,12 @@ export class AccountDetailsComponent implements OnInit {
 
   readonly account: WritableSignal<accountModel | undefined> = signal(undefined);
 
+  onSave(): void {
+    const account = this.account();
+    if (!account) return;
+    this._router.navigate([this._locale.currentLocale(), 'account', account.id, 'save']);
+  }
+
   onImportFile(): void {
     const account = this.account();
     if (!account) return;

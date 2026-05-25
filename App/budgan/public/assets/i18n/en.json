@@ -51,7 +51,15 @@
     "title": "Account Details",
     "loading": "Loading account...",
     "delete": "Delete",
+    "save": "Save",
     "importFile": "Import File"
+  },
+  "saveAccount": {
+    "title": "Save Account",
+    "chooseFile": "Select file",
+    "noFileChosen": "No file selected",
+    "save": "Save",
+    "cancel": "Cancel"
   },
   "importFile": {
     "title": "Import File",
