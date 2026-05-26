@@ -1,0 +1,26 @@
+<div class="save">
+  <h2 class="save__page-title">{{ 'save.title' | translate }}</h2>
+  <app-page-menu>
+    <app-page-menu-button
+      icon="arrow_back"
+      [label]="'save.cancel' | translate"
+      (clicked)="onCancel()" />
+  </app-page-menu>
+
+  <div class="save__body">
+    <div class="save__picker">
+      <button mat-stroked-button type="button" (click)="onSelectFile()">
+        {{ 'save.selectFile' | translate }}
+      </button>
+      <span class="save__file-name">
+        {{ selectedFileName() || ('save.noFileChosen' | translate) }}
+      </span>
+    </div>
+
+    <div class="save__actions">
+      <button mat-raised-button color="primary" [disabled]="!selectedFileName()" (click)="onSave()">
+        {{ 'save.save' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

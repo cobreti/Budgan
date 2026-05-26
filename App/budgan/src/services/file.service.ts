@@ -7,6 +7,7 @@ import { Result } from '@app-types/result';
 export interface FileService {
   getList(): Promise<fileModel[]>;
   create(accountId: string, filename: string, content: string, insertionDate: Date): Promise<Result<string>>;
+  getListByAccount(accountId: string): Promise<fileModel[]>;
   getById(id: string): Promise<fileModel>;
   delete(id: string): Promise<void>;
 }
@@ -26,6 +27,10 @@ export class FileServiceImpl implements FileService {
     const id = this._idGenerator.generateId();
     await this._indexDb.filesTable.add({ id, accountId, filename, content, insertionDate });
     return { success: true, value: id };
+  }
+
+  async getListByAccount(accountId: string): Promise<fileModel[]> {
+    return this._indexDb.filesTable.where('accountId').equals(accountId).toArray();
   }
 
   async getById(id: string): Promise<fileModel> {

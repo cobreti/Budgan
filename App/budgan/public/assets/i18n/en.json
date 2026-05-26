@@ -6,7 +6,8 @@
     "newJournal": "New Journal",
     "openJournal": "Open Journal",
     "newColumnsMapping": "New Columns Mapping",
-    "newAccount": "New Account"
+    "newAccount": "New Account",
+    "saveAll": "Save All"
   },
   "journalList": {
     "empty": "No journals yet."
@@ -57,6 +58,13 @@
   "saveAccount": {
     "title": "Save Account",
     "chooseFile": "Select file",
+    "noFileChosen": "No file selected",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "save": {
+    "title": "Save All",
+    "selectFile": "Select file",
     "noFileChosen": "No file selected",
     "save": "Save",
     "cancel": "Cancel"

@@ -14,6 +14,7 @@ import { THEME_SERVICE, ThemeServiceImpl } from '@services/theme.service';
 import { ACCOUNT_SERVICE, AccountServiceImpl } from '@services/account.service';
 import { FILE_SERVICE, FileServiceImpl } from '@services/file.service';
 import { ACCOUNT_TRANSACTION_SERVICE, AccountTransactionServiceImpl } from '@services/account-transaction.service';
+import { BUDGAN_EXPORT_SERVICE, BudganExportServiceImpl } from '@services/budgan-export.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -36,5 +37,6 @@ export const appConfig: ApplicationConfig = {
     { provide: ACCOUNT_SERVICE, useClass: AccountServiceImpl },
     { provide: FILE_SERVICE, useClass: FileServiceImpl },
     { provide: ACCOUNT_TRANSACTION_SERVICE, useClass: AccountTransactionServiceImpl },
+    { provide: BUDGAN_EXPORT_SERVICE, useClass: BudganExportServiceImpl },
   ]
 };

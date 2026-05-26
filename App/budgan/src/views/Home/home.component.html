@@ -1,6 +1,11 @@
 <app-page>
   <app-page-menu>
     <app-page-menu-button
+      icon="save"
+      [label]="'menu.saveAll' | translate"
+      (clicked)="onSave()"
+    />
+    <app-page-menu-button
       icon="table_chart"
       [label]="'menu.newColumnsMapping' | translate"
       (clicked)="onNewColumnsMapping()"

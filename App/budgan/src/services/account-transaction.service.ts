@@ -22,6 +22,7 @@ export interface AccountTransactionService {
     description: string,
     duplicateOf?: string
   ): Promise<Result<string>>;
+  getListByAccount(accountId: string): Promise<AccountTransactionModel[]>;
   getById(id: string): Promise<AccountTransactionModel>;
   delete(id: string): Promise<void>;
 }
@@ -72,6 +73,10 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
       id, fileId, accountId, cardNumber, dateInscriptionAsString, amount, description, duplicateOf,
     });
     return { success: true, value: id };
+  }
+
+  async getListByAccount(accountId: string): Promise<AccountTransactionModel[]> {
+    return this._indexDb.accountTransactionsTable.where('accountId').equals(accountId).toArray();
   }
 
   async getById(id: string): Promise<AccountTransactionModel> {

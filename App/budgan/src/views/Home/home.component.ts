@@ -34,4 +34,8 @@ export class HomeComponent {
   async onNewAccount(): Promise<void> {
     await this._router.navigate([this._locale.currentLocale(), 'account', 'new']);
   }
+
+  async onSave(): Promise<void> {
+    await this._router.navigate([this._locale.currentLocale(), 'save']);
+  }
 }

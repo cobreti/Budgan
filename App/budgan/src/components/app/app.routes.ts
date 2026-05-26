@@ -10,6 +10,7 @@ import { NewAccountComponent } from '@views/accounts/new-account/new-account.com
 import { AccountDetailsComponent } from '@views/accounts/account-details/account-details.component';
 import { ImportFileComponent } from '@views/accounts/import-file/import-file.component';
 import { SaveAccountComponent } from '@views/accounts/save-account/save-account.component';
+import { SaveComponent } from '@views/save/save.component';
 
 export const routes: Routes = [
   {
@@ -32,6 +33,7 @@ export const routes: Routes = [
       { path: 'account/:accountId', component: AccountDetailsComponent },
       { path: 'account/:accountId/import-file', component: ImportFileComponent },
       { path: 'account/:accountId/save', component: SaveAccountComponent },
+      { path: 'save', component: SaveComponent },
     ],
   },
   { path: '**', redirectTo: 'en' },
