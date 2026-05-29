@@ -1,6 +1,11 @@
 <app-page>
   <app-page-menu>
     <app-page-menu-button
+      icon="folder_open"
+      [label]="'menu.loadAll' | translate"
+      (clicked)="onLoad()"
+    />
+    <app-page-menu-button
       icon="save"
       [label]="'menu.saveAll' | translate"
       (clicked)="onSave()"

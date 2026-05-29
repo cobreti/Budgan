@@ -7,6 +7,7 @@ import { ColumnsMapping } from '@models/columnsMappingModel';
 import { accountModel } from '@models/accountModel';
 import { fileModel } from '@models/fileModel';
 import { AccountTransactionModel } from '@models/accountTransactionModel';
+import { Result } from '@app-types/result';
 
 export interface AccountExportPayload {
   version: number;
@@ -26,7 +27,9 @@ export interface AllDataExportPayload {
 
 export interface BudganExportService {
   pickSaveFile(suggestedName: string): Promise<FileSystemFileHandle | null>;
+  pickLoadFile(): Promise<FileSystemFileHandle | null>;
   writeJsonToFile(handle: FileSystemFileHandle, data: unknown): Promise<void>;
+  readAllDataPayload(handle: FileSystemFileHandle): Promise<Result<AllDataExportPayload>>;
   buildAccountPayload(accountId: string): Promise<AccountExportPayload>;
   buildAllDataPayload(): Promise<AllDataExportPayload>;
 }
@@ -54,10 +57,42 @@ export class BudganExportServiceImpl implements BudganExportService {
     }
   }
 
+  async pickLoadFile(): Promise<FileSystemFileHandle | null> {
+    const showOpenFilePicker = (window as unknown as {
+      showOpenFilePicker: (opts: unknown) => Promise<FileSystemFileHandle[]>;
+    }).showOpenFilePicker;
+    try {
+      const [handle] = await showOpenFilePicker({
+        multiple: false,
+        types: [{ description: 'Budgan files', accept: { 'application/octet-stream': ['.bdg'] } }],
+      });
+      return handle ?? null;
+    } catch {
+      return null;
+    }
+  }
+
   async writeJsonToFile(handle: FileSystemFileHandle, data: unknown): Promise<void> {
     const writable = await handle.createWritable();
     await writable.write(JSON.stringify(data, null, 2));
     await writable.close();
+  }
+
+  async readAllDataPayload(handle: FileSystemFileHandle): Promise<Result<AllDataExportPayload>> {
+    const text = await (await handle.getFile()).text();
+
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      return { success: false, error: 'parse-error' };
+    }
+
+    if (!isAllDataExportPayload(parsed)) {
+      return { success: false, error: 'invalid-format' };
+    }
+
+    return { success: true, value: parsed };
   }
 
   async buildAccountPayload(accountId: string): Promise<AccountExportPayload> {
@@ -79,4 +114,16 @@ export class BudganExportServiceImpl implements BudganExportService {
     ]);
     return { version: 1, columnsMappings, accounts, files, transactions };
   }
+}
+
+function isAllDataExportPayload(value: unknown): value is AllDataExportPayload {
+  if (typeof value !== 'object' || value === null) return false;
+  const v = value as Record<string, unknown>;
+  return (
+    typeof v['version'] === 'number' &&
+    Array.isArray(v['columnsMappings']) &&
+    Array.isArray(v['accounts']) &&
+    Array.isArray(v['files']) &&
+    Array.isArray(v['transactions'])
+  );
 }

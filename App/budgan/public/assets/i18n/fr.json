@@ -8,7 +8,21 @@
     "newColumnsMapping": "Nouveau mappage de colonnes",
     "newAccount": "Nouveau compte",
     "saveAll": "Sauvegarder tout",
+    "loadAll": "Tout charger",
     "clearAll": "Tout effacer"
+  },
+  "load": {
+    "title": "Tout charger",
+    "selectFile": "Sélectionner un fichier",
+    "noFileChosen": "Aucun fichier sélectionné",
+    "load": "Charger",
+    "cancel": "Annuler",
+    "parseError": "Impossible de lire le fichier. Assurez-vous qu'il s'agit d'une sauvegarde Budgan valide.",
+    "invalidFormat": "Le fichier n'est pas une sauvegarde Budgan valide.",
+    "confirmTitle": "Remplacer toutes les données ?",
+    "confirmMessage": "Cette action supprimera définitivement les données actuelles et les remplacera par le contenu du fichier sélectionné. Cette action est irréversible.",
+    "confirmAccept": "Charger et remplacer",
+    "confirmCancel": "Annuler"
   },
   "clearAll": {
     "title": "Effacer toutes les données ?",

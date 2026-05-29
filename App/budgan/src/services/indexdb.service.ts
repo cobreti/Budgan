@@ -5,6 +5,7 @@ import { ColumnsMapping } from '@models/columnsMappingModel';
 import { accountModel } from '@models/accountModel';
 import { fileModel } from '@models/fileModel';
 import { AccountTransactionModel } from '@models/accountTransactionModel';
+import { AllDataExportPayload } from './budgan-export.service';
 
 export type WorkspaceEntity = EntityTable<JournalModel, 'id'>;
 
@@ -87,6 +88,34 @@ export class IndexdbService extends Dexie {
           this.accountsTable.clear(),
           this.filesTable.clear(),
           this.accountTransactionsTable.clear(),
+        ]);
+      },
+    );
+  }
+
+  async replaceAll(payload: AllDataExportPayload): Promise<void> {
+    await this.transaction(
+      'rw',
+      [
+        this.workspaceTable,
+        this.columnsMappingTable,
+        this.accountsTable,
+        this.filesTable,
+        this.accountTransactionsTable,
+      ],
+      async () => {
+        await Promise.all([
+          this.workspaceTable.clear(),
+          this.columnsMappingTable.clear(),
+          this.accountsTable.clear(),
+          this.filesTable.clear(),
+          this.accountTransactionsTable.clear(),
+        ]);
+        await Promise.all([
+          this.columnsMappingTable.bulkAdd(payload.columnsMappings),
+          this.accountsTable.bulkAdd(payload.accounts),
+          this.filesTable.bulkAdd(payload.files),
+          this.accountTransactionsTable.bulkAdd(payload.transactions),
         ]);
       },
     );
