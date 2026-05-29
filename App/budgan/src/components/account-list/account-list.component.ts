@@ -20,10 +20,10 @@ export class AccountListComponent {
   readonly accounts = signal<accountModel[]>([]);
 
   constructor() {
-    this._load();
+    this.refresh();
   }
 
-  private async _load(): Promise<void> {
+  async refresh(): Promise<void> {
     this.accounts.set(await this._accountService.getList());
   }
 

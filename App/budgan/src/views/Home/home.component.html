@@ -15,6 +15,13 @@
       [label]="'menu.newAccount' | translate"
       (clicked)="onNewAccount()"
     />
+    <span class="home__menu-spacer"></span>
+    <app-page-menu-button
+      icon="delete_sweep"
+      variant="danger"
+      [label]="'menu.clearAll' | translate"
+      (clicked)="onClearAll()"
+    />
   </app-page-menu>
 
   <div class="menu-page-divider"></div>

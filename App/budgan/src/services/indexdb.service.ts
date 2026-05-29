@@ -69,4 +69,26 @@ export class IndexdbService extends Dexie {
 
     this.open();
   }
+
+  async clearAll(): Promise<void> {
+    await this.transaction(
+      'rw',
+      [
+        this.workspaceTable,
+        this.columnsMappingTable,
+        this.accountsTable,
+        this.filesTable,
+        this.accountTransactionsTable,
+      ],
+      async () => {
+        await Promise.all([
+          this.workspaceTable.clear(),
+          this.columnsMappingTable.clear(),
+          this.accountsTable.clear(),
+          this.filesTable.clear(),
+          this.accountTransactionsTable.clear(),
+        ]);
+      },
+    );
+  }
 }

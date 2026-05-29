@@ -7,7 +7,14 @@
     "openJournal": "Open Journal",
     "newColumnsMapping": "New Columns Mapping",
     "newAccount": "New Account",
-    "saveAll": "Save All"
+    "saveAll": "Save All",
+    "clearAll": "Clear All"
+  },
+  "clearAll": {
+    "title": "Clear all data?",
+    "message": "This will permanently delete all journals, columns mappings, accounts, files, and transactions. This action cannot be undone.",
+    "confirm": "Clear All",
+    "cancel": "Cancel"
   },
   "journalList": {
     "empty": "No journals yet."

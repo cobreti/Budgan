@@ -7,7 +7,14 @@
     "openJournal": "Ouvrir un journal",
     "newColumnsMapping": "Nouveau mappage de colonnes",
     "newAccount": "Nouveau compte",
-    "saveAll": "Sauvegarder tout"
+    "saveAll": "Sauvegarder tout",
+    "clearAll": "Tout effacer"
+  },
+  "clearAll": {
+    "title": "Effacer toutes les données ?",
+    "message": "Cette action supprimera définitivement tous les journaux, mappages de colonnes, comptes, fichiers et transactions. Cette action est irréversible.",
+    "confirm": "Tout effacer",
+    "cancel": "Annuler"
   },
   "journalList": {
     "empty": "Aucun journal pour l'instant."

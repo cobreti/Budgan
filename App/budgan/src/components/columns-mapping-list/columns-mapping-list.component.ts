@@ -23,10 +23,10 @@ export class ColumnsMappingListComponent {
   readonly mappings = signal<ColumnsMapping[]>([]);
 
   constructor() {
-    this._load();
+    this.refresh();
   }
 
-  private async _load(): Promise<void> {
+  async refresh(): Promise<void> {
     this.mappings.set(await this._service.getList());
   }
 
