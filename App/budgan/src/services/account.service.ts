@@ -40,6 +40,18 @@ export class AccountServiceImpl implements AccountService {
   }
 
   async delete(id: string): Promise<void> {
-    await this._indexDb.accountsTable.delete(id);
+    await this._indexDb.transaction(
+      'rw',
+      [
+        this._indexDb.accountsTable,
+        this._indexDb.filesTable,
+        this._indexDb.accountTransactionsTable,
+      ],
+      async () => {
+        await this._indexDb.accountTransactionsTable.where('accountId').equals(id).delete();
+        await this._indexDb.filesTable.where('accountId').equals(id).delete();
+        await this._indexDb.accountsTable.delete(id);
+      },
+    );
   }
 }
