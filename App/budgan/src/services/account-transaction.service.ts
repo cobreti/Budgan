@@ -20,14 +20,15 @@ export interface AccountTransactionService {
     dateInscriptionAsString: string,
     amount: number,
     description: string,
-    duplicateOf?: string
   ): Promise<Result<string>>;
   getListByAccount(accountId: string): Promise<AccountTransactionModel[]>;
   getById(id: string): Promise<AccountTransactionModel>;
   delete(id: string): Promise<void>;
 }
 
-export const ACCOUNT_TRANSACTION_SERVICE = new InjectionToken<AccountTransactionService>('AccountTransactionService');
+export const ACCOUNT_TRANSACTION_SERVICE = new InjectionToken<AccountTransactionService>(
+  'AccountTransactionService',
+);
 
 @Injectable({ providedIn: 'root' })
 export class AccountTransactionServiceImpl implements AccountTransactionService {
@@ -38,20 +39,24 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
   }
 
   async getCountByAccount(accountId: string): Promise<number> {
-    return this._indexDb.accountTransactionsTable
-      .where('accountId').equals(accountId)
-      .count();
+    return this._indexDb.accountTransactionsTable.where('accountId').equals(accountId).count();
   }
 
-  async getPageByAccount(accountId: string, page: number, pageSize: number): Promise<TransactionPage> {
+  async getPageByAccount(
+    accountId: string,
+    page: number,
+    pageSize: number,
+  ): Promise<TransactionPage> {
     const total = await this._indexDb.accountTransactionsTable
-      .where('accountId').equals(accountId)
+      .where('accountId')
+      .equals(accountId)
       .count();
 
     const totalPages = Math.ceil(total / pageSize);
 
     const transactions = await this._indexDb.accountTransactionsTable
-      .where('accountId').equals(accountId)
+      .where('accountId')
+      .equals(accountId)
       .offset(page * pageSize)
       .limit(pageSize)
       .toArray();
@@ -66,11 +71,17 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
     dateInscriptionAsString: string,
     amount: number,
     description: string,
-    duplicateOf?: string
   ): Promise<Result<string>> {
     const id = `${cardNumber}|${dateInscriptionAsString}|${amount}|${description}`;
     await this._indexDb.accountTransactionsTable.add({
-      id, fileId, accountId, cardNumber, dateInscriptionAsString, amount, description, duplicateOf,
+      id,
+      fileId,
+      accountId,
+      cardNumber,
+      dateInscriptionAsString,
+      amount,
+      calculatedAmount: 0,
+      description,
     });
     return { success: true, value: id };
   }

@@ -5,6 +5,6 @@ export interface AccountTransactionModel {
   cardNumber: string;
   dateInscriptionAsString: string;
   amount: number;
+  calculatedAmount: number;
   description: string;
-  duplicateOf?: string;
 }
