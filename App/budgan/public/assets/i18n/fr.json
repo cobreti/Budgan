@@ -76,6 +76,12 @@
     "save": "Enregistrer",
     "importFile": "Importer un fichier"
   },
+  "accountHome": {
+    "tabs": {
+      "details": "Détails",
+      "transactions": "Transactions"
+    }
+  },
   "saveAccount": {
     "title": "Enregistrer le compte",
     "chooseFile": "Sélectionner un fichier",

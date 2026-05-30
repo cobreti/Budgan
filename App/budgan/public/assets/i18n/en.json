@@ -76,6 +76,12 @@
     "save": "Save",
     "importFile": "Import File"
   },
+  "accountHome": {
+    "tabs": {
+      "details": "Details",
+      "transactions": "Transactions"
+    }
+  },
   "saveAccount": {
     "title": "Save Account",
     "chooseFile": "Select file",
