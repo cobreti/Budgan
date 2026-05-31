@@ -74,7 +74,11 @@
     "loading": "Chargement du compte...",
     "delete": "Supprimer",
     "save": "Enregistrer",
-    "importFile": "Importer un fichier"
+    "importFile": "Importer un fichier",
+    "confirmDeleteTitle": "Supprimer ce compte ?",
+    "confirmDeleteMessage": "Cette action supprimera définitivement le compte, tous les fichiers importés et toutes ses transactions. Cette action est irréversible.",
+    "confirmDeleteAccept": "Supprimer",
+    "confirmDeleteCancel": "Annuler"
   },
   "accountHome": {
     "tabs": {
