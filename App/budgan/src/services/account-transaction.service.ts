@@ -1,6 +1,6 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import { IndexdbService } from './indexdb.service';
-import { AccountTransactionModel } from '@models/accountTransactionModel';
+import { AccountTransactionModel, AccountTransactionRecordType } from '@models/accountTransactionModel';
 import { Result } from '@app-types/result';
 
 export type TransactionPage = {
@@ -82,6 +82,7 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
       amount,
       calculatedAmount: 0,
       description,
+      recordType: AccountTransactionRecordType.normal,
     });
     return { success: true, value: id };
   }

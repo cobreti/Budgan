@@ -7,4 +7,10 @@ export interface AccountTransactionModel {
   amount: number;
   calculatedAmount: number;
   description: string;
+  recordType: AccountTransactionRecordType;
+}
+
+export enum AccountTransactionRecordType {
+  normal = 'normal',
+  snapshot = 'snapshot',
 }
