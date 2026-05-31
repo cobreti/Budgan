@@ -1,0 +1,11 @@
+.account-snapshot {
+  &__empty {
+    color: var(--mat-sys-on-surface-variant, inherit);
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
+}

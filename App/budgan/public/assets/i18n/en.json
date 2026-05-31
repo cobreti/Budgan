@@ -86,6 +86,13 @@
       "transactions": "Transactions"
     }
   },
+  "accountSnapshot": {
+    "title": "Account Snapshot",
+    "date": "Snapshot date",
+    "amount": "Snapshot amount",
+    "save": "Save",
+    "empty": "No snapshot saved yet."
+  },
   "saveAccount": {
     "title": "Save Account",
     "chooseFile": "Select file",

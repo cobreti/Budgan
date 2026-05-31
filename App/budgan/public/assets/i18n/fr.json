@@ -86,6 +86,13 @@
       "transactions": "Transactions"
     }
   },
+  "accountSnapshot": {
+    "title": "Instantané du compte",
+    "date": "Date de l'instantané",
+    "amount": "Montant de l'instantané",
+    "save": "Enregistrer",
+    "empty": "Aucun instantané enregistré pour l'instant."
+  },
   "saveAccount": {
     "title": "Enregistrer le compte",
     "chooseFile": "Sélectionner un fichier",

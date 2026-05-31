@@ -1,6 +1,9 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import { IndexdbService } from './indexdb.service';
-import { AccountTransactionModel, AccountTransactionRecordType } from '@models/accountTransactionModel';
+import {
+  AccountTransactionModel,
+  AccountTransactionRecordType,
+} from '@models/accountTransactionModel';
 import { Result } from '@app-types/result';
 
 export type TransactionPage = {
@@ -21,6 +24,8 @@ export interface AccountTransactionService {
     amount: number,
     description: string,
   ): Promise<Result<string>>;
+  setSnapshot(accountId: string, dateAsString: string, amount: number): Promise<Result<string>>;
+  getSnapshot(accountId: string): Promise<AccountTransactionModel | undefined>;
   getListByAccount(accountId: string): Promise<AccountTransactionModel[]>;
   getById(id: string): Promise<AccountTransactionModel>;
   delete(id: string): Promise<void>;
@@ -85,6 +90,34 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
       recordType: AccountTransactionRecordType.normal,
     });
     return { success: true, value: id };
+  }
+
+  private snapshotId(accountId: string): string {
+    return `snapshot|${accountId}`;
+  }
+
+  async setSnapshot(
+    accountId: string,
+    dateAsString: string,
+    amount: number,
+  ): Promise<Result<string>> {
+    const id = this.snapshotId(accountId);
+    await this._indexDb.accountTransactionsTable.put({
+      id,
+      fileId: '',
+      accountId,
+      cardNumber: '',
+      dateInscriptionAsString: dateAsString,
+      amount,
+      calculatedAmount: amount,
+      description: '',
+      recordType: AccountTransactionRecordType.snapshot,
+    });
+    return { success: true, value: id };
+  }
+
+  async getSnapshot(accountId: string): Promise<AccountTransactionModel | undefined> {
+    return this._indexDb.accountTransactionsTable.get(this.snapshotId(accountId));
   }
 
   async getListByAccount(accountId: string): Promise<AccountTransactionModel[]> {
