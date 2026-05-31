@@ -113,7 +113,6 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
       cardNumber,
       dateInscriptionAsString,
       amount,
-      calculatedAmount: 0,
       description,
       recordType: AccountTransactionRecordType.normal,
     });

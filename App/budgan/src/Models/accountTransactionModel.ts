@@ -5,7 +5,7 @@ export interface AccountTransactionModel {
   cardNumber: string;
   dateInscriptionAsString: string;
   amount: number;
-  calculatedAmount: number;
+  calculatedAmount?: number;
   description: string;
   recordType: AccountTransactionRecordType;
 }
