@@ -12,10 +12,22 @@ export type TransactionPage = {
   page: number;
 };
 
+export type TransactionSortField = 'cardNumber' | 'dateInscription' | 'description' | 'amount';
+
+export type TransactionSort = {
+  field: TransactionSortField;
+  direction: 'asc' | 'desc';
+};
+
 export interface AccountTransactionService {
   getList(): Promise<AccountTransactionModel[]>;
   getCountByAccount(accountId: string): Promise<number>;
-  getPageByAccount(accountId: string, page: number, pageSize: number): Promise<TransactionPage>;
+  getPageByAccount(
+    accountId: string,
+    page: number,
+    pageSize: number,
+    sort: TransactionSort,
+  ): Promise<TransactionPage>;
   create(
     fileId: string,
     accountId: string,
@@ -52,22 +64,37 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
     accountId: string,
     page: number,
     pageSize: number,
+    sort: TransactionSort,
   ): Promise<TransactionPage> {
-    const total = await this._indexDb.accountTransactionsTable
+    const all = await this._indexDb.accountTransactionsTable
       .where('accountId')
       .equals(accountId)
-      .count();
-
-    const totalPages = Math.ceil(total / pageSize);
-
-    const transactions = await this._indexDb.accountTransactionsTable
-      .where('accountId')
-      .equals(accountId)
-      .offset(page * pageSize)
-      .limit(pageSize)
       .toArray();
 
+    const sorted = this._sortTransactions(all, sort);
+    const totalPages = Math.ceil(sorted.length / pageSize);
+    const transactions = sorted.slice(page * pageSize, (page + 1) * pageSize);
+
     return { transactions, totalPages, page };
+  }
+
+  private _sortTransactions(
+    transactions: AccountTransactionModel[],
+    sort: TransactionSort,
+  ): AccountTransactionModel[] {
+    const sign = sort.direction === 'desc' ? -1 : 1;
+    return [...transactions].sort((a, b) => {
+      switch (sort.field) {
+        case 'amount':
+          return sign * (a.amount - b.amount);
+        case 'cardNumber':
+          return sign * a.cardNumber.localeCompare(b.cardNumber);
+        case 'description':
+          return sign * a.description.localeCompare(b.description);
+        case 'dateInscription':
+          return sign * a.dateInscriptionAsString.localeCompare(b.dateInscriptionAsString);
+      }
+    });
   }
 
   async create(
