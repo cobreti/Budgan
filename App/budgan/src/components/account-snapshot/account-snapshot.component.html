@@ -1,5 +1,6 @@
 <mat-card class="account-snapshot">
-  <mat-card-title>{{ 'accountSnapshot.title' | translate }}</mat-card-title>
+  <mat-card-title class="title">{{ 'accountSnapshot.title' | translate }}</mat-card-title>
+  <div class="v-spacer"></div>
   <mat-card-content>
     @if (!hasSnapshot()) {
       <p class="account-snapshot__empty">{{ 'accountSnapshot.empty' | translate }}</p>
@@ -25,6 +26,7 @@
         />
       </mat-form-field>
       <button
+        class="save-btn"
         mat-flat-button
         type="submit"
         [disabled]="form.invalid"

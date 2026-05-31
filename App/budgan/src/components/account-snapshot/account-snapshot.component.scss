@@ -1,4 +1,17 @@
 .account-snapshot {
+  display: block;
+  max-width: 50%;
+  margin: 1em;
+
+  .title {
+    padding: 0.5em;
+  }
+
+  .v-spacer {
+    height: 1em;
+    display: block;
+  }
+
   &__empty {
     color: var(--mat-sys-on-surface-variant, inherit);
   }
@@ -7,5 +20,10 @@
     display: flex;
     flex-direction: column;
     gap: 0.5em;
+  }
+
+  .save-btn {
+    max-width: 30%;
+    margin-left: auto;
   }
 }
