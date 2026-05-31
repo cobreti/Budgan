@@ -10,7 +10,7 @@ import {
   TransactionSort,
   TransactionSortField,
 } from '@services/account-transaction.service';
-import { AccountTransactionModel } from '@models/accountTransactionModel';
+import { AccountTransactionModel, AccountTransactionRecordType } from '@models/accountTransactionModel';
 
 const DEFAULT_SORT: TransactionSort = { field: 'dateInscription', direction: 'desc' };
 const SORTABLE_FIELDS: readonly TransactionSortField[] = [
@@ -87,5 +87,21 @@ export class AccountTransactionsTableComponent {
     if (isNaN(page)) return;
     const clamped = Math.max(1, Math.min(page, this.totalPages())) - 1;
     this._currentPage.set(clamped);
+  }
+
+  formatAmount(amount: number): string {
+    const [intPart, decPart] = amount.toFixed(2).split('.');
+    const sign = intPart.startsWith('-') ? '-' : '';
+    const intAbs = sign ? intPart.slice(1) : intPart;
+    const grouped = intAbs.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    return `${sign}${grouped}.${decPart}`;
+  }
+
+  isPositiveAmount(row: AccountTransactionModel): boolean {
+    return row.recordType !== AccountTransactionRecordType.snapshot && row.amount > 0;
+  }
+
+  isNegativeAmount(row: AccountTransactionModel): boolean {
+    return row.recordType !== AccountTransactionRecordType.snapshot && row.amount < 0;
   }
 }

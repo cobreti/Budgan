@@ -33,7 +33,12 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header data-testid="sort-header-amount">
         {{ 'transactionTable.amount' | translate }}
       </th>
-      <td mat-cell *matCellDef="let row">{{ row.amount }}</td>
+      <td mat-cell *matCellDef="let row"
+          class="transaction-table__amount"
+          [class.transaction-table__amount--positive]="isPositiveAmount(row)"
+          [class.transaction-table__amount--negative]="isNegativeAmount(row)">
+        {{ formatAmount(row.amount) }}
+      </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

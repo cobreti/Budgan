@@ -28,6 +28,16 @@
     font-size: 0.875em;
   }
 
+  &__amount {
+    &--positive {
+      color: var(--color-success, inherit);
+    }
+
+    &--negative {
+      color: var(--mat-sys-error, inherit);
+    }
+  }
+
   &__page-input {
     width: 4em;
     padding: 0.25em 0.5em;
