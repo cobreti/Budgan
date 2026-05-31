@@ -6,6 +6,7 @@ export interface AccountTransactionModel {
   dateInscriptionAsString: string;
   amount: number;
   balance?: number;
+  balanceDateOffset?: number;
   description: string;
   recordType: AccountTransactionRecordType;
 }

@@ -96,8 +96,13 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
           return sign * a.cardNumber.localeCompare(b.cardNumber);
         case 'description':
           return sign * a.description.localeCompare(b.description);
-        case 'dateInscription':
-          return sign * a.dateInscriptionAsString.localeCompare(b.dateInscriptionAsString);
+        case 'dateInscription': {
+          const dateCmp = a.dateInscriptionAsString.localeCompare(b.dateInscriptionAsString);
+          if (dateCmp !== 0) return sign * dateCmp;
+          const aOff = a.balanceDateOffset ?? 0;
+          const bOff = b.balanceDateOffset ?? 0;
+          return sign * (aOff - bOff);
+        }
       }
     });
   }
@@ -142,6 +147,7 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
       dateInscriptionAsString: dateAsString,
       amount,
       balance: amount,
+      balanceDateOffset: 0,
       description: '',
       recordType: AccountTransactionRecordType.snapshot,
     });
@@ -183,12 +189,16 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
     const snapshot = all.find(t => t.recordType === AccountTransactionRecordType.snapshot);
     const normal = all
       .filter(t => t.recordType === AccountTransactionRecordType.normal)
-      .sort((a, b) => a.dateInscriptionAsString.localeCompare(b.dateInscriptionAsString));
+      .sort((a, b) => {
+        const dateCmp = a.dateInscriptionAsString.localeCompare(b.dateInscriptionAsString);
+        if (dateCmp !== 0) return dateCmp;
+        return a.id.localeCompare(b.id);
+      });
 
     if (!snapshot) {
       const cleared = normal
-        .filter(t => t.balance !== undefined)
-        .map(({ balance, ...rest }) => rest as AccountTransactionModel);
+        .filter(t => t.balance !== undefined || t.balanceDateOffset !== undefined)
+        .map(({ balance, balanceDateOffset, ...rest }) => rest as AccountTransactionModel);
       if (cleared.length > 0) {
         await this._indexDb.accountTransactionsTable.bulkPut(cleared);
       }
@@ -201,16 +211,20 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
     const afterOrEqual = normal.filter(t => t.dateInscriptionAsString >= snapshotDate);
 
     let running = snapshot.amount;
+    let offset = 0;
     const updatedAfter = afterOrEqual.map(t => {
+      offset += 1;
       running += t.amount;
-      return { ...t, balance: running };
+      return { ...t, balance: running, balanceDateOffset: offset };
     });
 
     running = snapshot.amount;
+    offset = 0;
     const updatedBefore: AccountTransactionModel[] = [];
     for (let i = before.length - 1; i >= 0; i--) {
+      offset -= 1;
       const t = before[i];
-      updatedBefore.unshift({ ...t, balance: running });
+      updatedBefore.unshift({ ...t, balance: running, balanceDateOffset: offset });
       running -= t.amount;
     }
 
