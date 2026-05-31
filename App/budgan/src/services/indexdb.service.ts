@@ -2,7 +2,7 @@ import Dexie, { EntityTable, Table } from 'dexie';
 import { Injectable } from '@angular/core';
 import { JournalModel } from '@models/journalModel';
 import { ColumnsMapping } from '@models/columnsMappingModel';
-import { accountModel } from '@models/accountModel';
+import { AccountModel } from '@models/accountModel';
 import { fileModel } from '@models/fileModel';
 import { AccountTransactionModel } from '@models/accountTransactionModel';
 import { AllDataExportPayload } from './budgan-export.service';
@@ -15,7 +15,7 @@ export type WorkspaceEntity = EntityTable<JournalModel, 'id'>;
 export class IndexdbService extends Dexie {
   workspaceTable!: WorkspaceEntity;
   columnsMappingTable!: Table<ColumnsMapping, string>;
-  accountsTable!: EntityTable<accountModel, 'id'>;
+  accountsTable!: EntityTable<AccountModel, 'id'>;
   filesTable!: EntityTable<fileModel, 'id'>;
   accountTransactionsTable!: EntityTable<AccountTransactionModel, 'id'>;
 

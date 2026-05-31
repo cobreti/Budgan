@@ -1,13 +1,13 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import { IndexdbService } from './indexdb.service';
-import { accountModel } from '@models/accountModel';
+import { AccountModel } from '@models/accountModel';
 import { ID_GENERATOR_SERVICE, IdGeneratorService } from './id-generator.service';
 import { Result } from '@app-types/result';
 
 export interface AccountService {
-  getList(): Promise<accountModel[]>;
+  getList(): Promise<AccountModel[]>;
   create(name: string, columnsMappingId: string): Promise<Result<string>>;
-  getById(id: string): Promise<accountModel>;
+  getById(id: string): Promise<AccountModel>;
   delete(id: string): Promise<void>;
 }
 
@@ -18,7 +18,7 @@ export class AccountServiceImpl implements AccountService {
   private readonly _indexDb = inject(IndexdbService);
   private readonly _idGenerator = inject<IdGeneratorService>(ID_GENERATOR_SERVICE);
 
-  async getList(): Promise<accountModel[]> {
+  async getList(): Promise<AccountModel[]> {
     return this._indexDb.accountsTable.toArray();
   }
 
@@ -31,7 +31,7 @@ export class AccountServiceImpl implements AccountService {
     return { success: true, value: id };
   }
 
-  async getById(id: string): Promise<accountModel> {
+  async getById(id: string): Promise<AccountModel> {
     const entry = await this._indexDb.accountsTable.get(id);
     if (!entry) {
       throw new Error('Account not found');

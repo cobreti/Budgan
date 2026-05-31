@@ -12,7 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ACCOUNT_SERVICE, AccountService } from '@services/account.service';
 import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
-import { accountModel } from '@models/accountModel';
+import { AccountModel } from '@models/accountModel';
 import { PageMenuComponent } from '@components/page-menu/page-menu.component';
 import { PageMenuButtonComponent } from '@components/page-menu/page-menu-button/page-menu-button.component';
 import {
@@ -44,7 +44,7 @@ export class AccountHomeComponent implements OnInit {
   private readonly _accountService = inject<AccountService>(ACCOUNT_SERVICE);
   private readonly _dialog = inject(MatDialog);
 
-  readonly account: WritableSignal<accountModel | undefined> = signal(undefined);
+  readonly account: WritableSignal<AccountModel | undefined> = signal(undefined);
 
   onSave(): void {
     const account = this.account();

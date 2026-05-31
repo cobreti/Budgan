@@ -4,14 +4,14 @@ import { ACCOUNT_SERVICE, AccountService } from './account.service';
 import { FILE_SERVICE, FileService } from './file.service';
 import { ACCOUNT_TRANSACTION_SERVICE, AccountTransactionService } from './account-transaction.service';
 import { ColumnsMapping } from '@models/columnsMappingModel';
-import { accountModel } from '@models/accountModel';
+import { AccountModel } from '@models/accountModel';
 import { fileModel } from '@models/fileModel';
 import { AccountTransactionModel } from '@models/accountTransactionModel';
 import { Result } from '@app-types/result';
 
 export interface AccountExportPayload {
   version: number;
-  account: accountModel;
+  account: AccountModel;
   columnsMapping: ColumnsMapping;
   files: fileModel[];
   transactions: AccountTransactionModel[];
@@ -20,7 +20,7 @@ export interface AccountExportPayload {
 export interface AllDataExportPayload {
   version: number;
   columnsMappings: ColumnsMapping[];
-  accounts: accountModel[];
+  accounts: AccountModel[];
   files: fileModel[];
   transactions: AccountTransactionModel[];
 }

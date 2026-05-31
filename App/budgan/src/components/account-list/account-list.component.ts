@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ACCOUNT_SERVICE, AccountService } from '@services/account.service';
 import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
-import { accountModel } from '@models/accountModel';
+import { AccountModel } from '@models/accountModel';
 
 @Component({
   selector: 'app-account-list',
@@ -17,7 +17,7 @@ export class AccountListComponent {
   private readonly _router = inject(Router);
   private readonly _locale = inject<LocaleService>(LOCALE_SERVICE);
 
-  readonly accounts = signal<accountModel[]>([]);
+  readonly accounts = signal<AccountModel[]>([]);
 
   constructor() {
     this.refresh();
