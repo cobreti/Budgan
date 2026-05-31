@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -17,6 +17,7 @@ import { ACCOUNT_SERVICE, AccountServiceImpl } from '@services/account.service';
 import { FILE_SERVICE, FileServiceImpl } from '@services/file.service';
 import { ACCOUNT_TRANSACTION_SERVICE, AccountTransactionServiceImpl } from '@services/account-transaction.service';
 import { BUDGAN_EXPORT_SERVICE, BudganExportServiceImpl } from '@services/budgan-export.service';
+import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -41,6 +42,9 @@ export const appConfig: ApplicationConfig = {
     { provide: ACCOUNT_SERVICE, useClass: AccountServiceImpl },
     { provide: FILE_SERVICE, useClass: FileServiceImpl },
     { provide: ACCOUNT_TRANSACTION_SERVICE, useClass: AccountTransactionServiceImpl },
-    { provide: BUDGAN_EXPORT_SERVICE, useClass: BudganExportServiceImpl },
+    { provide: BUDGAN_EXPORT_SERVICE, useClass: BudganExportServiceImpl }, provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          }),
   ]
 };
