@@ -10,10 +10,12 @@
         <mat-label>{{ 'accountSnapshot.date' | translate }}</mat-label>
         <input
           matInput
-          type="date"
-          formControlName="dateAsString"
+          [matDatepicker]="picker"
+          formControlName="date"
           data-testid="account-snapshot-date"
         />
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
       <mat-form-field>
         <mat-label>{{ 'accountSnapshot.amount' | translate }}</mat-label>
