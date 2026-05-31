@@ -43,13 +43,14 @@ export class AccountTransactionsTableComponent {
   readonly sortDirection = computed(() => this._sort().direction);
 
   readonly pageSize = 25;
-  readonly displayedColumns = ['cardNumber', 'dateInscription', 'description', 'amount'];
+  readonly displayedColumns = ['cardNumber', 'dateInscription', 'description', 'amount', 'balance'];
 
   constructor() {
     effect(() => {
       const accountId = this.accountId();
       const page = this._currentPage();
       const sort = this._sort();
+      this._transactionService.transactionsVersion();
       this._loadPage(accountId, page, sort);
     });
   }
@@ -103,5 +104,9 @@ export class AccountTransactionsTableComponent {
 
   isNegativeAmount(row: AccountTransactionModel): boolean {
     return row.recordType !== AccountTransactionRecordType.snapshot && row.amount < 0;
+  }
+
+  formatBalance(balance: number | undefined): string {
+    return balance === undefined ? '' : this.formatAmount(balance);
   }
 }

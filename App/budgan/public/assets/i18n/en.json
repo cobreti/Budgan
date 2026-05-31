@@ -133,6 +133,7 @@
     "dateInscription": "Date",
     "description": "Description",
     "amount": "Amount",
+    "balance": "Balance",
     "empty": "No transactions.",
     "page": "Page",
     "of": "of",

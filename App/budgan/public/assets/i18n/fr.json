@@ -133,6 +133,7 @@
     "dateInscription": "Date d'inscription",
     "description": "Description",
     "amount": "Montant",
+    "balance": "Solde",
     "empty": "Aucune transaction.",
     "page": "Page",
     "of": "sur",

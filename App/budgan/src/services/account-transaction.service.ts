@@ -1,4 +1,4 @@
-import { inject, Injectable, InjectionToken } from '@angular/core';
+import { inject, Injectable, InjectionToken, Signal, signal } from '@angular/core';
 import { IndexdbService } from './indexdb.service';
 import {
   AccountTransactionModel,
@@ -20,6 +20,7 @@ export type TransactionSort = {
 };
 
 export interface AccountTransactionService {
+  readonly transactionsVersion: Signal<number>;
   getList(): Promise<AccountTransactionModel[]>;
   getCountByAccount(accountId: string): Promise<number>;
   getPageByAccount(
@@ -42,6 +43,7 @@ export interface AccountTransactionService {
   getListByAccount(accountId: string): Promise<AccountTransactionModel[]>;
   getById(id: string): Promise<AccountTransactionModel>;
   delete(id: string): Promise<void>;
+  recalculateBalances(accountId: string): Promise<void>;
 }
 
 export const ACCOUNT_TRANSACTION_SERVICE = new InjectionToken<AccountTransactionService>(
@@ -51,6 +53,9 @@ export const ACCOUNT_TRANSACTION_SERVICE = new InjectionToken<AccountTransaction
 @Injectable({ providedIn: 'root' })
 export class AccountTransactionServiceImpl implements AccountTransactionService {
   private readonly _indexDb = inject(IndexdbService);
+  private readonly _transactionsVersion = signal(0);
+
+  readonly transactionsVersion: Signal<number> = this._transactionsVersion;
 
   async getList(): Promise<AccountTransactionModel[]> {
     return this._indexDb.accountTransactionsTable.toArray();
@@ -136,10 +141,11 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
       cardNumber: '',
       dateInscriptionAsString: dateAsString,
       amount,
-      calculatedAmount: amount,
+      balance: amount,
       description: '',
       recordType: AccountTransactionRecordType.snapshot,
     });
+    await this.recalculateBalances(accountId);
     return { success: true, value: id };
   }
 
@@ -149,6 +155,7 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
 
   async deleteSnapshot(accountId: string): Promise<void> {
     await this._indexDb.accountTransactionsTable.delete(this.snapshotId(accountId));
+    await this.recalculateBalances(accountId);
   }
 
   async getListByAccount(accountId: string): Promise<AccountTransactionModel[]> {
@@ -165,5 +172,49 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
 
   async delete(id: string): Promise<void> {
     await this._indexDb.accountTransactionsTable.delete(id);
+  }
+
+  async recalculateBalances(accountId: string): Promise<void> {
+    const all = await this._indexDb.accountTransactionsTable
+      .where('accountId')
+      .equals(accountId)
+      .toArray();
+
+    const snapshot = all.find(t => t.recordType === AccountTransactionRecordType.snapshot);
+    const normal = all
+      .filter(t => t.recordType === AccountTransactionRecordType.normal)
+      .sort((a, b) => a.dateInscriptionAsString.localeCompare(b.dateInscriptionAsString));
+
+    if (!snapshot) {
+      const cleared = normal
+        .filter(t => t.balance !== undefined)
+        .map(({ balance, ...rest }) => rest as AccountTransactionModel);
+      if (cleared.length > 0) {
+        await this._indexDb.accountTransactionsTable.bulkPut(cleared);
+      }
+      this._transactionsVersion.update(v => v + 1);
+      return;
+    }
+
+    const snapshotDate = snapshot.dateInscriptionAsString;
+    const before = normal.filter(t => t.dateInscriptionAsString < snapshotDate);
+    const afterOrEqual = normal.filter(t => t.dateInscriptionAsString >= snapshotDate);
+
+    let running = snapshot.amount;
+    const updatedAfter = afterOrEqual.map(t => {
+      running += t.amount;
+      return { ...t, balance: running };
+    });
+
+    running = snapshot.amount;
+    const updatedBefore: AccountTransactionModel[] = [];
+    for (let i = before.length - 1; i >= 0; i--) {
+      const t = before[i];
+      updatedBefore.unshift({ ...t, balance: running });
+      running -= t.amount;
+    }
+
+    await this._indexDb.accountTransactionsTable.bulkPut([...updatedBefore, ...updatedAfter]);
+    this._transactionsVersion.update(v => v + 1);
   }
 }

@@ -74,6 +74,8 @@ export class ImportFileComponent {
       await this._transactionService.create(fileId, this._accountId, cardNumber, dateInscriptionAsString, amount, description);
     }
 
+    await this._transactionService.recalculateBalances(this._accountId);
+
     await this._router.navigate([this._locale.currentLocale(), 'account', this._accountId]);
   }
 
