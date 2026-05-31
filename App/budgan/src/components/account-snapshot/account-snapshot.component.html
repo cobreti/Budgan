@@ -25,15 +25,29 @@
           data-testid="account-snapshot-amount"
         />
       </mat-form-field>
-      <button
-        class="save-btn"
-        mat-flat-button
-        type="submit"
-        [disabled]="form.invalid"
-        data-testid="account-snapshot-save"
-      >
-        {{ 'accountSnapshot.save' | translate }}
-      </button>
+      <div class="account-snapshot__actions">
+        @if (hasSnapshot()) {
+          <button
+            class="save-btn"
+            mat-stroked-button
+            type="button"
+            color="warn"
+            (click)="onDelete()"
+            data-testid="account-snapshot-delete"
+          >
+            {{ 'accountSnapshot.delete' | translate }}
+          </button>
+        }
+        <button
+          class="save-btn"
+          mat-flat-button
+          type="submit"
+          [disabled]="form.invalid"
+          data-testid="account-snapshot-save"
+        >
+          {{ 'accountSnapshot.save' | translate }}
+        </button>
+      </div>
     </form>
   </mat-card-content>
 </mat-card>

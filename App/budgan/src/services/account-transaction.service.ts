@@ -26,6 +26,7 @@ export interface AccountTransactionService {
   ): Promise<Result<string>>;
   setSnapshot(accountId: string, dateAsString: string, amount: number): Promise<Result<string>>;
   getSnapshot(accountId: string): Promise<AccountTransactionModel | undefined>;
+  deleteSnapshot(accountId: string): Promise<void>;
   getListByAccount(accountId: string): Promise<AccountTransactionModel[]>;
   getById(id: string): Promise<AccountTransactionModel>;
   delete(id: string): Promise<void>;
@@ -118,6 +119,10 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
 
   async getSnapshot(accountId: string): Promise<AccountTransactionModel | undefined> {
     return this._indexDb.accountTransactionsTable.get(this.snapshotId(accountId));
+  }
+
+  async deleteSnapshot(accountId: string): Promise<void> {
+    await this._indexDb.accountTransactionsTable.delete(this.snapshotId(accountId));
   }
 
   async getListByAccount(accountId: string): Promise<AccountTransactionModel[]> {

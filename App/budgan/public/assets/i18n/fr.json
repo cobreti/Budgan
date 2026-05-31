@@ -91,7 +91,12 @@
     "date": "Date de l'instantané",
     "amount": "Montant de l'instantané",
     "save": "Enregistrer",
-    "empty": "Aucun instantané enregistré pour l'instant."
+    "delete": "Supprimer",
+    "empty": "Aucun instantané enregistré pour l'instant.",
+    "confirmDeleteTitle": "Supprimer cet instantané ?",
+    "confirmDeleteMessage": "Cette action supprimera définitivement l'instantané de ce compte. Cette action est irréversible.",
+    "confirmDeleteAccept": "Supprimer",
+    "confirmDeleteCancel": "Annuler"
   },
   "saveAccount": {
     "title": "Enregistrer le compte",

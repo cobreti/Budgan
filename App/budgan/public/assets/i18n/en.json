@@ -91,7 +91,12 @@
     "date": "Snapshot date",
     "amount": "Snapshot amount",
     "save": "Save",
-    "empty": "No snapshot saved yet."
+    "delete": "Delete",
+    "empty": "No snapshot saved yet.",
+    "confirmDeleteTitle": "Delete this snapshot?",
+    "confirmDeleteMessage": "This will permanently delete the snapshot for this account. This action cannot be undone.",
+    "confirmDeleteAccept": "Delete",
+    "confirmDeleteCancel": "Cancel"
   },
   "saveAccount": {
     "title": "Save Account",

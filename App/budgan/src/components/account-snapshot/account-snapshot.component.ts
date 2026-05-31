@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, effect, inject, input, signal } fro
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -9,6 +10,10 @@ import {
   ACCOUNT_TRANSACTION_SERVICE,
   AccountTransactionService,
 } from '@services/account-transaction.service';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogData,
+} from '@components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-account-snapshot',
@@ -31,6 +36,7 @@ export class AccountSnapshotComponent {
   private readonly _transactionService = inject<AccountTransactionService>(
     ACCOUNT_TRANSACTION_SERVICE,
   );
+  private readonly _dialog = inject(MatDialog);
 
   readonly accountId = input.required<string>();
 
@@ -74,5 +80,29 @@ export class AccountSnapshotComponent {
     if (result.success) {
       this.hasSnapshot.set(true);
     }
+  }
+
+  async onDelete(): Promise<void> {
+    if (!this.hasSnapshot()) return;
+
+    const ref = this._dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
+      ConfirmDialogComponent,
+      {
+        data: {
+          title: 'accountSnapshot.confirmDeleteTitle',
+          message: 'accountSnapshot.confirmDeleteMessage',
+          confirmLabel: 'accountSnapshot.confirmDeleteAccept',
+          cancelLabel: 'accountSnapshot.confirmDeleteCancel',
+          danger: true,
+        },
+      },
+    );
+
+    const confirmed = await ref.afterClosed().toPromise();
+    if (!confirmed) return;
+
+    await this._transactionService.deleteSnapshot(this.accountId());
+    this.form.reset();
+    this.hasSnapshot.set(false);
   }
 }
