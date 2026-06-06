@@ -83,7 +83,8 @@
   "accountHome": {
     "tabs": {
       "details": "Détails",
-      "transactions": "Transactions"
+      "transactions": "Transactions",
+      "graphs": "Graphiques"
     }
   },
   "accountSnapshot": {

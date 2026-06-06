@@ -21,6 +21,7 @@ import {
 } from '@components/confirm-dialog/confirm-dialog.component';
 import { AccountDetailsComponent } from '@views/accounts/account-details/account-details.component';
 import { AccountTransactionsComponent } from '@views/accounts/account-transactions/account-transactions.component';
+import { AccountGraphsComponent } from '@views/accounts/account-graphs/account-graphs.component';
 
 @Component({
   selector: 'app-account-home',
@@ -35,6 +36,7 @@ import { AccountTransactionsComponent } from '@views/accounts/account-transactio
     PageMenuButtonComponent,
     AccountDetailsComponent,
     AccountTransactionsComponent,
+    AccountGraphsComponent,
   ],
 })
 export class AccountHomeComponent implements OnInit {
