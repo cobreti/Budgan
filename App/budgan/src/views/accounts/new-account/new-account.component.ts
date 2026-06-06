@@ -11,13 +11,16 @@ import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
 import { ACCOUNT_SERVICE, AccountService } from '@services/account.service';
 import { COLUMNS_MAPPING_SERVICE, ColumnsMappingService } from '@services/columns-mapping.service';
 import { ColumnsMapping } from '@models/columnsMappingModel';
+import { PageMenuComponent } from '@components/page-menu/page-menu.component';
+import { PageMenuButtonComponent } from '@components/page-menu/page-menu-button/page-menu-button.component';
+import { PageComponent } from '@components/page/page.component';
 
 @Component({
   selector: 'app-new-account',
   templateUrl: './new-account.component.html',
   styleUrl: './new-account.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, MatFormField, MatLabel, MatError, MatInput, MatSelect, MatOption, MatButton, TranslatePipe],
+  imports: [PageComponent, ReactiveFormsModule, MatFormField, MatLabel, MatError, MatInput, MatSelect, MatOption, MatButton, TranslatePipe, PageMenuComponent, PageMenuButtonComponent],
 })
 export class NewAccountComponent {
   private readonly _accountService = inject<AccountService>(ACCOUNT_SERVICE);

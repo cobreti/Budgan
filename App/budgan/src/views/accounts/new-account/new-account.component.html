@@ -1,28 +1,38 @@
-<div class="new-account">
-  <h1 class="new-account__title">{{ 'newAccount.title' | translate }}</h1>
-  <form [formGroup]="form" (ngSubmit)="onCreate()">
-    <mat-form-field>
-      <mat-label>{{ 'newAccount.namePlaceholder' | translate }}</mat-label>
-      <input matInput formControlName="name" />
-      @if (form.controls.name.hasError('nameExists')) {
-        <mat-error>{{ 'newAccount.nameExists' | translate }}</mat-error>
-      }
-    </mat-form-field>
+<app-page>
+  <h2 class="new-account__title">{{ 'newAccount.title' | translate }}</h2>
+  <app-page-menu>
+    <app-page-menu-button
+      icon="arrow_back"
+      [label]="'newAccount.back' | translate"
+      (clicked)="onCancel()"
+    />
+  </app-page-menu>
 
-    <mat-form-field>
-      <mat-label>{{ 'newAccount.columnsMappingPlaceholder' | translate }}</mat-label>
-      <mat-select formControlName="columnsMappingId">
-        @for (mapping of columnsMappings(); track mapping.id) {
-          <mat-option [value]="mapping.id">{{ mapping.name }}</mat-option>
+  <div class="new-account">
+    <form [formGroup]="form" (ngSubmit)="onCreate()">
+      <mat-form-field>
+        <mat-label>{{ 'newAccount.namePlaceholder' | translate }}</mat-label>
+        <input matInput formControlName="name"/>
+        @if (form.controls.name.hasError('nameExists')) {
+          <mat-error>{{ 'newAccount.nameExists' | translate }}</mat-error>
         }
-      </mat-select>
-    </mat-form-field>
+      </mat-form-field>
 
-    <div class="new-account__actions">
-      <button mat-button type="button" (click)="onCancel()">{{ 'newAccount.cancel' | translate }}</button>
-      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
-        {{ 'newAccount.create' | translate }}
-      </button>
-    </div>
-  </form>
-</div>
+      <mat-form-field>
+        <mat-label>{{ 'newAccount.columnsMappingPlaceholder' | translate }}</mat-label>
+        <mat-select formControlName="columnsMappingId">
+          @for (mapping of columnsMappings(); track mapping.id) {
+            <mat-option [value]="mapping.id">{{ mapping.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <div class="new-account__actions">
+        <button mat-button type="button" (click)="onCancel()">{{ 'newAccount.cancel' | translate }}</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+          {{ 'newAccount.create' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</app-page>

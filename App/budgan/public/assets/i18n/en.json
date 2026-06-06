@@ -142,6 +142,7 @@
     "columnsMappingPlaceholder": "Columns mapping",
     "create": "Create",
     "cancel": "Cancel",
+    "back": "Back",
     "nameExists": "An account with this name already exists."
   },
   "transactionTable": {
@@ -166,6 +167,7 @@
     "descriptionColumn": "Description column",
     "create": "Create",
     "cancel": "Cancel",
+    "back": "Back",
     "nameExists": "A column mapping with this name already exists.",
     "chooseFile": "Choose CSV file",
     "noFileChosen": "No file chosen",
