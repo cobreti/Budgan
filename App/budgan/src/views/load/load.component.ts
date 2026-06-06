@@ -16,13 +16,15 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '@components/confirm-dialog/confirm-dialog.component';
+import { PageBodyComponent } from '@components/page-body/page-body.component';
+import { PageComponent } from '@components/page/page.component';
 
 @Component({
   selector: 'app-load',
   templateUrl: './load.component.html',
   styleUrl: './load.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatButton, TranslatePipe, PageMenuComponent, PageMenuButtonComponent],
+  imports: [MatButton, TranslatePipe, PageComponent, PageBodyComponent, PageMenuComponent, PageMenuButtonComponent],
 })
 export class LoadComponent {
   private readonly _router = inject(Router);

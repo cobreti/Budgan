@@ -14,12 +14,14 @@ import {
   ConfirmDialogData,
 } from '@components/confirm-dialog/confirm-dialog.component';
 import { IndexdbService } from '@services/indexdb.service';
+import { PageBodyComponent } from '@components/page-body/page-body.component';
 
 @Component({
   templateUrl: 'home.component.html',
   styleUrls: ['home.component.scss'],
   selector: 'app-home',
   imports: [
+    PageBodyComponent,
     PageMenuComponent,
     PageMenuButtonComponent,
     TranslatePipe,

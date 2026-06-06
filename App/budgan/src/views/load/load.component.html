@@ -1,39 +1,42 @@
-<div class="load">
-  <h2 class="load__page-title">{{ 'load.title' | translate }}</h2>
-  <app-page-menu>
+<app-page title="{{ 'load.title' | translate }}">
+  <app-page-menu page-menu>
     <app-page-menu-button
       icon="arrow_back"
       [label]="'load.cancel' | translate"
-      (clicked)="onCancel()" />
+      (clicked)="onCancel()"/>
   </app-page-menu>
 
-  <div class="load__body">
-    <div class="load__picker">
-      <button
-        mat-stroked-button
-        type="button"
-        data-testid="load-select-file"
-        (click)="onSelectFile()">
-        {{ 'load.selectFile' | translate }}
-      </button>
-      <span class="load__file-name">
+  <app-page-body page-body>
+    <div class="load">
+      <div class="load__body">
+        <div class="load__picker">
+          <button
+            mat-stroked-button
+            type="button"
+            data-testid="load-select-file"
+            (click)="onSelectFile()">
+            {{ 'load.selectFile' | translate }}
+          </button>
+          <span class="load__file-name">
         {{ selectedFileName() || ('load.noFileChosen' | translate) }}
       </span>
-    </div>
+        </div>
 
-    @if (errorKey(); as key) {
-      <span class="load__error" role="alert">{{ key | translate }}</span>
-    }
+        @if (errorKey(); as key) {
+          <span class="load__error" role="alert">{{ key | translate }}</span>
+        }
 
-    <div class="load__actions">
-      <button
-        mat-raised-button
-        color="primary"
-        data-testid="load-confirm"
-        [disabled]="!selectedFileName() || errorKey() !== null"
-        (click)="onLoad()">
-        {{ 'load.load' | translate }}
-      </button>
+        <div class="load__actions">
+          <button
+            mat-raised-button
+            color="primary"
+            data-testid="load-confirm"
+            [disabled]="!selectedFileName() || errorKey() !== null"
+            (click)="onLoad()">
+            {{ 'load.load' | translate }}
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+  </app-page-body>
+</app-page>

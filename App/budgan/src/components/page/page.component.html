@@ -1,3 +1,5 @@
 <div class="page-container">
-  <ng-content></ng-content>
+  <h2 class="page-title">{{ title }}</h2>
+  <ng-content select="[page-menu]"></ng-content>
+  <ng-content select="[page-body]"></ng-content>
 </div>

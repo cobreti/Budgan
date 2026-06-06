@@ -1,5 +1,5 @@
 <app-page>
-  <app-page-menu>
+  <app-page-menu page-menu>
     <app-page-menu-button
       icon="folder_open"
       [label]="'menu.loadAll' | translate"
@@ -34,16 +34,18 @@
     />
   </app-page-menu>
 
-  <div class="menu-page-divider"></div>
+  <app-page-body page-body>
+    <div class="menu-page-divider"></div>
 
-  <div class="flex-row">
-    <mat-card class="column-50">
-      <span class="section-title">{{ 'home.columnsMapping' | translate }}</span>
-      <app-columns-mapping-list class="columns-mapping-list" />
-    </mat-card>
-    <mat-card class="column-50">
-      <span class="section-title">{{ 'home.accounts' | translate }}</span>
-      <app-account-list class="account-list" />
-    </mat-card>
-  </div>
+    <div class="flex-row">
+      <mat-card class="column-50">
+        <span class="section-title">{{ 'home.columnsMapping' | translate }}</span>
+        <app-columns-mapping-list class="columns-mapping-list"/>
+      </mat-card>
+      <mat-card class="column-50">
+        <span class="section-title">{{ 'home.accounts' | translate }}</span>
+        <app-account-list class="account-list"/>
+      </mat-card>
+    </div>
+  </app-page-body>
 </app-page>

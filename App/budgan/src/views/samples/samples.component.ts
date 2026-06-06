@@ -16,6 +16,7 @@ import {
   ConfirmDialogComponent,
   ConfirmDialogData,
 } from '@components/confirm-dialog/confirm-dialog.component';
+import { PageBodyComponent } from '@components/page-body/page-body.component';
 
 @Component({
   selector: 'app-samples',
@@ -25,6 +26,7 @@ import {
   imports: [
     TranslatePipe,
     PageComponent,
+    PageBodyComponent,
     PageMenuComponent,
     PageMenuButtonComponent,
     MatCard,
