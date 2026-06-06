@@ -31,6 +31,8 @@ export class SaveAccountComponent {
     if (handle) {
       this._fileHandle = handle;
       this.selectedFileName.set(handle.name);
+
+      await this.onSave();
     }
   }
 

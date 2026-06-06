@@ -16,11 +16,5 @@
         {{ selectedFileName() || ('save.noFileChosen' | translate) }}
       </span>
     </div>
-
-    <div class="save__actions">
-      <button mat-raised-button color="primary" [disabled]="!selectedFileName()" (click)="onSave()">
-        {{ 'save.save' | translate }}
-      </button>
-    </div>
   </div>
 </div>
