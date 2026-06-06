@@ -30,6 +30,7 @@ export interface BudganExportService {
   pickLoadFile(): Promise<FileSystemFileHandle | null>;
   writeJsonToFile(handle: FileSystemFileHandle, data: unknown): Promise<void>;
   readAllDataPayload(handle: FileSystemFileHandle): Promise<Result<AllDataExportPayload>>;
+  parseAllDataPayload(text: string): Result<AllDataExportPayload>;
   buildAccountPayload(accountId: string): Promise<AccountExportPayload>;
   buildAllDataPayload(): Promise<AllDataExportPayload>;
 }
@@ -80,7 +81,10 @@ export class BudganExportServiceImpl implements BudganExportService {
 
   async readAllDataPayload(handle: FileSystemFileHandle): Promise<Result<AllDataExportPayload>> {
     const text = await (await handle.getFile()).text();
+    return this.parseAllDataPayload(text);
+  }
 
+  parseAllDataPayload(text: string): Result<AllDataExportPayload> {
     let parsed: unknown;
     try {
       parsed = JSON.parse(text);

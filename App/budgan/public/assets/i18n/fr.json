@@ -14,7 +14,13 @@
   },
   "samples": {
     "title": "Exemples",
-    "back": "Retour"
+    "back": "Retour",
+    "sampleAccount": {
+      "title": "Compte exemple",
+      "description": "Chargez un compte exemple prêt à l'emploi pour découvrir Budgan.",
+      "load": "Charger l'exemple"
+    },
+    "loadError": "Impossible de charger les données d'exemple."
   },
   "load": {
     "title": "Tout charger",

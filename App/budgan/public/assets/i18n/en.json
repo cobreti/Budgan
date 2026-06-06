@@ -14,7 +14,13 @@
   },
   "samples": {
     "title": "Samples",
-    "back": "Back"
+    "back": "Back",
+    "sampleAccount": {
+      "title": "Sample account",
+      "description": "Load a ready-made sample account to explore Budgan.",
+      "load": "Load sample"
+    },
+    "loadError": "Could not load the sample data."
   },
   "load": {
     "title": "Load All",
