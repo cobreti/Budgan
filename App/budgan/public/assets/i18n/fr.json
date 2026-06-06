@@ -126,6 +126,7 @@
     "selectFile": "Choisir un fichier",
     "noFileChosen": "Aucun fichier sélectionné",
     "save": "Sauvegarder",
+    "back": "Retour",
     "cancel": "Annuler"
   },
   "importFile": {

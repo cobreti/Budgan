@@ -44,7 +44,7 @@ export class SaveComponent {
     await this._router.navigate([this._locale.currentLocale()]);
   }
 
-  onCancel(): void {
+  onBack(): void {
     this._router.navigate([this._locale.currentLocale()]);
   }
 }
