@@ -5,6 +5,8 @@ import {
   AccountTransactionRecordType,
 } from '@models/accountTransactionModel';
 import { Result } from '@app-types/result';
+import { ACCOUNT_SERVICE, AccountService } from './account.service';
+import { previousIsoDay } from '@/utils/date';
 
 export type TransactionPage = {
   transactions: AccountTransactionModel[];
@@ -53,6 +55,7 @@ export const ACCOUNT_TRANSACTION_SERVICE = new InjectionToken<AccountTransaction
 @Injectable({ providedIn: 'root' })
 export class AccountTransactionServiceImpl implements AccountTransactionService {
   private readonly _indexDb = inject(IndexdbService);
+  private readonly _accountService = inject<AccountService>(ACCOUNT_SERVICE);
   private readonly _transactionsVersion = signal(0);
 
   readonly transactionsVersion: Signal<number> = this._transactionsVersion;
@@ -186,9 +189,9 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
       .equals(accountId)
       .toArray();
 
-    const snapshot = all.find(t => t.recordType === AccountTransactionRecordType.snapshot);
+    const snapshot = all.find((t) => t.recordType === AccountTransactionRecordType.snapshot);
     const normal = all
-      .filter(t => t.recordType === AccountTransactionRecordType.normal)
+      .filter((t) => t.recordType === AccountTransactionRecordType.normal)
       .sort((a, b) => {
         const dateCmp = a.dateInscriptionAsString.localeCompare(b.dateInscriptionAsString);
         if (dateCmp !== 0) return dateCmp;
@@ -197,22 +200,23 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
 
     if (!snapshot) {
       const cleared = normal
-        .filter(t => t.balance !== undefined || t.balanceDateOffset !== undefined)
+        .filter((t) => t.balance !== undefined || t.balanceDateOffset !== undefined)
         .map(({ balance, balanceDateOffset, ...rest }) => rest as AccountTransactionModel);
       if (cleared.length > 0) {
         await this._indexDb.accountTransactionsTable.bulkPut(cleared);
       }
-      this._transactionsVersion.update(v => v + 1);
+      await this._accountService.setReferenceBalance(accountId, undefined);
+      this._transactionsVersion.update((v) => v + 1);
       return;
     }
 
     const snapshotDate = snapshot.dateInscriptionAsString;
-    const before = normal.filter(t => t.dateInscriptionAsString < snapshotDate);
-    const afterOrEqual = normal.filter(t => t.dateInscriptionAsString >= snapshotDate);
+    const before = normal.filter((t) => t.dateInscriptionAsString < snapshotDate);
+    const afterOrEqual = normal.filter((t) => t.dateInscriptionAsString >= snapshotDate);
 
     let running = snapshot.amount;
     let offset = 0;
-    const updatedAfter = afterOrEqual.map(t => {
+    const updatedAfter = afterOrEqual.map((t) => {
       offset += 1;
       running += t.amount;
       return { ...t, balance: running, balanceDateOffset: offset };
@@ -228,7 +232,19 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
       running -= t.amount;
     }
 
-    await this._indexDb.accountTransactionsTable.bulkPut([...updatedBefore, ...updatedAfter]);
-    this._transactionsVersion.update(v => v + 1);
+    const ordered = [...updatedBefore, ...updatedAfter];
+    await this._indexDb.accountTransactionsTable.bulkPut(ordered);
+
+    if (ordered.length === 0) {
+      await this._accountService.setReferenceBalance(accountId, undefined);
+    } else {
+      const earliest = ordered[0];
+      await this._accountService.setReferenceBalance(accountId, {
+        date: previousIsoDay(earliest.dateInscriptionAsString),
+        balance: (earliest.balance ?? 0) - earliest.amount,
+      });
+    }
+
+    this._transactionsVersion.update((v) => v + 1);
   }
 }

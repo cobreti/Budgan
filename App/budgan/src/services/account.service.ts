@@ -1,6 +1,6 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import { IndexdbService } from './indexdb.service';
-import { AccountModel } from '@models/accountModel';
+import { AccountModel, AccountReferenceBalance } from '@models/accountModel';
 import { ID_GENERATOR_SERVICE, IdGeneratorService } from './id-generator.service';
 import { Result } from '@app-types/result';
 
@@ -8,6 +8,10 @@ export interface AccountService {
   getList(): Promise<AccountModel[]>;
   create(name: string, columnsMappingId: string): Promise<Result<string>>;
   getById(id: string): Promise<AccountModel>;
+  setReferenceBalance(
+    accountId: string,
+    referenceBalance: AccountReferenceBalance | undefined,
+  ): Promise<void>;
   delete(id: string): Promise<void>;
 }
 
@@ -37,6 +41,21 @@ export class AccountServiceImpl implements AccountService {
       throw new Error('Account not found');
     }
     return entry;
+  }
+
+  async setReferenceBalance(
+    accountId: string,
+    referenceBalance: AccountReferenceBalance | undefined,
+  ): Promise<void> {
+    const account = await this._indexDb.accountsTable.get(accountId);
+    if (!account) return;
+
+    if (referenceBalance) {
+      await this._indexDb.accountsTable.put({ ...account, referenceBalance });
+    } else {
+      const { referenceBalance: _omit, ...rest } = account;
+      await this._indexDb.accountsTable.put(rest);
+    }
   }
 
   async delete(id: string): Promise<void> {
