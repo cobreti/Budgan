@@ -9,21 +9,41 @@ import { MatOption } from '@angular/material/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
 import { COLUMNS_MAPPING_SERVICE, ColumnsMappingService } from '@services/columns-mapping.service';
-import { CSV_CONTENT_EXTRACTOR_SERVICE, CsvContentExtractorService } from '@services/csv-content-extractor.service';
+import {
+  CSV_CONTENT_EXTRACTOR_SERVICE,
+  CsvContentExtractorService,
+} from '@services/csv-content-extractor.service';
 import { PageMenuComponent } from '@components/page-menu/page-menu.component';
 import { PageMenuButtonComponent } from '@components/page-menu/page-menu-button/page-menu-button.component';
 import { PageComponent } from '@components/page/page.component';
+import { PageBodyComponent } from '@components/page-body/page-body.component';
 
 @Component({
   selector: 'app-new-columns-mapping',
   templateUrl: './new-columns-mapping.component.html',
   styleUrl: './new-columns-mapping.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PageComponent, ReactiveFormsModule, MatFormField, MatLabel, MatError, MatInput, MatSelect, MatOption, MatButton, TranslatePipe, PageMenuComponent, PageMenuButtonComponent],
+  imports: [
+    PageComponent,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatError,
+    MatInput,
+    MatSelect,
+    MatOption,
+    MatButton,
+    TranslatePipe,
+    PageMenuComponent,
+    PageBodyComponent,
+    PageMenuButtonComponent,
+  ],
 })
 export class NewColumnsMappingComponent {
   private readonly _columnsMappingService = inject<ColumnsMappingService>(COLUMNS_MAPPING_SERVICE);
-  private readonly _csvExtractor = inject<CsvContentExtractorService>(CSV_CONTENT_EXTRACTOR_SERVICE);
+  private readonly _csvExtractor = inject<CsvContentExtractorService>(
+    CSV_CONTENT_EXTRACTOR_SERVICE,
+  );
   private readonly _router = inject(Router);
   private readonly _locale = inject<LocaleService>(LOCALE_SERVICE);
 
@@ -65,7 +85,13 @@ export class NewColumnsMappingComponent {
 
   async onCreate(): Promise<void> {
     if (this.form.invalid) return;
-    const { name, cardNumberColumnIndex, dateInscriptionColumnIndex, amountColumnIndex, descriptionColumnIndex } = this.form.getRawValue();
+    const {
+      name,
+      cardNumberColumnIndex,
+      dateInscriptionColumnIndex,
+      amountColumnIndex,
+      descriptionColumnIndex,
+    } = this.form.getRawValue();
     const headers = this.csvHeaders();
     const result = await this._columnsMappingService.save({
       name,
