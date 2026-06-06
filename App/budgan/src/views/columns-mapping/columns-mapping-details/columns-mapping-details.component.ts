@@ -9,13 +9,15 @@ import {
 import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
 import { PageMenuComponent } from '@components/page-menu/page-menu.component';
 import { PageMenuButtonComponent } from '@components/page-menu/page-menu-button/page-menu-button.component';
+import { PageBodyComponent } from '@components/page-body/page-body.component';
+import { PageComponent } from '@components/page/page.component';
 
 @Component({
   selector: 'app-columns-mapping-details',
   templateUrl: './columns-mapping-details.component.html',
   styleUrl: './columns-mapping-details.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, PageMenuComponent, PageMenuButtonComponent],
+  imports: [TranslatePipe, PageComponent, PageBodyComponent, PageMenuComponent, PageMenuButtonComponent],
 })
 export class ColumnsMappingDetailsComponent implements OnInit {
   private readonly _route = inject(ActivatedRoute);
