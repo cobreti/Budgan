@@ -6,13 +6,15 @@ import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
 import { BUDGAN_EXPORT_SERVICE, BudganExportService } from '@services/budgan-export.service';
 import { PageMenuComponent } from '@components/page-menu/page-menu.component';
 import { PageMenuButtonComponent } from '@components/page-menu/page-menu-button/page-menu-button.component';
+import { PageBodyComponent } from '@components/page-body/page-body.component';
+import { PageComponent } from '@components/page/page.component';
 
 @Component({
   selector: 'app-save-account',
   templateUrl: './save-account.component.html',
   styleUrl: './save-account.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatButton, TranslatePipe, PageMenuComponent, PageMenuButtonComponent],
+  imports: [MatButton, TranslatePipe, PageComponent, PageBodyComponent, PageMenuComponent, PageMenuButtonComponent],
 })
 export class SaveAccountComponent {
   private readonly _route = inject(ActivatedRoute);

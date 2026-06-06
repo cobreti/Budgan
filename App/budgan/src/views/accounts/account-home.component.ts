@@ -22,6 +22,8 @@ import {
 import { AccountDetailsComponent } from '@views/accounts/account-details/account-details.component';
 import { AccountTransactionsComponent } from '@views/accounts/account-transactions/account-transactions.component';
 import { AccountGraphsComponent } from '@views/accounts/account-graphs/account-graphs.component';
+import { PageComponent } from '@components/page/page.component';
+import { PageBodyComponent } from '@components/page-body/page-body.component';
 
 @Component({
   selector: 'app-account-home',
@@ -32,6 +34,8 @@ import { AccountGraphsComponent } from '@views/accounts/account-graphs/account-g
     TranslatePipe,
     MatTabGroup,
     MatTab,
+    PageComponent,
+    PageBodyComponent,
     PageMenuComponent,
     PageMenuButtonComponent,
     AccountDetailsComponent,

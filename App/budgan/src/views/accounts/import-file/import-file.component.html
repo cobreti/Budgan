@@ -1,31 +1,34 @@
-<div class="import-file">
-  <h2 class="import-file__page-title">{{ 'importFile.title' | translate }}</h2>
-  <app-page-menu>
+<app-page title="{{ 'importFile.title' | translate }}">
+  <app-page-menu page-menu>
     <app-page-menu-button
       icon="arrow_back"
       [label]="'importFile.cancel' | translate"
-      (clicked)="onCancel()" />
+      (clicked)="onCancel()"/>
   </app-page-menu>
 
-  <div class="import-file__body">
-    @if (importError()) {
-      <p class="import-file__error" role="alert">{{ importError() | translate }}</p>
-    }
+  <app-page-body page-body>
+    <div class="import-file">
+      <div class="import-file__body">
+        @if (importError()) {
+          <p class="import-file__error" role="alert">{{ importError() | translate }}</p>
+        }
 
-    <div class="import-file__picker">
-      <button mat-stroked-button type="button" (click)="fileInput.click()">
-        {{ 'importFile.chooseFile' | translate }}
-      </button>
-      <span class="import-file__file-name">
+        <div class="import-file__picker">
+          <button mat-stroked-button type="button" (click)="fileInput.click()">
+            {{ 'importFile.chooseFile' | translate }}
+          </button>
+          <span class="import-file__file-name">
         {{ selectedFileName() || ('importFile.noFileChosen' | translate) }}
       </span>
-      <input #fileInput type="file" accept=".csv" hidden (change)="onFileSelected($event)" />
-    </div>
+          <input #fileInput type="file" accept=".csv" hidden (change)="onFileSelected($event)"/>
+        </div>
 
-    <div class="import-file__actions">
-      <button mat-raised-button color="primary" [disabled]="!selectedFileName()" (click)="onImport()">
-        {{ 'importFile.import' | translate }}
-      </button>
+        <div class="import-file__actions">
+          <button mat-raised-button color="primary" [disabled]="!selectedFileName()" (click)="onImport()">
+            {{ 'importFile.import' | translate }}
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+  </app-page-body>
+</app-page>

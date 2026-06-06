@@ -10,13 +10,15 @@ import { CSV_CONTENT_EXTRACTOR_SERVICE, CsvContentExtractorService } from '@serv
 import { ACCOUNT_TRANSACTION_SERVICE, AccountTransactionService } from '@services/account-transaction.service';
 import { PageMenuComponent } from '@components/page-menu/page-menu.component';
 import { PageMenuButtonComponent } from '@components/page-menu/page-menu-button/page-menu-button.component';
+import { PageComponent } from '@components/page/page.component';
+import { PageBodyComponent } from '@components/page-body/page-body.component';
 
 @Component({
   selector: 'app-import-file',
   templateUrl: './import-file.component.html',
   styleUrl: './import-file.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatButton, TranslatePipe, PageMenuComponent, PageMenuButtonComponent],
+  imports: [MatButton, TranslatePipe, PageComponent, PageBodyComponent, PageMenuComponent, PageMenuButtonComponent],
 })
 export class ImportFileComponent {
   private readonly _route = inject(ActivatedRoute);

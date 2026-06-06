@@ -1,6 +1,5 @@
-<div class="account-home">
-  <h2 class="account-home__page-title">{{ 'account.title' | translate }}</h2>
-  <app-page-menu>
+<app-page title="{{ 'account.title' | translate }}">
+  <app-page-menu page-menu>
     <app-page-menu-button
       icon="save"
       [label]="'account.save' | translate"
@@ -22,29 +21,33 @@
       data-testid="account-home-delete"
     />
   </app-page-menu>
-  @if (account(); as a) {
-    <h1 class="account-home__title">{{ a.name }}</h1>
-    <mat-tab-group class="account-home__tabs">
-      <mat-tab
-        [label]="'accountHome.tabs.details' | translate"
-        data-testid="account-home-tab-details"
-      >
-        <app-account-details [accountId]="a.id" />
-      </mat-tab>
-      <mat-tab
-        [label]="'accountHome.tabs.transactions' | translate"
-        data-testid="account-home-tab-transactions"
-      >
-        <app-account-transactions [accountId]="a.id" />
-      </mat-tab>
-      <mat-tab
-        [label]="'accountHome.tabs.graphs' | translate"
-        data-testid="account-home-tab-graphs"
-      >
-        <app-account-graphs [accountId]="a.id" />
-      </mat-tab>
-    </mat-tab-group>
-  } @else {
-    <h1 class="account-home__title">{{ 'account.loading' | translate }}</h1>
-  }
-</div>
+  <app-page-body page-body>
+    <div class="account-home">
+      @if (account(); as a) {
+        <h1 class="account-home__title">{{ a.name }}</h1>
+        <mat-tab-group class="account-home__tabs">
+          <mat-tab
+            [label]="'accountHome.tabs.details' | translate"
+            data-testid="account-home-tab-details"
+          >
+            <app-account-details [accountId]="a.id"/>
+          </mat-tab>
+          <mat-tab
+            [label]="'accountHome.tabs.transactions' | translate"
+            data-testid="account-home-tab-transactions"
+          >
+            <app-account-transactions [accountId]="a.id"/>
+          </mat-tab>
+          <mat-tab
+            [label]="'accountHome.tabs.graphs' | translate"
+            data-testid="account-home-tab-graphs"
+          >
+            <app-account-graphs [accountId]="a.id"/>
+          </mat-tab>
+        </mat-tab-group>
+      } @else {
+        <h1 class="account-home__title">{{ 'account.loading' | translate }}</h1>
+      }
+    </div>
+  </app-page-body>
+</app-page>

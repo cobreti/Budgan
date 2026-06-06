@@ -14,13 +14,14 @@ import { ColumnsMapping } from '@models/columnsMappingModel';
 import { PageMenuComponent } from '@components/page-menu/page-menu.component';
 import { PageMenuButtonComponent } from '@components/page-menu/page-menu-button/page-menu-button.component';
 import { PageComponent } from '@components/page/page.component';
+import { PageBodyComponent } from '@components/page-body/page-body.component';
 
 @Component({
   selector: 'app-new-account',
   templateUrl: './new-account.component.html',
   styleUrl: './new-account.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PageComponent, ReactiveFormsModule, MatFormField, MatLabel, MatError, MatInput, MatSelect, MatOption, MatButton, TranslatePipe, PageMenuComponent, PageMenuButtonComponent],
+  imports: [PageComponent, ReactiveFormsModule, MatFormField, MatLabel, MatError, MatInput, MatSelect, MatOption, MatButton, TranslatePipe, PageBodyComponent, PageMenuComponent, PageMenuButtonComponent],
 })
 export class NewAccountComponent {
   private readonly _accountService = inject<AccountService>(ACCOUNT_SERVICE);
