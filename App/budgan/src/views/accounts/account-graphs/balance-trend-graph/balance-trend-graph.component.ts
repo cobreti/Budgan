@@ -22,7 +22,7 @@ import {
 } from '@models/accountTransactionModel';
 import { previousIsoDay } from '@/utils/date';
 
-type DataPoint = { date: string; balance: number };
+type DataPoint = { date: string; balance: number; isSnapshot?: boolean };
 
 @Component({
   selector: 'app-balance-trend-graph',
@@ -42,17 +42,28 @@ export class BalanceTrendGraphComponent {
 
   protected readonly _points = signal<DataPoint[]>([]);
 
-  readonly chartData = computed<ChartData<'line'>>(() => ({
-    labels: this._points().map(p => p.date.slice(5)), // MM-DD
-    datasets: [
-      {
-        data: this._points().map(p => p.balance),
-        fill: false,
-        tension: 0.1,
-        pointRadius: 3,
-      },
-    ],
-  }));
+  readonly chartData = computed<ChartData<'line'>>(() => {
+    const pts = this._points();
+    return {
+      labels: pts.map((p) => p.date), // MM-DD
+      datasets: [
+        {
+          data: pts.map((p) => p.balance),
+          fill: false,
+          tension: 0.1,
+          // Per-point styling: snapshot gets a larger amber dot.
+          // Scriptable functions are evaluated independently per point — unlike arrays,
+          // they have no carry-forward behaviour for undefined values.
+          pointRadius: (ctx) => (pts[ctx.dataIndex]?.isSnapshot ? 3 : 3),
+          pointBackgroundColor: (ctx) =>
+            pts[ctx.dataIndex]?.isSnapshot ? 'rgba(255, 152, 0, 1)' : 'rgba(100, 100, 200, 1)',
+          pointBorderColor: (ctx) =>
+            pts[ctx.dataIndex]?.isSnapshot ? 'rgba(255, 152, 0, 1)' : 'rgba(100, 100, 200, 1)',
+          pointBorderWidth: (ctx) => (pts[ctx.dataIndex]?.isSnapshot ? 1 : 1),
+        },
+      ],
+    };
+  });
 
   readonly chartOptions: ChartOptions<'line'> = {
     responsive: true,
@@ -108,10 +119,33 @@ export class BalanceTrendGraphComponent {
       ? { date: account.referenceBalance.date, balance: account.referenceBalance.balance }
       : { date: previousIsoDay(normal[0].dateInscriptionAsString), balance: 0 };
 
-    this._points.set([
-      opening,
-      ...normal.map(t => ({ date: t.dateInscriptionAsString, balance: t.balance! })),
-    ]);
+    // Build remaining points: normal transactions + the snapshot itself (if present).
+    // The snapshot has balanceDateOffset === 0, so it sorts between pre-snapshot
+    // transactions (negative offset) and on-or-after-snapshot transactions (positive offset).
+    const snapshotTx = txs.find(t => t.recordType === AccountTransactionRecordType.snapshot);
+    const allPoints: DataPoint[] = normal.map(t => ({
+      date: t.dateInscriptionAsString,
+      balance: t.balance!,
+    }));
+
+    if (snapshotTx) {
+      allPoints.push({
+        date: snapshotTx.dateInscriptionAsString,
+        balance: snapshotTx.amount,
+        isSnapshot: true,
+      });
+      allPoints.sort((a, b) => {
+        const d = a.date.localeCompare(b.date);
+        if (d !== 0) return d;
+        // On the same date: snapshot (isSnapshot) sits between negative-offset
+        // and positive-offset normal rows — sort it to offset 0 position.
+        if (a.isSnapshot) return -1;
+        if (b.isSnapshot) return 1;
+        return 0;
+      });
+    }
+
+    this._points.set([opening, ...allPoints]);
     this._cdr.markForCheck();
   }
 }
