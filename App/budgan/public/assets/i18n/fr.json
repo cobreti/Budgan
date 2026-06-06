@@ -87,6 +87,10 @@
       "graphs": "Graphiques"
     }
   },
+  "balanceTrendGraph": {
+    "ariaLabel": "Graphique de tendance du solde du compte",
+    "noData": "Aucune donnée de solde disponible. Définissez un instantané pour activer le graphique."
+  },
   "accountSnapshot": {
     "title": "Instantané du compte",
     "date": "Date de l'instantané",

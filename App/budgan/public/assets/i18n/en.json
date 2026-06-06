@@ -87,6 +87,10 @@
       "graphs": "Graphs"
     }
   },
+  "balanceTrendGraph": {
+    "ariaLabel": "Account balance trend chart",
+    "noData": "No balance data available. Set a snapshot to enable the chart."
+  },
   "accountSnapshot": {
     "title": "Account Snapshot",
     "date": "Snapshot date",

@@ -18,6 +18,7 @@ import { FILE_SERVICE, FileServiceImpl } from '@services/file.service';
 import { ACCOUNT_TRANSACTION_SERVICE, AccountTransactionServiceImpl } from '@services/account-transaction.service';
 import { BUDGAN_EXPORT_SERVICE, BudganExportServiceImpl } from '@services/budgan-export.service';
 import { provideServiceWorker } from '@angular/service-worker';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -42,7 +43,9 @@ export const appConfig: ApplicationConfig = {
     { provide: ACCOUNT_SERVICE, useClass: AccountServiceImpl },
     { provide: FILE_SERVICE, useClass: FileServiceImpl },
     { provide: ACCOUNT_TRANSACTION_SERVICE, useClass: AccountTransactionServiceImpl },
-    { provide: BUDGAN_EXPORT_SERVICE, useClass: BudganExportServiceImpl }, provideServiceWorker('ngsw-worker.js', {
+    { provide: BUDGAN_EXPORT_SERVICE, useClass: BudganExportServiceImpl },
+    provideCharts(withDefaultRegisterables()),
+    provideServiceWorker('ngsw-worker.js', {
             enabled: !isDevMode(),
             registrationStrategy: 'registerWhenStable:30000'
           }),
