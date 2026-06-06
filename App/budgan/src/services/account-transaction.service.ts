@@ -183,13 +183,30 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
     await this._indexDb.accountTransactionsTable.delete(id);
   }
 
+  /**
+   * Recomputes the running `balance` and `balanceDateOffset` for every transaction
+   * of an account, anchored on the user-entered snapshot, and updates the account's
+   * reference (opening) balance.
+   *
+   * The snapshot is the one known-true balance at a given date. From it we walk:
+   *   - forward  (dates >= snapshot) adding each amount, and
+   *   - backward (dates <  snapshot) subtracting each amount,
+   * so every row gets the account balance as of that row. `balanceDateOffset` records
+   * each row's order relative to the snapshot (0) to break ties when several rows share
+   * the same date. With no snapshot there is no anchor, so all computed balances are
+   * cleared. The reference balance is the balance the day before the earliest row.
+   */
   async recalculateBalances(accountId: string): Promise<void> {
+    // Load every record for this account: the (optional) snapshot plus normal rows.
     const all = await this._indexDb.accountTransactionsTable
       .where('accountId')
       .equals(accountId)
       .toArray();
 
+    // The snapshot is the anchor; there is at most one per account.
     const snapshot = all.find((t) => t.recordType === AccountTransactionRecordType.snapshot);
+
+    // Normal rows in chronological order; id is a stable tiebreaker for equal dates.
     const normal = all
       .filter((t) => t.recordType === AccountTransactionRecordType.normal)
       .sort((a, b) => {
@@ -198,6 +215,8 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
         return a.id.localeCompare(b.id);
       });
 
+    // No anchor -> balances are meaningless. Strip any previously computed
+    // balance/balanceDateOffset, clear the reference balance, and bail out.
     if (!snapshot) {
       const cleared = normal
         .filter((t) => t.balance !== undefined || t.balanceDateOffset !== undefined)
@@ -210,10 +229,15 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
       return;
     }
 
+    // Partition normal rows around the snapshot date.
+    // `afterOrEqual` includes the snapshot date itself (forward pass);
+    // `before` is everything strictly earlier (backward pass).
     const snapshotDate = snapshot.dateInscriptionAsString;
     const before = normal.filter((t) => t.dateInscriptionAsString < snapshotDate);
     const afterOrEqual = normal.filter((t) => t.dateInscriptionAsString >= snapshotDate);
 
+    // Forward pass: start at the snapshot balance and ADD each later amount.
+    // Offset increases (+1, +2, ...) the further a row is after the snapshot.
     let running = snapshot.amount;
     let offset = 0;
     const updatedAfter = afterOrEqual.map((t) => {
@@ -222,6 +246,9 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
       return { ...t, balance: running, balanceDateOffset: offset };
     });
 
+    // Backward pass: reset to the snapshot balance and walk earlier rows newest->oldest,
+    // assigning each row's balance BEFORE subtracting its amount (so each row stores the
+    // balance as of itself). Offset decreases (-1, -2, ...). unshift keeps order ascending.
     running = snapshot.amount;
     offset = 0;
     const updatedBefore: AccountTransactionModel[] = [];
@@ -232,9 +259,12 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
       running -= t.amount;
     }
 
+    // `ordered` is fully chronological (before rows, then after-or-equal rows). Persist all.
     const ordered = [...updatedBefore, ...updatedAfter];
     await this._indexDb.accountTransactionsTable.bulkPut(ordered);
 
+    // Reference balance = the opening balance one day before the earliest row.
+    // earliest.balance - earliest.amount is the balance just before that row posted.
     if (ordered.length === 0) {
       await this._accountService.setReferenceBalance(accountId, undefined);
     } else {
@@ -245,6 +275,7 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
       });
     }
 
+    // Bump the version signal so dependent views recompute.
     this._transactionsVersion.update((v) => v + 1);
   }
 }
