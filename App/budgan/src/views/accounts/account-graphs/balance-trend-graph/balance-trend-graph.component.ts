@@ -49,7 +49,7 @@ export class BalanceTrendGraphComponent {
       datasets: [
         {
           data: pts.map((p) => p.balance),
-          fill: false,
+          fill: true,
           tension: 0.1,
           // Per-point styling: snapshot gets a larger amber dot.
           // Scriptable functions are evaluated independently per point — unlike arrays,
