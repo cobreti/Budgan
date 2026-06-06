@@ -193,8 +193,9 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
    *   - backward (dates <  snapshot) subtracting each amount,
    * so every row gets the account balance as of that row. `balanceDateOffset` records
    * each row's order relative to the snapshot (0) to break ties when several rows share
-   * the same date. With no snapshot there is no anchor, so all computed balances are
-   * cleared. The reference balance is the balance the day before the earliest row.
+   * the same date. With no snapshot, the opening balance is assumed to be 0 and balances
+   * run forward from there. The reference balance is the balance the day before the
+   * earliest row.
    */
   async recalculateBalances(accountId: string): Promise<void> {
     // Load every record for this account: the (optional) snapshot plus normal rows.
@@ -215,16 +216,31 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
         return a.id.localeCompare(b.id);
       });
 
-    // No anchor -> balances are meaningless. Strip any previously computed
-    // balance/balanceDateOffset, clear the reference balance, and bail out.
+    // No snapshot -> assume an opening balance of 0 the day before the earliest row
+    // and run balances forward from there, so the data is still meaningful.
     if (!snapshot) {
-      const cleared = normal
-        .filter((t) => t.balance !== undefined || t.balanceDateOffset !== undefined)
-        .map(({ balance, balanceDateOffset, ...rest }) => rest as AccountTransactionModel);
-      if (cleared.length > 0) {
-        await this._indexDb.accountTransactionsTable.bulkPut(cleared);
+      if (normal.length === 0) {
+        await this._accountService.setReferenceBalance(accountId, undefined);
+        this._transactionsVersion.update((v) => v + 1);
+        return;
       }
-      await this._accountService.setReferenceBalance(accountId, undefined);
+
+      // Forward pass from 0: assign each row the running balance after adding its amount.
+      // Offset increases (1, 2, ...) to keep a stable order for rows sharing a date.
+      let running = 0;
+      let offset = 0;
+      const updated = normal.map((t) => {
+        offset += 1;
+        running += t.amount;
+        return { ...t, balance: running, balanceDateOffset: offset };
+      });
+      await this._indexDb.accountTransactionsTable.bulkPut(updated);
+
+      // Reference (opening) balance is 0, the day before the earliest row.
+      await this._accountService.setReferenceBalance(accountId, {
+        date: previousIsoDay(updated[0].dateInscriptionAsString),
+        balance: 0,
+      });
       this._transactionsVersion.update((v) => v + 1);
       return;
     }
