@@ -12,6 +12,7 @@ import { ImportFileComponent } from '@views/accounts/import-file/import-file.com
 import { SaveAccountComponent } from '@views/accounts/save-account/save-account.component';
 import { SaveComponent } from '@views/save/save.component';
 import { LoadComponent } from '@views/load/load.component';
+import { SamplesComponent } from '@views/samples/samples.component';
 
 export const routes: Routes = [
   {
@@ -36,6 +37,7 @@ export const routes: Routes = [
       { path: 'account/:accountId/save', component: SaveAccountComponent },
       { path: 'save', component: SaveComponent },
       { path: 'load', component: LoadComponent },
+      { path: 'samples', component: SamplesComponent },
     ],
   },
   { path: '**', redirectTo: 'en' },

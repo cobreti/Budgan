@@ -54,6 +54,10 @@ export class HomeComponent {
     await this._router.navigate([this._locale.currentLocale(), 'load']);
   }
 
+  async onSamples(): Promise<void> {
+    await this._router.navigate([this._locale.currentLocale(), 'samples']);
+  }
+
   async onClearAll(): Promise<void> {
     const ref = this._dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
       ConfirmDialogComponent,

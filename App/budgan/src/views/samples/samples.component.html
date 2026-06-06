@@ -1,0 +1,15 @@
+<app-page>
+  <app-page-menu>
+    <app-page-menu-button
+      icon="arrow_back"
+      [label]="'samples.back' | translate"
+      (clicked)="onBack()"
+    />
+  </app-page-menu>
+
+  <div class="menu-page-divider"></div>
+
+  <div class="samples__body">
+    <h2 class="samples__page-title">{{ 'samples.title' | translate }}</h2>
+  </div>
+</app-page>

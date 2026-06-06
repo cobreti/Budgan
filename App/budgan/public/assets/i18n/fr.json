@@ -9,7 +9,12 @@
     "newAccount": "Nouveau compte",
     "saveAll": "Sauvegarder tout",
     "loadAll": "Tout charger",
+    "samples": "Exemples",
     "clearAll": "Tout effacer"
+  },
+  "samples": {
+    "title": "Exemples",
+    "back": "Retour"
   },
   "load": {
     "title": "Tout charger",

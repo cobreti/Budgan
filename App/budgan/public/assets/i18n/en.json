@@ -9,7 +9,12 @@
     "newAccount": "New Account",
     "saveAll": "Save All",
     "loadAll": "Load All",
+    "samples": "Samples",
     "clearAll": "Clear All"
+  },
+  "samples": {
+    "title": "Samples",
+    "back": "Back"
   },
   "load": {
     "title": "Load All",
