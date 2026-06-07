@@ -8,13 +8,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { MainMenuService } from '@services/main-menu.service';
 import { LOCALE_SERVICE } from '@services/locale.service';
 import { THEME_SERVICE } from '@services/theme.service';
+import { HeaderPageTitleComponent } from '@components/header/header-page-title/header-page-title.component';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatToolbar, MatIconButton, MatIcon, MatMenu, MatMenuItem, MatMenuTrigger, TranslatePipe],
+  imports: [MatToolbar, HeaderPageTitleComponent, MatIconButton, MatIcon, MatMenu, MatMenuItem, MatMenuTrigger, TranslatePipe],
 })
 export class HeaderComponent {
   private readonly _mainMenuService = inject(MainMenuService);
