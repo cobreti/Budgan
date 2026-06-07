@@ -25,17 +25,6 @@
         @if (errorKey(); as key) {
           <span class="load__error" role="alert">{{ key | translate }}</span>
         }
-
-        <div class="load__actions">
-          <button
-            mat-raised-button
-            color="primary"
-            data-testid="load-confirm"
-            [disabled]="!selectedFileName() || errorKey() !== null"
-            (click)="onLoad()">
-            {{ 'load.load' | translate }}
-          </button>
-        </div>
       </div>
     </div>
   </app-page-body>
