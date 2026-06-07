@@ -3,14 +3,28 @@
   height: var(--header-height);
   width: 100%;
 
-  .title {
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     margin-left: 2rem;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    color: var(--mat-sys-on-primary);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .brand-icon {
+    display: block;
+    width: 32px;
+    height: 32px;
+  }
+
+  .title {
     color: var(--mat-sys-on-primary);
     user-select: none;
-
-    &:hover {
-      cursor: pointer;
-    }
   }
 
   .menu-icon {

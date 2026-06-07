@@ -2,7 +2,10 @@
   <button mat-icon-button class="menu-icon" (click)="onMenuBtnClick()">
     <mat-icon>menu</mat-icon>
   </button>
-  <span class="title" (click)="onHome()">{{ 'app.title' | translate }}</span>
+  <button type="button" class="brand" (click)="onHome()" data-testid="header-brand">
+    <img class="brand-icon" ngSrc="/icons/Budgan48.png" width="48" height="48" alt="" priority />
+    <span class="title">{{ 'app.title' | translate }}</span>
+  </button>
 
   <span class="spacer"></span>
 
