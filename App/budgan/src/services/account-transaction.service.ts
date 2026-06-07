@@ -118,7 +118,7 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
     amount: number,
     description: string,
   ): Promise<Result<string>> {
-    const id = `${cardNumber}|${dateInscriptionAsString}|${amount}|${description}`;
+    const id = `${accountId}|${cardNumber}|${dateInscriptionAsString}|${amount}|${description}`;
     await this._indexDb.accountTransactionsTable.add({
       id,
       fileId,

@@ -63,7 +63,14 @@ export class ImportFileComponent {
     const mapping = await this._columnsMappingService.getById(account.columnsMappingId);
 
     const fileResult = await this._fileService.create(this._accountId, this._selectedFile.name, content, new Date());
-    if (!fileResult.success) return;
+    if (!fileResult.success) {
+      this.importError.set(
+        fileResult.error === 'file-already-imported'
+          ? 'importFile.fileAlreadyImported'
+          : 'importFile.csvParseError',
+      );
+      return;
+    }
     const fileId = fileResult.value;
 
     for (const row of rows) {
