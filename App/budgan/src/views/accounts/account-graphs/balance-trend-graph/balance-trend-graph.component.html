@@ -1,0 +1,13 @@
+<canvas
+  baseChart
+  class="balance-trend-graph__canvas"
+  [class.balance-trend-graph__canvas--hidden]="_points().length < 2"
+  [type]="'line'"
+  [data]="chartData()"
+  [options]="chartOptions"
+  [attr.aria-label]="'balanceTrendGraph.ariaLabel' | translate"
+  role="img"
+></canvas>
+@if (_points().length < 2) {
+  <p class="balance-trend-graph__empty">{{ 'balanceTrendGraph.noData' | translate }}</p>
+}

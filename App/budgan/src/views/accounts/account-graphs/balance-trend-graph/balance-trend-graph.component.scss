@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+.balance-trend-graph {
+  &__canvas {
+    width: 100%;
+    height: auto;
+    display: block;
+
+    &--hidden {
+      display: none;
+    }
+  }
+
+  &__empty {
+    color: var(--mat-sys-on-surface-variant, inherit);
+  }
+}

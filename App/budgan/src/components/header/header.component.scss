@@ -1,0 +1,53 @@
+.header {
+  background-color: var(--mat-sys-primary);
+  height: var(--header-height);
+  width: 100%;
+
+  .title {
+    margin-left: 2rem;
+    color: var(--mat-sys-on-primary);
+    user-select: none;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .menu-icon {
+    display: none;
+    color: var(--mat-sys-on-primary);
+  }
+
+
+  [mat-button]:not([disabled]),
+  [mat-icon-button]:not([disabled]),
+  [mat-raised-button]:not([disabled]),
+  [mat-fab]:not([disabled]) {
+    cursor: pointer;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .locale-trigger {
+    color: var(--mat-sys-on-primary);
+  }
+
+  .theme-toggle {
+    color: var(--mat-sys-on-primary);
+  }
+
+  .workspace-name {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--mat-sys-on-primary);
+    max-width: 40%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    user-select: none;
+    pointer-events: none;
+  }
+}

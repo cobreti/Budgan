@@ -1,0 +1,179 @@
+{
+  "app": {
+    "title": "Budgan"
+  },
+  "menu": {
+    "newJournal": "New Journal",
+    "openJournal": "Open Journal",
+    "newColumnsMapping": "New Columns Mapping",
+    "newAccount": "New Account",
+    "saveAll": "Save All",
+    "loadAll": "Load All",
+    "samples": "Samples",
+    "clearAll": "Clear All"
+  },
+  "samples": {
+    "title": "Samples",
+    "back": "Back",
+    "sampleAccount": {
+      "title": "Sample account",
+      "description": "Load a ready-made sample account to explore Budgan.",
+      "load": "Load sample"
+    },
+    "loadError": "Could not load the sample data."
+  },
+  "load": {
+    "title": "Load All",
+    "selectFile": "Select file",
+    "noFileChosen": "No file selected",
+    "load": "Load",
+    "cancel": "Cancel",
+    "parseError": "Could not read the file. Make sure it is a valid Budgan backup.",
+    "invalidFormat": "The file is not a valid Budgan backup.",
+    "confirmTitle": "Replace all data?",
+    "confirmMessage": "This will permanently delete the current data and replace it with the contents of the selected file. This action cannot be undone.",
+    "confirmAccept": "Load and Replace",
+    "confirmCancel": "Cancel"
+  },
+  "clearAll": {
+    "title": "Clear all data?",
+    "message": "This will permanently delete all journals, columns mappings, accounts, files, and transactions. This action cannot be undone.",
+    "confirm": "Clear All",
+    "cancel": "Cancel"
+  },
+  "journalList": {
+    "empty": "No journals yet."
+  },
+  "columnsMappingList": {
+    "empty": "No column mappings yet."
+  },
+  "accountList": {
+    "empty": "No accounts yet."
+  },
+  "journal": {
+    "title": "Journal Details",
+    "loading": "Loading journal...",
+    "delete": "Delete"
+  },
+  "newJournal": {
+    "title": "New Journal",
+    "namePlaceholder": "Journal name",
+    "create": "Create",
+    "cancel": "Cancel",
+    "nameExists": "A journal with this name already exists."
+  },
+  "home": {
+    "journals": "Journals",
+    "columnsMapping": "Columns Mapping",
+    "accounts": "Accounts"
+  },
+  "columnsMapping": {
+    "title": "Columns Mapping Details",
+    "loading": "Loading...",
+    "delete": "Delete",
+    "cardNumberColumn": "Card Number Column",
+    "dateInscriptionColumn": "Date Inscription Column",
+    "amountColumn": "Amount Column",
+    "descriptionColumn": "Description Column",
+    "back": "Back"
+  },
+  "header": {
+    "switchToDark": "Switch to dark theme",
+    "switchToLight": "Switch to light theme"
+  },
+  "account": {
+    "title": "Account Details",
+    "loading": "Loading account...",
+    "delete": "Delete",
+    "save": "Save",
+    "importFile": "Import File",
+    "confirmDeleteTitle": "Delete this account?",
+    "confirmDeleteMessage": "This will permanently delete the account, every imported file, and every transaction it owns. This action cannot be undone.",
+    "confirmDeleteAccept": "Delete",
+    "confirmDeleteCancel": "Cancel",
+    "back": "Back"
+  },
+  "accountHome": {
+    "tabs": {
+      "details": "Details",
+      "transactions": "Transactions",
+      "graphs": "Graphs"
+    }
+  },
+  "balanceTrendGraph": {
+    "ariaLabel": "Account balance trend chart",
+    "noData": "No balance data available. Set a snapshot to enable the chart."
+  },
+  "accountSnapshot": {
+    "title": "Account Snapshot",
+    "date": "Snapshot date",
+    "amount": "Snapshot amount",
+    "save": "Save",
+    "delete": "Delete",
+    "empty": "No snapshot saved yet.",
+    "confirmDeleteTitle": "Delete this snapshot?",
+    "confirmDeleteMessage": "This will permanently delete the snapshot for this account. This action cannot be undone.",
+    "confirmDeleteAccept": "Delete",
+    "confirmDeleteCancel": "Cancel"
+  },
+  "saveAccount": {
+    "title": "Save Account",
+    "chooseFile": "Select file",
+    "noFileChosen": "No file selected",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "save": {
+    "title": "Save All",
+    "selectFile": "Select file",
+    "noFileChosen": "No file selected",
+    "save": "Save",
+    "back": "Back",
+    "cancel": "Cancel"
+  },
+  "importFile": {
+    "title": "Import File",
+    "chooseFile": "Choose CSV file",
+    "noFileChosen": "No file chosen",
+    "import": "Import",
+    "cancel": "Cancel",
+    "csvParseError": "Failed to parse the CSV file."
+  },
+  "newAccount": {
+    "title": "New Account",
+    "namePlaceholder": "Account name",
+    "columnsMappingPlaceholder": "Columns mapping",
+    "create": "Create",
+    "cancel": "Cancel",
+    "back": "Back",
+    "nameExists": "An account with this name already exists."
+  },
+  "transactionTable": {
+    "cardNumber": "Card Number",
+    "dateInscription": "Date",
+    "description": "Description",
+    "amount": "Amount",
+    "balance": "Balance",
+    "empty": "No transactions.",
+    "page": "Page",
+    "of": "of",
+    "goToPage": "Go to page",
+    "previousPage": "Previous page",
+    "nextPage": "Next page"
+  },
+  "newColumnsMapping": {
+    "title": "New Columns Mapping",
+    "namePlaceholder": "Mapping name",
+    "cardNumberColumn": "Card number column",
+    "dateInscriptionColumn": "Date inscription column",
+    "amountColumn": "Amount column",
+    "descriptionColumn": "Description column",
+    "create": "Create",
+    "cancel": "Cancel",
+    "back": "Back",
+    "nameExists": "A column mapping with this name already exists.",
+    "chooseFile": "Choose CSV file",
+    "noFileChosen": "No file chosen",
+    "csvParseError": "Failed to parse the CSV file."
+  }
+}

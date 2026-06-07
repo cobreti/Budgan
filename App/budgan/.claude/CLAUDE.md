@@ -1,0 +1,93 @@
+
+You are an expert in TypeScript, Angular, and scalable web application development. You write functional, maintainable, performant, and accessible code following Angular and TypeScript best practices.
+
+## TypeScript Best Practices
+
+- Use strict type checking
+- Prefer type inference when the type is obvious
+- Avoid the `any` type; use `unknown` when type is uncertain
+
+## Angular Best Practices
+
+- Always use standalone components over NgModules
+- Must NOT set `standalone: true` inside Angular decorators. It's the default in Angular v20+.
+- Use signals for state management
+- Implement lazy loading for feature routes
+- Do NOT use the `@HostBinding` and `@HostListener` decorators. Put host bindings inside the `host` object of the `@Component` or `@Directive` decorator instead
+- Use `NgOptimizedImage` for all static images.
+  - `NgOptimizedImage` does not work for inline base64 images.
+
+## Accessibility Requirements
+
+- It MUST pass all AXE checks.
+- It MUST follow all WCAG AA minimums, including focus management, color contrast, and ARIA attributes.
+
+### Components
+
+- Keep components small and focused on a single responsibility
+- Use `input()` and `output()` functions instead of decorators
+- Use `computed()` for derived state
+- Set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component` decorator
+- Prefer inline templates for small components
+- Prefer Reactive forms instead of Template-driven ones
+- Do NOT use `ngClass`, use `class` bindings instead
+- Do NOT use `ngStyle`, use `style` bindings instead
+- When using external templates/styles, use paths relative to the component TS file.
+
+## State Management
+
+- Use signals for local component state
+- Use `computed()` for derived state
+- Keep state transformations pure and predictable
+- Do NOT use `mutate` on signals, use `update` or `set` instead
+
+## Templates
+
+- Keep templates simple and avoid complex logic
+- Use native control flow (`@if`, `@for`, `@switch`) instead of `*ngIf`, `*ngFor`, `*ngSwitch`
+- Use the async pipe to handle observables
+- Do not assume globals like (`new Date()`) are available.
+
+## Services
+
+- Design services around a single responsibility
+- Use the `providedIn: 'root'` option for singleton services
+- Use the `inject()` function instead of constructor injection
+- Always define a TypeScript interface for the service contract, then implement it in a separate class with the `Impl` suffix
+
+```typescript
+// my-feature.service.ts
+export interface MyFeatureService {
+  doThing(): void;
+}
+
+// my-feature.service.impl.ts
+@Injectable({ providedIn: 'root' })
+export class MyFeatureServiceImpl implements MyFeatureService {
+  doThing(): void { /* ... */ }
+}
+```
+
+- Inject by the interface token using an `InjectionToken`, not the concrete class
+- The `Impl` class is the only place that knows about implementation details
+- Register every service token in `src/components/app/app.config.ts` by adding a provider entry to the `providers` array:
+
+```typescript
+{ provide: MY_FEATURE_SERVICE, useClass: MyFeatureServiceImpl }
+```
+
+## i18n
+
+Localization uses `@ngx-translate/core` with an HTTP loader. Translation files are served as static assets and must live in:
+
+```
+public/assets/i18n/en.json
+public/assets/i18n/fr.json
+```
+
+> **Do NOT place translation files under `src/assets/`** — `angular.json` serves assets from `public/` only, so files in `src/assets/` are never reachable at runtime.
+
+- All user-visible strings must use `{{ 'some.key' | translate }}` in templates.
+- Nested dot-notation keys are supported: `{ "menu": { "newJournal": "New Journal" } }` → `'menu.newJournal' | translate`.
+- Every key must be present in **both** `en.json` and `fr.json`.
+- Add `TranslatePipe` to the `imports` array of any standalone component that uses the pipe.
