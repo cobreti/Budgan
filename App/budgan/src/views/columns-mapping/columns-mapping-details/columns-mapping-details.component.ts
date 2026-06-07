@@ -27,6 +27,10 @@ export class ColumnsMappingDetailsComponent implements OnInit {
 
   readonly mapping = signal<ColumnsMapping | undefined>(undefined);
 
+  onBack(): void {
+    this._router.navigate([this._locale.currentLocale()]);
+  }
+
   async ngOnInit(): Promise<void> {
     const id = this._route.snapshot.params['columnsMappingId'];
     const entry = await this._service.getById(id);

@@ -52,6 +52,10 @@ export class AccountHomeComponent implements OnInit {
 
   readonly account: WritableSignal<AccountModel | undefined> = signal(undefined);
 
+  onBack(): void {
+    this._router.navigate([this._locale.currentLocale()]);
+  }
+
   onSave(): void {
     const account = this.account();
     if (!account) return;

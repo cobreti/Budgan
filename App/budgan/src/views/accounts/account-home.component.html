@@ -1,6 +1,13 @@
 <app-page [title]="'account.title' | translate">
   <app-page-menu page-menu>
     <app-page-menu-button
+      page-menu-back
+      icon="arrow_back"
+      [label]="'account.back' | translate"
+      (clicked)="onBack()"
+      data-testid="account-home-back"
+    />
+    <app-page-menu-button
       icon="save"
       [label]="'account.save' | translate"
       (clicked)="onSave()"

@@ -74,7 +74,8 @@
     "cardNumberColumn": "Colonne numéro de carte",
     "dateInscriptionColumn": "Colonne date d'inscription",
     "amountColumn": "Colonne montant",
-    "descriptionColumn": "Colonne description"
+    "descriptionColumn": "Colonne description",
+    "back": "Retour"
   },
   "header": {
     "switchToDark": "Passer au thème sombre",
@@ -89,7 +90,8 @@
     "confirmDeleteTitle": "Supprimer ce compte ?",
     "confirmDeleteMessage": "Cette action supprimera définitivement le compte, tous les fichiers importés et toutes ses transactions. Cette action est irréversible.",
     "confirmDeleteAccept": "Supprimer",
-    "confirmDeleteCancel": "Annuler"
+    "confirmDeleteCancel": "Annuler",
+    "back": "Retour"
   },
   "accountHome": {
     "tabs": {

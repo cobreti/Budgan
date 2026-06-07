@@ -74,7 +74,8 @@
     "cardNumberColumn": "Card Number Column",
     "dateInscriptionColumn": "Date Inscription Column",
     "amountColumn": "Amount Column",
-    "descriptionColumn": "Description Column"
+    "descriptionColumn": "Description Column",
+    "back": "Back"
   },
   "header": {
     "switchToDark": "Switch to dark theme",
@@ -89,7 +90,8 @@
     "confirmDeleteTitle": "Delete this account?",
     "confirmDeleteMessage": "This will permanently delete the account, every imported file, and every transaction it owns. This action cannot be undone.",
     "confirmDeleteAccept": "Delete",
-    "confirmDeleteCancel": "Cancel"
+    "confirmDeleteCancel": "Cancel",
+    "back": "Back"
   },
   "accountHome": {
     "tabs": {
