@@ -137,7 +137,8 @@
     "noFileChosen": "No file chosen",
     "import": "Import",
     "cancel": "Cancel",
-    "csvParseError": "Failed to parse the CSV file."
+    "csvParseError": "Failed to parse the CSV file.",
+    "fileAlreadyImported": "This file has already been imported to this account."
   },
   "newAccount": {
     "title": "New Account",

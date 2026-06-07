@@ -137,7 +137,8 @@
     "noFileChosen": "Aucun fichier sélectionné",
     "import": "Importer",
     "cancel": "Annuler",
-    "csvParseError": "Impossible d'analyser le fichier CSV."
+    "csvParseError": "Impossible d'analyser le fichier CSV.",
+    "fileAlreadyImported": "Ce fichier a déjà été importé pour ce compte."
   },
   "newAccount": {
     "title": "Nouveau compte",

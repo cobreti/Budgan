@@ -37,7 +37,6 @@ export class LoadComponent {
   readonly errorKey = signal<string | null>(null);
 
   private _fileHandle: FileSystemFileHandle | null = null;
-  private _pendingPayload: AllDataExportPayload | null = null;
 
   async onSelectFile(): Promise<void> {
     const handle = await this._exportService.pickLoadFile();
@@ -46,7 +45,6 @@ export class LoadComponent {
     this._fileHandle = handle;
     this.selectedFileName.set(handle.name);
     this.errorKey.set(null);
-    this._pendingPayload = null;
 
     const result = await this._exportService.readAllDataPayload(handle);
     if (!result.success) {
@@ -56,12 +54,10 @@ export class LoadComponent {
       return;
     }
 
-    this._pendingPayload = result.value;
+    await this.onLoad(result.value);
   }
 
-  async onLoad(): Promise<void> {
-    if (!this._pendingPayload) return;
-
+  async onLoad(payload: AllDataExportPayload): Promise<void> {
     const ref = this._dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
       ConfirmDialogComponent,
       {
@@ -78,7 +74,7 @@ export class LoadComponent {
     const confirmed = await ref.afterClosed().toPromise();
     if (!confirmed) return;
 
-    await this._indexdb.replaceAll(this._pendingPayload);
+    await this._indexdb.replaceAll(payload);
     await this._router.navigate([this._locale.currentLocale()]);
   }
 

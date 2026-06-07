@@ -30,22 +30,33 @@ npx prettier --write . # Format with Prettier
 App/Budgan/src/
 ├── components/         # Reusable Angular components
 │   ├── app/            # Root component, routing config, app config, locale guards
+│   ├── account-list/
+│   ├── account-snapshot/
+│   ├── account-transactions-table/
 │   ├── columns-mapping-list/
-│   ├── header/
+│   ├── confirm-dialog/
+│   ├── header/                     # + header-page-title sub-component
 │   ├── journal-list/
 │   ├── main-menu/
 │   │   └── main-menu-button/
 │   ├── main/
-│   ├── page-menu/
-│   │   └── page-menu-button/
-│   └── page/
+│   ├── page/
+│   ├── page-body/
+│   └── page-menu/
+│       └── page-menu-button/
 ├── Models/             # Plain TypeScript interfaces (data shapes)
 ├── services/           # Injectable services (interface + Impl pattern)
 ├── types/              # Shared utility types (Result<T>)
+├── utils/              # Pure helpers (date.ts)
 └── views/              # Routed page components
     ├── Home/
+    ├── accounts/       # account-home + tabs (details, transactions, graphs);
+    │                   # new-account, import-file, save-account
     ├── columns-mapping/
-    └── journals/
+    ├── journals/
+    ├── load/
+    ├── samples/
+    └── save/
 ```
 
 **Data flow for CSV import:**
@@ -87,11 +98,24 @@ export class MyFeatureServiceImpl implements MyFeatureService {
 |---|---|
 | `ID_GENERATOR_SERVICE` | `IdGeneratorServiceImpl` |
 | `LOCALE_SERVICE` | `LocaleServiceImpl` |
+| `THEME_SERVICE` | `ThemeServiceImpl` |
 | `JOURNAL_SERVICE` | `JournalServiceImpl` |
 | `COLUMNS_MAPPING_SERVICE` | `ColumnsMappingServiceImpl` |
+| `ACCOUNT_SERVICE` | `AccountServiceImpl` |
+| `FILE_SERVICE` | `FileServiceImpl` |
+| `ACCOUNT_TRANSACTION_SERVICE` | `AccountTransactionServiceImpl` |
 | `CSV_CONTENT_EXTRACTOR_SERVICE` | `CsvContentExtractorServiceImpl` |
+| `BUDGAN_EXPORT_SERVICE` | `BudganExportServiceImpl` |
 
-`IndexdbService` is used directly (no token) — it extends Dexie and is `providedIn: 'root'`.
+**Non-tokenized singletons** (injected by class, intentionally — they are pure UI-state holders):
+
+| Class | Purpose |
+|---|---|
+| `MainMenuService` | `isOpen` signal for the sidenav; `toggleMenu()` / `close()` |
+| `PageService` | `title` signal used by `<app-header-page-title>`; `setTitle(string)` |
+| `IndexdbService` | Extends Dexie — owns IndexedDB schema and access for all domain services |
+
+Do not add new non-tokenized services. New domain services must follow the interface + `InjectionToken` + `Impl` pattern.
 
 ### Result pattern (no throwing for expected errors)
 
@@ -131,17 +155,27 @@ All UI changes must work correctly in both light and dark mode.
 - Do NOT use `@HostBinding` / `@HostListener` — put host bindings in the `host` object of `@Component`.
 - Use `inject()` in the component body, not constructor parameters.
 - Add `TranslatePipe` to the `imports` array of any component that uses `| translate`.
+- Use `NgOptimizedImage` (`<img ngSrc="…" width="…" height="…" alt="…">`) for static images under `public/`. Do not use a plain `<img src>` for shipped assets. Inline base64 images are exempt (`NgOptimizedImage` does not support them).
 
 ### Persistence — IndexedDB via Dexie
 
-`IndexdbService` (extends `Dexie`) owns all database access:
+`IndexdbService` (extends `Dexie('budgan')`) owns all database access. Current schema is **version 8**:
 
 | Table | Schema | Entity type |
 |---|---|---|
 | `workspaces` | `&id, &name` | `JournalModel` |
 | `columnMappings` | `&id, &name` | `ColumnsMapping` |
+| `accounts` | `&id, &name` | `AccountModel` |
+| `files` | `&id, filename, accountId` | `fileModel` |
+| `accountTransactions` | `&id, accountId, fileId` | `AccountTransactionModel` |
 
 Services inject `IndexdbService` directly to read/write their respective tables.
+
+**Schema upgrades**: never edit a published `version(N).stores({...})` entry. Add a new `version(N+1).stores({...})` entry to migrate forward.
+
+**Transactional helpers** on `IndexdbService`:
+- `clearAll()` — wipes every table in a single `rw` transaction.
+- `replaceAll(payload)` — clears every table and bulk-adds the contents of an `AllDataExportPayload` (used by `/load` and `/samples`).
 
 ### Naming conventions
 
@@ -160,15 +194,22 @@ Services inject `IndexdbService` directly to read/write their respective tables.
 Routes are locale-prefixed. Current route tree:
 
 ```
-/                           → redirects to browser locale (defaultLocaleGuard)
-/:locale
-  /                         home
-  /journals                 journal list
-  /journal/new              new journal
-  /journal/:journalId       journal details
-  /columns-mapping/new      new columns mapping
-  /columns-mapping/:id      columns mapping details
-/**                         → redirects to /en
+/                                      → defaultLocaleGuard (redirects to /<browser-locale>)
+/:locale                               → localeGuard
+  /                                    HomeComponent
+  /journals                            JournalsComponent
+  /journal/new                         NewJournalComponent
+  /journal/:journalId                  JournalDetailsComponent
+  /columns-mapping/new                 NewColumnsMappingComponent
+  /columns-mapping/:columnsMappingId   ColumnsMappingDetailsComponent
+  /account/new                         NewAccountComponent
+  /account/:accountId                  AccountHomeComponent (tabs: details, transactions, graphs)
+  /account/:accountId/import-file      ImportFileComponent
+  /account/:accountId/save             SaveAccountComponent
+  /save                                SaveComponent
+  /load                                LoadComponent
+  /samples                             SamplesComponent
+/**                                    → redirects to /en
 ```
 
 `localeGuard` validates the locale param (must be `en` or `fr`), calls `LocaleService.setLocale()`, and calls `TranslateService.use()`. `defaultLocaleGuard` redirects `/` to the browser's detected locale.
@@ -193,29 +234,61 @@ Localization uses `@ngx-translate/core` with an HTTP loader.
 
 ```typescript
 // Models
-JournalModel   { id: string; name: string }
-ColumnsMapping { id?: string; name: string; cardNumberColumn: number;
-                 dateInscriptionColumn: number; amountColumn: number;
-                 descriptionColumn: number }
+JournalModel    { id: string; name: string }
+AccountModel    { id: string; name: string; columnsMappingId: string;
+                  referenceBalance?: AccountReferenceBalance }
+AccountReferenceBalance { date: string; balance: number }
+ColumnsMapping  { id?: string; name: string;
+                  cardNumberColumnIndex: number;        cardNumberColumnText?: string;
+                  dateInscriptionColumnIndex: number;   dateInscriptionColumnText?: string;
+                  amountColumnIndex: number;            amountColumnText?: string;
+                  descriptionColumnIndex: number;       descriptionColumnText?: string }
+fileModel       { id: string; accountId: string; filename: string;
+                  content: string; insertionDate: Date }
+AccountTransactionModel {
+  id: string;                // normal: `${cardNumber}|${date}|${amount}|${description}`
+                             // snapshot: `snapshot|${accountId}`
+  fileId: string; accountId: string; cardNumber: string;
+  dateInscriptionAsString: string; amount: number;
+  balance?: number;           // populated by recalculateBalances
+  balanceDateOffset?: number; // tiebreaker for same-date rows
+  description: string;
+  recordType: 'normal' | 'snapshot'
+}
 
 // CSV extraction
 CsvContentExtractionResult { delimiter: string; headerRowIndex: number;
                              header: string[]; rows: CsvJsonRecord[] }
 CsvJsonRecord              Record<string, string>
 
+// Export payloads (.bdg files)
+AccountExportPayload  { version, account, columnsMapping, files, transactions }
+AllDataExportPayload  { version, columnsMappings, accounts, files, transactions }
+
 // Result
 Result<T>  { success: true; value: T } | { success: false; error: string }
 ```
+
+After mutating transactions, call `AccountTransactionService.recalculateBalances(accountId)` so running `balance` and the account's `referenceBalance` stay consistent. The snapshot row is the anchor used by the algorithm.
 
 ## Checklist for new features
 
 1. **New service** → interface + `InjectionToken` + `Impl` class; register token in `app.config.ts`
 2. **New entity needing an ID** → inject `ID_GENERATOR_SERVICE` and call `generateId()`
-3. **Persistence** → add a table to `IndexdbService` (new Dexie version entry)
+3. **Persistence** → add a new `version(N).stores({ ... })` entry to `IndexdbService`; never edit a published version
 4. **Fallible operation** → return `Result<T>`, not `throw`
 5. **New component** → standalone, `OnPush`, signals for state, `data-testid` on all interactive elements
-6. **New route** → add to `app.routes.ts` under `/:locale`, lazy-load with `() => import(...)`
+6. **New route** → add to `app.routes.ts` under `/:locale`
 7. **New i18n text** → add key to both `en.json` and `fr.json`
+8. **New static image** → place under `public/`; reference with `NgOptimizedImage` and explicit `width`/`height`
+9. **New page that wants a header title** → inject `PageService` and call `setTitle('i18n.key')` from the view
+10. **New `.bdg` field** → bump `version` in the payload type, extend `parseAllDataPayload`, and keep older `version` readable
+11. **Mutating account transactions** → call `AccountTransactionService.recalculateBalances(accountId)` after the write so `balance` + `referenceBalance` stay in sync
+
+## PWA & charts
+
+- The Angular service worker is registered only in production builds (`provideServiceWorker('ngsw-worker.js', { enabled: !isDevMode() })`). PWA assets live at `public/manifest.webmanifest` and `public/icons/Budgan{48,180,256,512}.png`.
+- The graphs tab uses `ng2-charts`; charts are registered globally via `provideCharts(withDefaultRegisterables())`.
 
 ## Tools directory
 

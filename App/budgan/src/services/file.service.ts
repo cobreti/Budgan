@@ -24,6 +24,13 @@ export class FileServiceImpl implements FileService {
   }
 
   async create(accountId: string, filename: string, content: string, insertionDate: Date): Promise<Result<string>> {
+    const existing = await this._indexDb.filesTable
+      .where('accountId').equals(accountId)
+      .filter((f) => f.filename === filename)
+      .first();
+    if (existing) {
+      return { success: false, error: 'file-already-imported' };
+    }
     const id = this._idGenerator.generateId();
     await this._indexDb.filesTable.add({ id, accountId, filename, content, insertionDate });
     return { success: true, value: id };

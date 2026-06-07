@@ -17,31 +17,39 @@ Budgan is a single-page Angular application for importing CSV bank statements an
 App/Budgan/
 ├── angular.json            # CLI config; assets served from public/
 ├── package.json
-├── public/assets/i18n/     # en.json, fr.json (runtime translation files)
+├── public/
+│   ├── assets/i18n/        # en.json, fr.json (runtime translation files)
+│   ├── assets/samples/     # sample.json (.bdg dataset bundled with the app)
+│   ├── icons/              # Budgan{48,180,256,512}.png (PWA + header brand)
+│   └── manifest.webmanifest
 └── src/
     ├── main.ts             # bootstrapApplication(App, appConfig)
     ├── styles.scss
     ├── components/         # Reusable building blocks
     │   ├── app/            # Root component, routes, DI config, locale guard
-    │   ├── header/
+    │   ├── header/         # Toolbar + brand button + page-title sub-component
     │   ├── main/           # Hosts the <router-outlet>
     │   ├── main-menu/
-    │   ├── page/ + page-menu/
+    │   ├── page/ + page-menu/ + page-body/
     │   ├── journal-list/
     │   ├── columns-mapping-list/
     │   ├── account-list/
+    │   ├── account-snapshot/         # Balance-anchor form for an account
     │   ├── account-transactions-table/
     │   └── confirm-dialog/
     ├── views/              # Routed pages
     │   ├── Home/
     │   ├── journals/       (list, new, details)
     │   ├── columns-mapping/(new, details)
-    │   ├── accounts/       (new, details, import-file, save)
+    │   ├── accounts/       (account-home + tabs: details, transactions, graphs;
+    │   │                    plus new, import-file, save-account)
     │   ├── load/
-    │   └── save/
+    │   ├── save/
+    │   └── samples/        # Loads bundled sample.json into IndexedDB
     ├── services/           # Interface + Impl pattern, registered in app.config.ts
     ├── Models/             # Plain TypeScript data shapes
-    └── types/              # Shared utility types (Result<T>)
+    ├── types/              # Shared utility types (Result<T>)
+    └── utils/              # Pure helpers (date.ts: ISO date parse/format)
 ```
 
 TypeScript path aliases (`tsconfig.json`): `@components/*`, `@models/*`, `@services/*`, `@views/*`, `@app-types/*`.
@@ -51,13 +59,16 @@ TypeScript path aliases (`tsconfig.json`): `@components/*`, `@models/*`, `@servi
 `main.ts` → `bootstrapApplication(App, appConfig)`.
 
 `App` (`src/components/app/app.ts`) is a thin shell that renders:
-- `<app-header>` — toolbar with menu toggle, locale switcher, theme toggle
+- `<app-header>` — toolbar with menu toggle, brand button (Budgan icon + title — uses `NgOptimizedImage` against `/icons/Budgan48.png`), page-title slot, locale switcher, theme toggle
 - `<mat-sidenav-container>` — holds `<app-main-menu>` and `<main>`
 - `<main>` — hosts the `<router-outlet>`
 
 `appConfig` (`src/components/app/app.config.ts`) wires the global providers:
-- `provideRouter(routes)`, `provideHttpClient()`, `provideAnimations()`
+- `provideBrowserGlobalErrorListeners()`, `provideRouter(routes)`, `provideHttpClient()`, `provideAnimations()`
+- `provideNativeDateAdapter()` — Angular Material datepicker support
 - `provideTranslateService` + `provideTranslateHttpLoader` (prefix `/assets/i18n/`, suffix `.json`)
+- `provideCharts(withDefaultRegisterables())` — `ng2-charts` registration used by the account graphs view
+- `provideServiceWorker('ngsw-worker.js', { enabled: !isDevMode() })` — PWA support
 - All service tokens → their `Impl` classes (see §6)
 
 ### Shell composition
@@ -79,7 +90,7 @@ flowchart TD
 Routes are locale-prefixed and defined in `src/components/app/app.routes.ts`.
 
 ```
-/                                       → defaultLocaleGuard → /<browser-locale>
+/                                       → defaultLocaleGuard → /<browser-locale> (renders JournalsComponent during redirect)
 /:locale                                → localeGuard
   /                                     HomeComponent
   /journals                             JournalsComponent
@@ -88,11 +99,13 @@ Routes are locale-prefixed and defined in `src/components/app/app.routes.ts`.
   /columns-mapping/new                  NewColumnsMappingComponent
   /columns-mapping/:columnsMappingId    ColumnsMappingDetailsComponent
   /account/new                          NewAccountComponent
-  /account/:accountId                   AccountDetailsComponent
+  /account/:accountId                   AccountHomeComponent  (Material tab group:
+                                          details | transactions | graphs)
   /account/:accountId/import-file       ImportFileComponent
   /account/:accountId/save              SaveAccountComponent
   /save                                 SaveComponent
   /load                                 LoadComponent
+  /samples                              SamplesComponent
 /**                                     → /en
 ```
 
@@ -116,11 +129,13 @@ flowchart TD
     Locale --> MappingNew["/columns-mapping/new<br/>NewColumnsMappingComponent"]
     Locale --> MappingDetails["/columns-mapping/:id<br/>ColumnsMappingDetailsComponent"]
     Locale --> AccountNew["/account/new<br/>NewAccountComponent"]
-    Locale --> AccountDetails["/account/:accountId<br/>AccountDetailsComponent"]
+    Locale --> AccountHome["/account/:accountId<br/>AccountHomeComponent"]
+    AccountHome --> AccTabs["Tabs: details | transactions | graphs"]
     Locale --> AccountImport["/account/:accountId/import-file<br/>ImportFileComponent"]
     Locale --> AccountSave["/account/:accountId/save<br/>SaveAccountComponent"]
     Locale --> Save["/save<br/>SaveComponent"]
     Locale --> Load["/load<br/>LoadComponent"]
+    Locale --> Samples["/samples<br/>SamplesComponent"]
 ```
 
 ### View → reusable component dependencies
@@ -128,42 +143,72 @@ flowchart TD
 ```mermaid
 flowchart LR
     subgraph Views
+        Home[HomeComponent]
         Journals[JournalsComponent]
         JournalDetails[JournalDetailsComponent]
-        Accounts[AccountDetailsComponent]
+        AccountHome[AccountHomeComponent]
+        AccDetails[AccountDetailsComponent]
+        AccTx[AccountTransactionsComponent]
+        AccGraphs[AccountGraphsComponent]
         Import[ImportFileComponent]
         Mapping[ColumnsMappingDetailsComponent]
         SaveV[SaveComponent / SaveAccountComponent]
         LoadV[LoadComponent]
+        SamplesV[SamplesComponent]
     end
 
     subgraph Reusable["Reusable components"]
+        Page[page]
+        PageBody[page-body]
         PageMenu[page-menu]
         PageMenuBtn[page-menu-button]
         JournalList[journal-list]
         AccountList[account-list]
         MappingList[columns-mapping-list]
         TxTable[account-transactions-table]
+        Snapshot[account-snapshot]
         Confirm[confirm-dialog]
     end
 
+    Home --> Page
+    Home --> JournalList
+    Home --> AccountList
+    Home --> MappingList
+    Journals --> Page
     Journals --> PageMenu
     Journals --> PageMenuBtn
     Journals --> JournalList
+    JournalDetails --> Page
     JournalDetails --> PageMenu
     JournalDetails --> PageMenuBtn
-    Accounts --> PageMenu
-    Accounts --> PageMenuBtn
-    Accounts --> TxTable
+    AccountHome --> Page
+    AccountHome --> PageBody
+    AccountHome --> PageMenu
+    AccountHome --> PageMenuBtn
+    AccountHome --> AccDetails
+    AccountHome --> AccTx
+    AccountHome --> AccGraphs
+    AccDetails --> Snapshot
+    AccTx --> TxTable
+    Import --> Page
     Import --> PageMenu
     Import --> PageMenuBtn
+    Mapping --> Page
     Mapping --> PageMenu
     Mapping --> PageMenuBtn
+    SaveV --> Page
     SaveV --> PageMenu
-    LoadV --> PageMenu
+    LoadV --> Page
+    SamplesV --> Page
+    SamplesV --> PageBody
+    SamplesV --> PageMenu
+    SamplesV --> PageMenuBtn
     JournalList -. delete .-> Confirm
     AccountList -. delete .-> Confirm
     MappingList -. delete .-> Confirm
+    Snapshot -. delete .-> Confirm
+    LoadV -. confirm replace .-> Confirm
+    SamplesV -. confirm replace .-> Confirm
 ```
 
 ## 5. Domain model
@@ -173,10 +218,13 @@ Plain interfaces in `src/Models/` (no class methods, no behavior):
 | Model | Purpose | Key fields |
 |---|---|---|
 | `JournalModel` | A user-named workspace | `id`, `name` |
-| `accountModel` | A bank account belonging to a user | `id`, `name`, `columnsMappingId` |
+| `AccountModel` | A bank account belonging to a user | `id`, `name`, `columnsMappingId`, `referenceBalance?` (`AccountReferenceBalance`) |
+| `AccountReferenceBalance` | Opening balance pinned the day before the earliest transaction | `date` (ISO string), `balance` |
 | `ColumnsMapping` | Maps CSV columns → semantic transaction fields | `id?`, `name`, `cardNumberColumnIndex` + `Text?`, `dateInscriptionColumnIndex` + `Text?`, `amountColumnIndex` + `Text?`, `descriptionColumnIndex` + `Text?` |
 | `fileModel` | An imported CSV file (raw content kept) | `id`, `accountId`, `filename`, `content`, `insertionDate` |
-| `AccountTransactionModel` | A single parsed transaction | `id`, `fileId`, `accountId`, `cardNumber`, `dateInscriptionAsString`, `amount`, `description`, `duplicateOf?` |
+| `AccountTransactionModel` | A single parsed transaction (or the snapshot anchor row) | `id`, `fileId`, `accountId`, `cardNumber`, `dateInscriptionAsString`, `amount`, `balance?`, `balanceDateOffset?`, `description`, `recordType` (`normal` \| `snapshot`) |
+
+Snapshot rows live in the same `accountTransactions` table as normal rows. Their id is the literal `snapshot|<accountId>` (one per account) and `recordType = snapshot`. Normal transaction ids are the composite `${cardNumber}|${date}|${amount}|${description}`.
 
 ### Result type
 
@@ -190,10 +238,11 @@ erDiagram
         string id PK
         string name
     }
-    accountModel {
+    AccountModel {
         string id PK
         string name
         string columnsMappingId FK
+        object  referenceBalance "AccountReferenceBalance | undefined"
     }
     ColumnsMapping {
         string id PK
@@ -217,15 +266,16 @@ erDiagram
         string cardNumber
         string dateInscriptionAsString
         number amount
+        number balance "running balance after recalculate"
+        number balanceDateOffset "stable tie-break for same-date rows"
         string description
-        string duplicateOf
+        enum recordType "normal | snapshot"
     }
 
-    accountModel ||--o{ fileModel : "owns"
-    accountModel ||--o{ AccountTransactionModel : "owns"
-    accountModel }o--|| ColumnsMapping : "uses"
+    AccountModel ||--o{ fileModel : "owns"
+    AccountModel ||--o{ AccountTransactionModel : "owns"
+    AccountModel }o--|| ColumnsMapping : "uses"
     fileModel ||--o{ AccountTransactionModel : "produced"
-    AccountTransactionModel }o--o| AccountTransactionModel : "duplicateOf"
 ```
 
 > `JournalModel` is the `workspaces` table; it exists as a workspace container but is not currently linked to accounts/files/transactions at the type level.
@@ -243,11 +293,18 @@ Every service follows the **interface + `InjectionToken` + `Impl` class** patter
 | `ACCOUNT_SERVICE` | `AccountServiceImpl` | CRUD on `accounts` table |
 | `COLUMNS_MAPPING_SERVICE` | `ColumnsMappingServiceImpl` | CRUD on `columnMappings` table (create or update via `save()`) |
 | `FILE_SERVICE` | `FileServiceImpl` | CRUD on `files` table; query by `accountId` |
-| `ACCOUNT_TRANSACTION_SERVICE` | `AccountTransactionServiceImpl` | CRUD + paginated read on `accountTransactions` table |
+| `ACCOUNT_TRANSACTION_SERVICE` | `AccountTransactionServiceImpl` | CRUD + paginated/sorted read on `accountTransactions`; snapshot CRUD (`setSnapshot` / `getSnapshot` / `deleteSnapshot`); `recalculateBalances(accountId)` walks forward/backward from the snapshot to fill every row's `balance` + `balanceDateOffset`. Exposes a `transactionsVersion` signal so views re-fetch after writes. |
 | `CSV_CONTENT_EXTRACTOR_SERVICE` | `CsvContentExtractorServiceImpl` | Pure CSV → JSON parsing (delimiter detection, header scoring, row extraction) |
 | `BUDGAN_EXPORT_SERVICE` | `BudganExportServiceImpl` | File System Access API; builds & reads `.bdg` payloads |
 
-`MainMenuService` is the only service without an interface/token — it's a pure UI state holder (`isOpen` signal) bound directly to the sidenav in `App`. `IndexdbService` is also injected by class directly (it extends Dexie).
+Two UI-state holders are intentionally **not** tokenized — they are pure local-state services and are injected by class:
+
+| Service | State | Used by |
+|---|---|---|
+| `MainMenuService` | `isOpen` signal; `toggleMenu()` / `close()` | `App` shell sidenav, `<app-header>` menu button |
+| `PageService` | `title` signal; `setTitle(string)` | All page views set their title; `<app-header-page-title>` reads it |
+
+`IndexdbService` is also injected by class directly (it extends `Dexie`).
 
 ### Conventions
 - Use `inject()` inside the `Impl` body, never constructor parameters.
@@ -259,13 +316,14 @@ Every service follows the **interface + `InjectionToken` + `Impl` class** patter
 
 ```mermaid
 flowchart TD
-    subgraph UIState["UI-state services"]
-        LocaleSvc[LocaleService]
-        ThemeSvc[ThemeService]
+    subgraph UIState["UI-state services (no token)"]
+        LocaleSvc[LocaleService *]
+        ThemeSvc[ThemeService *]
         MenuSvc[MainMenuService]
+        PageSvc[PageService]
     end
 
-    subgraph Domain["Domain services"]
+    subgraph Domain["Domain services (tokenized)"]
         IdGen[IdGeneratorService]
         Journal[JournalService]
         Account[AccountService]
@@ -291,12 +349,15 @@ flowchart TD
     Mapping --> IndexDB
     FileSvc --> IndexDB
     Tx --> IndexDB
+    Tx --> Account
 
     Export --> Account
     Export --> Mapping
     Export --> FileSvc
     Export --> Tx
 ```
+
+`*` = tokenized (`LOCALE_SERVICE`, `THEME_SERVICE`); `MainMenuService` / `PageService` are injected by class.
 
 ## 7. Persistence (Dexie / IndexedDB)
 
@@ -347,8 +408,9 @@ The CSV → transactions flow is split across three services and the `ImportFile
    - Normalizes headers (`lowercase`, non-alphanumerics → `_`, dedupes with `_2`, `_3`...).
    - Returns `Result<{ delimiter, headerRowIndex, header, rows }>`.
 3. **Mapping resolution** — component loads the account and its `ColumnsMapping`.
-4. **Persistence** — creates a `fileModel` row holding the raw CSV content, then iterates `rows` and writes one `AccountTransactionModel` per parseable row. The transaction `id` is composite: `${cardNumber}|${date}|${amount}|${description}` — duplicates fail the `&id` unique index (current implementation simply lets the `add` reject; `duplicateOf` is the planned field for marking matches).
-5. **Navigation** — redirects back to `/{locale}/account/:accountId`.
+4. **Persistence** — creates a `fileModel` row holding the raw CSV content, then iterates `rows` and writes one `AccountTransactionModel` per parseable row. The transaction `id` is the composite `${cardNumber}|${date}|${amount}|${description}` — duplicates fail the `&id` unique index (the `add` simply rejects, so re-importing the same statement is a no-op).
+5. **Balance recompute** — after the rows are written, the component (or follow-on snapshot edit) calls `AccountTransactionService.recalculateBalances(accountId)`, which fills `balance` + `balanceDateOffset` on every row anchored on the snapshot (or 0 if there is none) and updates `AccountModel.referenceBalance`.
+6. **Navigation** — redirects back to `/{locale}/account/:accountId`.
 
 ```mermaid
 sequenceDiagram
@@ -376,6 +438,9 @@ sequenceDiagram
         V->>T: create(fileId, accountId, card, date, amount, desc)
         T->>DB: accountTransactions.add()
     end
+    V->>T: recalculateBalances(accountId)
+    T->>DB: bulkPut(updated rows)
+    T->>A: setReferenceBalance(accountId, opening)
     V-->>U: navigate /{locale}/account/:id
 ```
 
@@ -444,16 +509,57 @@ sequenceDiagram
     end
 ```
 
-## 10. State management
+## 10. Account snapshot & running balances
 
-There is no central store. State lives in three places:
+A "snapshot" is a single known-true balance the user enters for an account at a specific date. It is stored as one extra row in `accountTransactions` with `recordType = snapshot` and `id = snapshot|<accountId>` (so there is at most one per account).
+
+`AccountTransactionService.recalculateBalances(accountId)` is the engine that turns transactions into running balances. It is invoked by `setSnapshot`, `deleteSnapshot`, and whenever transactions are mutated.
+
+```mermaid
+flowchart LR
+    subgraph Inputs["Inputs (per accountId)"]
+        Snap["snapshot row<br/>(may be absent)"]
+        Normals["normal rows<br/>(sorted by date, id)"]
+    end
+
+    subgraph WithSnap["With snapshot"]
+        SD["snapshotDate"]
+        After["rows >= snapshotDate<br/>forward pass: +amount, offset +1, +2..."]
+        Before["rows <  snapshotDate<br/>backward pass: balance BEFORE -amount,<br/>offset -1, -2..."]
+    end
+
+    subgraph WithoutSnap["No snapshot"]
+        FromZero["forward pass from 0<br/>balance += amount"]
+    end
+
+    Inputs --> WithSnap
+    Inputs --> WithoutSnap
+    WithSnap --> Write["bulkPut updated rows"]
+    WithoutSnap --> Write
+    Write --> RefBal["AccountService.setReferenceBalance(<br/>date = day before earliest row,<br/>balance = earliest.balance - earliest.amount)"]
+    Write --> Bump["transactionsVersion.update(v => v+1)"]
+```
+
+Views that depend on transactions (`AccountTransactionsComponent`, `AccountGraphsComponent`) read `transactionsVersion` via an `effect()` and re-fetch when it bumps.
+
+## 11. PWA & graphs
+
+- **PWA**: `provideServiceWorker('ngsw-worker.js', { enabled: !isDevMode() })` registers the Angular service worker only in production builds. Manifest at `public/manifest.webmanifest`; PNG icons at `public/icons/Budgan{48,180,256,512}.png`.
+- **Charts**: `AccountGraphsComponent` uses `ng2-charts` (registered globally via `provideCharts(withDefaultRegisterables())`) to plot balance history from the recalculated `balance` field.
+- **Bundled sample data**: `SamplesComponent` (`/samples`) fetches `/assets/samples/sample.json`, validates it through `BudganExportService.parseAllDataPayload()`, and replaces every IndexedDB table via `IndexdbService.replaceAll()` after a confirm dialog. Useful for first-run demos.
+
+## 12. State management
+
+There is no central store. State lives in four places:
 
 1. **IndexedDB** (via Dexie) — the source of truth for all persistent domain data.
 2. **Service-held signals** — small pieces of cross-component UI state:
    - `LocaleService.currentLocale`
    - `ThemeService.isDark`
    - `MainMenuService.isOpen`
-3. **Component-local signals** — page-specific view state (`signal()`, `computed()`). Async fetches store results into component signals; no observables-as-state.
+   - `PageService.title` — current page title shown in the header.
+3. **Cache-invalidation signal**: `AccountTransactionService.transactionsVersion` is bumped after every mutation (`create`, `setSnapshot`, `deleteSnapshot`, `recalculateBalances`); transaction-dependent views re-fetch by reading it in an `effect()`.
+4. **Component-local signals** — page-specific view state (`signal()`, `computed()`). Async fetches store results into component signals; no observables-as-state.
 
 ```mermaid
 flowchart LR
@@ -464,6 +570,8 @@ flowchart LR
         L[LocaleService.currentLocale]
         T[ThemeService.isDark]
         M[MainMenuService.isOpen]
+        P[PageService.title]
+        V[AccountTransactionService.transactionsVersion]
     end
     subgraph Local["Per-component signals"]
         C1[journal/account/file<br/>view state]
@@ -476,9 +584,11 @@ flowchart LR
     T --> Header
     T --> RootHtml["html.dark-theme"]
     M --> AppShell["App sidenav"]
+    P --> Header
+    V --> TxViews["AccountTransactions /<br/>AccountGraphs"]
 ```
 
-## 11. Component conventions
+## 13. Component conventions
 
 Enforced across the codebase (see `App/Budgan/.claude/CLAUDE.md` for the full list):
 
@@ -490,9 +600,10 @@ Enforced across the codebase (see `App/Budgan/.claude/CLAUDE.md` for the full li
 - No `@HostBinding`/`@HostListener` — use the `host` object on the decorator.
 - `inject()` in the body, not constructor parameters.
 - Components using `| translate` must add `TranslatePipe` to their `imports`.
+- Static `<img>` must use `NgOptimizedImage` with explicit `width`/`height` (see the brand button in `<app-header>` for the pattern). Inline base64 images are out of scope for `NgOptimizedImage`.
 - Interactive elements carry `data-testid="kebab-case"` for tests.
 
-## 12. Theming
+## 14. Theming
 
 Light/dark theming uses Material 3 CSS system variables. `ThemeService` toggles a `dark-theme` class on `<html>` and persists the choice in `localStorage`.
 
@@ -502,25 +613,26 @@ Light/dark theming uses Material 3 CSS system variables. `ThemeService` toggles 
 color: var(--mat-sys-on-surface-variant, inherit);  /* correct */
 ```
 
-## 13. Internationalization
+## 15. Internationalization
 
 - Loader: `provideTranslateHttpLoader({ prefix: '/assets/i18n/', suffix: '.json' })`.
 - Translation files live in `public/assets/i18n/` — Angular CLI only serves `public/`, so files under `src/assets/` are unreachable at runtime.
 - Templates use `{{ 'menu.newJournal' | translate }}`. Keys are dot-namespaced and must be present in **both** `en.json` and `fr.json`.
 - `localeGuard` calls `TranslateService.use(locale)` on every route activation, so the language follows the URL.
 
-## 14. Testing & tooling
+## 16. Testing & tooling
 
 - **Unit tests**: Vitest with jsdom. Run via `ng test` (Angular CLI builder).
 - **Formatting**: Prettier (`npx prettier --write .`).
 - **TypeScript**: strict mode, plus `noImplicitOverride`, `noPropertyAccessFromIndexSignature`, `strictTemplates`.
-- **Path aliases**: declared in `tsconfig.json` (`@components/*`, etc.).
+- **Path aliases**: declared in `tsconfig.json` (`@components/*`, `@models/*`, `@services/*`, `@views/*`, `@app-types/*`, plus `@/*` → `src/*`).
+- **PWA**: built via the Angular service worker. The service worker is **disabled in dev** (`isDevMode()` short-circuits registration); a production build (`ng build`) ships `ngsw-worker.js` and `manifest.webmanifest`.
 
-## 15. Tools directory
+## 17. Tools directory
 
 `Tools/StatementGenerator/` is a standalone Node 20+ utility that generates mock CSV bank statements for testing the import pipeline. It is not part of the Angular bundle.
 
-## 16. Extending the application
+## 18. Extending the application
 
 Checklist for the most common changes:
 
@@ -533,4 +645,7 @@ Checklist for the most common changes:
 | New component | Standalone (no flag), `OnPush`, signals for state, `data-testid` on interactive nodes. |
 | New route | Add under `/:locale` in `app.routes.ts`; use the locale signal when building navigation arrays. |
 | New i18n key | Add to both `public/assets/i18n/en.json` and `fr.json`. |
-| New `.bdg` field | Bump `version` in the payload type, extend the `isAllDataExportPayload` validator, and handle the older `version` on load. |
+| New `.bdg` field | Bump `version` in the payload type, extend the `parseAllDataPayload` validator, and handle the older `version` on load. |
+| New static image | Place under `public/`; reference with `NgOptimizedImage` (`<img ngSrc="/path" width="…" height="…">`). |
+| New page that needs a header title | Inject `PageService` in the view and call `setTitle('i18n.key')` (translation happens at the consumer). |
+| New account-transaction mutation | After writing, call `AccountTransactionService.recalculateBalances(accountId)` so running balances and `referenceBalance` stay consistent. |
