@@ -133,12 +133,13 @@
   },
   "importFile": {
     "title": "Import File",
-    "chooseFile": "Choose CSV file",
-    "noFileChosen": "No file chosen",
+    "chooseFiles": "Choose CSV files",
+    "noFilesChosen": "No files chosen",
     "import": "Import",
     "cancel": "Cancel",
     "csvParseError": "Failed to parse the CSV file.",
-    "fileAlreadyImported": "This file has already been imported to this account."
+    "fileAlreadyImported": "This file has already been imported to this account.",
+    "duplicatesSkipped": "{{count}} duplicate transaction(s) skipped"
   },
   "newAccount": {
     "title": "New Account",
