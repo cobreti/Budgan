@@ -40,7 +40,7 @@ export class HomeComponent {
   private readonly _columnsMappingList = viewChild.required(ColumnsMappingListComponent);
   private readonly _accountList = viewChild.required(AccountListComponent);
 
-  readonly hasSaveableData = computed(
+  readonly hasData = computed(
     () =>
       this._accountList().accounts().length > 0 ||
       this._columnsMappingList().mappings().length > 0,

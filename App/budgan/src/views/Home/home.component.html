@@ -8,7 +8,7 @@
     <app-page-menu-button
       icon="save"
       [label]="'menu.saveAll' | translate"
-      [disabled]="!hasSaveableData()"
+      [disabled]="!hasData()"
       (clicked)="onSave()"
     />
     <app-page-menu-button
@@ -31,6 +31,7 @@
       icon="delete_sweep"
       variant="danger"
       [label]="'menu.clearAll' | translate"
+      [disabled]="!hasData()"
       (clicked)="onClearAll()"
     />
   </app-page-menu>
