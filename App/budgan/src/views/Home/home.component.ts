@@ -1,4 +1,4 @@
-import { Component, inject, viewChild } from '@angular/core';
+import { Component, computed, inject, viewChild } from '@angular/core';
 import { PageMenuComponent } from '@components/page-menu/page-menu.component';
 import { PageMenuButtonComponent } from '@components/page-menu/page-menu-button/page-menu-button.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -39,6 +39,12 @@ export class HomeComponent {
 
   private readonly _columnsMappingList = viewChild.required(ColumnsMappingListComponent);
   private readonly _accountList = viewChild.required(AccountListComponent);
+
+  readonly hasSaveableData = computed(
+    () =>
+      this._accountList().accounts().length > 0 ||
+      this._columnsMappingList().mappings().length > 0,
+  );
 
   async onNewColumnsMapping(): Promise<void> {
     await this._router.navigate([this._locale.currentLocale(), 'columns-mapping', 'new']);

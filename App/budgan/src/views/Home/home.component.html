@@ -8,6 +8,7 @@
     <app-page-menu-button
       icon="save"
       [label]="'menu.saveAll' | translate"
+      [disabled]="!hasSaveableData()"
       (clicked)="onSave()"
     />
     <app-page-menu-button

@@ -40,6 +40,16 @@
     outline-offset: 2px;
     border-radius: 4px;
   }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: var(--mat-sys-on-surface, inherit);
+  }
+
+  &:disabled:hover {
+    opacity: 0.5;
+  }
 }
 
 :host(.page-menu-button--danger) {
