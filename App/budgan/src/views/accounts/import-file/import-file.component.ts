@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
 import { FILE_SERVICE, FileService } from '@services/file.service';
@@ -13,12 +14,26 @@ import { PageMenuButtonComponent } from '@components/page-menu/page-menu-button/
 import { PageComponent } from '@components/page/page.component';
 import { PageBodyComponent } from '@components/page-body/page-body.component';
 
+interface DuplicateTransaction {
+  cardNumber: string;
+  dateInscriptionAsString: string;
+  amount: number;
+  description: string;
+}
+
+interface FileImportStatus {
+  file: File;
+  status: 'pending' | 'importing' | 'success' | 'warning' | 'error';
+  error?: string;
+  duplicates?: DuplicateTransaction[];
+}
+
 @Component({
   selector: 'app-import-file',
   templateUrl: './import-file.component.html',
   styleUrl: './import-file.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatButton, TranslatePipe, PageComponent, PageBodyComponent, PageMenuComponent, PageMenuButtonComponent],
+  imports: [MatButton, MatIcon, TranslatePipe, PageComponent, PageBodyComponent, PageMenuComponent, PageMenuButtonComponent],
 })
 export class ImportFileComponent {
   private readonly _route = inject(ActivatedRoute);
@@ -32,60 +47,98 @@ export class ImportFileComponent {
 
   private readonly _accountId = this._route.snapshot.params['accountId'] as string;
 
-  readonly selectedFileName = signal<string>('');
-  readonly importError = signal<string>('');
-
-  private _selectedFile: File | null = null;
+  readonly selectedFiles = signal<File[]>([]);
+  readonly importStatuses = signal<FileImportStatus[]>([]);
+  readonly isImporting = signal<boolean>(false);
+  readonly importCompleted = signal<boolean>(false);
+  readonly hasSelectedFiles = computed(() => this.selectedFiles().length > 0);
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-    this._selectedFile = file;
-    this.selectedFileName.set(file.name);
-    this.importError.set('');
+    const files = Array.from(input.files ?? []);
+    if (files.length === 0) return;
+    this.selectedFiles.set(files);
+    this.importStatuses.set(files.map(file => ({ file, status: 'pending' })));
+    this.importCompleted.set(false);
+    input.value = '';
   }
 
   async onImport(): Promise<void> {
-    if (!this._selectedFile) return;
-
-    const content = await this._selectedFile.text();
-
-    const extractionResult = this._csvExtractor.extract(content);
-    if (!extractionResult.success) {
-      this.importError.set('importFile.csvParseError');
-      return;
-    }
-
-    const { header, rows } = extractionResult.value;
+    if (!this.hasSelectedFiles()) return;
+    this.isImporting.set(true);
 
     const account = await this._accountService.getById(this._accountId);
     const mapping = await this._columnsMappingService.getById(account.columnsMappingId);
 
-    const fileResult = await this._fileService.create(this._accountId, this._selectedFile.name, content, new Date());
-    if (!fileResult.success) {
-      this.importError.set(
-        fileResult.error === 'file-already-imported'
-          ? 'importFile.fileAlreadyImported'
-          : 'importFile.csvParseError',
-      );
-      return;
+    let anySuccess = false;
+    let anyError = false;
+    let anyWarning = false;
+
+    for (let i = 0; i < this.selectedFiles().length; i++) {
+      const file = this.selectedFiles()[i];
+      this.importStatuses.update(s => s.map((x, idx) => idx === i ? { ...x, status: 'importing' } : x));
+
+      const content = await file.text();
+      const extractionResult = this._csvExtractor.extract(content);
+
+      if (!extractionResult.success) {
+        anyError = true;
+        this.importStatuses.update(s => s.map((x, idx) =>
+          idx === i ? { ...x, status: 'error', error: 'importFile.csvParseError' } : x));
+        continue;
+      }
+
+      const { header, rows } = extractionResult.value;
+      const fileResult = await this._fileService.create(this._accountId, file.name, content, new Date());
+
+      if (!fileResult.success) {
+        anyError = true;
+        this.importStatuses.update(s => s.map((x, idx) =>
+          idx === i ? {
+            ...x, status: 'error',
+            error: fileResult.error === 'file-already-imported'
+              ? 'importFile.fileAlreadyImported'
+              : 'importFile.csvParseError',
+          } : x));
+        continue;
+      }
+
+      const fileId = fileResult.value;
+      const duplicates: DuplicateTransaction[] = [];
+
+      for (const row of rows) {
+        const cardNumber = row[header[mapping.cardNumberColumnIndex]] ?? '';
+        const dateInscriptionAsString = row[header[mapping.dateInscriptionColumnIndex]] ?? '';
+        const amountStr = (row[header[mapping.amountColumnIndex]] ?? '').replace(',', '.');
+        const amount = parseFloat(amountStr);
+        if (isNaN(amount)) continue;
+        const description = row[header[mapping.descriptionColumnIndex]] ?? '';
+        const result = await this._transactionService.create(fileId, this._accountId, cardNumber, dateInscriptionAsString, amount, description);
+        if (!result.success && result.error === 'duplicate-transaction') {
+          duplicates.push({ cardNumber, dateInscriptionAsString, amount, description });
+        }
+      }
+
+      if (duplicates.length > 0) {
+        anyWarning = true;
+        this.importStatuses.update(s => s.map((x, idx) =>
+          idx === i ? { ...x, status: 'warning', duplicates } : x));
+      } else {
+        anySuccess = true;
+        this.importStatuses.update(s => s.map((x, idx) => idx === i ? { ...x, status: 'success' } : x));
+      }
     }
-    const fileId = fileResult.value;
 
-    for (const row of rows) {
-      const cardNumber = row[header[mapping.cardNumberColumnIndex]] ?? '';
-      const dateInscriptionAsString = row[header[mapping.dateInscriptionColumnIndex]] ?? '';
-      const amountStr = (row[header[mapping.amountColumnIndex]] ?? '').replace(',', '.');
-      const amount = parseFloat(amountStr);
-      if (isNaN(amount)) continue;
-      const description = row[header[mapping.descriptionColumnIndex]] ?? '';
-      await this._transactionService.create(fileId, this._accountId, cardNumber, dateInscriptionAsString, amount, description);
+    if (anySuccess || anyWarning) {
+      await this._transactionService.recalculateBalances(this._accountId);
     }
 
-    await this._transactionService.recalculateBalances(this._accountId);
+    this.isImporting.set(false);
+    this.importCompleted.set(true);
 
-    await this._router.navigate([this._locale.currentLocale(), 'account', this._accountId]);
+    if (!anyError && !anyWarning) {
+      await this._router.navigate([this._locale.currentLocale(), 'account', this._accountId]);
+    }
   }
 
   onCancel(): void {

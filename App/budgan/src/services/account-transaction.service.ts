@@ -1,4 +1,5 @@
 import { inject, Injectable, InjectionToken, Signal, signal } from '@angular/core';
+import Dexie from 'dexie';
 import { IndexdbService } from './indexdb.service';
 import {
   AccountTransactionModel,
@@ -119,17 +120,24 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
     description: string,
   ): Promise<Result<string>> {
     const id = `${accountId}|${cardNumber}|${dateInscriptionAsString}|${amount}|${description}`;
-    await this._indexDb.accountTransactionsTable.add({
-      id,
-      fileId,
-      accountId,
-      cardNumber,
-      dateInscriptionAsString,
-      amount,
-      description,
-      recordType: AccountTransactionRecordType.normal,
-    });
-    return { success: true, value: id };
+    try {
+      await this._indexDb.accountTransactionsTable.add({
+        id,
+        fileId,
+        accountId,
+        cardNumber,
+        dateInscriptionAsString,
+        amount,
+        description,
+        recordType: AccountTransactionRecordType.normal,
+      });
+      return { success: true, value: id };
+    } catch (e) {
+      if (e instanceof Dexie.ConstraintError) {
+        return { success: false, error: 'duplicate-transaction' };
+      }
+      throw e;
+    }
   }
 
   private snapshotId(accountId: string): string {

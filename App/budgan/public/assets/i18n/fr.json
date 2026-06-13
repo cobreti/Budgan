@@ -133,12 +133,13 @@
   },
   "importFile": {
     "title": "Importer un fichier",
-    "chooseFile": "Choisir un fichier CSV",
-    "noFileChosen": "Aucun fichier sélectionné",
+    "chooseFiles": "Choisir des fichiers CSV",
+    "noFilesChosen": "Aucun fichier sélectionné",
     "import": "Importer",
     "cancel": "Annuler",
     "csvParseError": "Impossible d'analyser le fichier CSV.",
-    "fileAlreadyImported": "Ce fichier a déjà été importé pour ce compte."
+    "fileAlreadyImported": "Ce fichier a déjà été importé pour ce compte.",
+    "duplicatesSkipped": "{{count}} transaction(s) en double ignorée(s)"
   },
   "newAccount": {
     "title": "Nouveau compte",
