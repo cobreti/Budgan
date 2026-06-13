@@ -2,6 +2,7 @@
   class="page-menu-button"
   type="button"
   [attr.aria-label]="label()"
+  [disabled]="disabled()"
   (click)="clicked.emit()">
   <mat-icon>{{ icon() }}</mat-icon>
   <span class="page-menu-button__label">{{ label() }}</span>
