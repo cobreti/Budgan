@@ -96,7 +96,14 @@
   },
   "analyzeAccount": {
     "title": "Analyze Account",
-    "back": "Back"
+    "back": "Back",
+    "analyze": "Analyze",
+    "empty": "No recurring transactions found. Run the analysis to detect them.",
+    "error": "Analysis failed. Please try again.",
+    "tableAriaLabel": "Recurring transactions",
+    "columnId": "Transaction Pattern",
+    "columnPeriod": "Approximate Period",
+    "days": "days"
   },
   "accountHome": {
     "tabs": {

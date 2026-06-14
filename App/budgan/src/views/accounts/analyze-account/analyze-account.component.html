@@ -8,5 +8,53 @@
     />
   </app-page-menu>
   <app-page-body page-body>
+    <div class="analyze-account">
+      <div class="analyze-account__actions">
+        <button
+          mat-raised-button
+          color="primary"
+          [disabled]="isAnalyzing()"
+          (click)="onAnalyze()"
+          data-testid="analyze-account-run"
+        >
+          @if (isAnalyzing()) {
+            <mat-progress-spinner diameter="20" mode="indeterminate" />
+          } @else {
+            <mat-icon>manage_search</mat-icon>
+          }
+          {{ 'analyzeAccount.analyze' | translate }}
+        </button>
+      </div>
+
+      @if (errorKey()) {
+        <p class="analyze-account__error" role="alert">{{ errorKey()! | translate }}</p>
+      }
+
+      @if (recurringTransactions().length > 0) {
+        <table
+          class="analyze-account__table"
+          [attr.aria-label]="'analyzeAccount.tableAriaLabel' | translate"
+        >
+          <thead>
+            <tr>
+              <th scope="col">{{ 'analyzeAccount.columnId' | translate }}</th>
+              <th scope="col">{{ 'analyzeAccount.columnPeriod' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of recurringTransactions(); track item.id) {
+              <tr>
+                <td class="analyze-account__cell-id">{{ item.id }}</td>
+                <td class="analyze-account__cell-period">
+                  {{ item.periodInDays | number: '1.0-1' }} {{ 'analyzeAccount.days' | translate }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else if (!isAnalyzing()) {
+        <p class="analyze-account__empty">{{ 'analyzeAccount.empty' | translate }}</p>
+      }
+    </div>
   </app-page-body>
 </app-page>

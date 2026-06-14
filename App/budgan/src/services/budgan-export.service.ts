@@ -3,10 +3,12 @@ import { COLUMNS_MAPPING_SERVICE, ColumnsMappingService } from './columns-mappin
 import { ACCOUNT_SERVICE, AccountService } from './account.service';
 import { FILE_SERVICE, FileService } from './file.service';
 import { ACCOUNT_TRANSACTION_SERVICE, AccountTransactionService } from './account-transaction.service';
+import { ACCOUNT_ANALYSIS_SERVICE, AccountAnalysisService } from './account-analysis.service';
 import { ColumnsMapping } from '@models/columnsMappingModel';
 import { AccountModel } from '@models/accountModel';
 import { fileModel } from '@models/fileModel';
 import { AccountTransactionModel } from '@models/accountTransactionModel';
+import { AccountRecurringTransactionModel } from '@models/accountRecurringTransactionModel';
 import { Result } from '@app-types/result';
 
 export interface AccountExportPayload {
@@ -23,6 +25,7 @@ export interface AllDataExportPayload {
   accounts: AccountModel[];
   files: fileModel[];
   transactions: AccountTransactionModel[];
+  recurringTransactions?: AccountRecurringTransactionModel[];
 }
 
 export interface BudganExportService {
@@ -43,6 +46,7 @@ export class BudganExportServiceImpl implements BudganExportService {
   private readonly _accountService = inject<AccountService>(ACCOUNT_SERVICE);
   private readonly _fileService = inject<FileService>(FILE_SERVICE);
   private readonly _transactionService = inject<AccountTransactionService>(ACCOUNT_TRANSACTION_SERVICE);
+  private readonly _analysisService = inject<AccountAnalysisService>(ACCOUNT_ANALYSIS_SERVICE);
 
   async pickSaveFile(suggestedName: string): Promise<FileSystemFileHandle | null> {
     const showSaveFilePicker = (window as unknown as {
@@ -110,13 +114,14 @@ export class BudganExportServiceImpl implements BudganExportService {
   }
 
   async buildAllDataPayload(): Promise<AllDataExportPayload> {
-    const [columnsMappings, accounts, files, transactions] = await Promise.all([
+    const [columnsMappings, accounts, files, transactions, recurringTransactions] = await Promise.all([
       this._columnsMappingService.getList(),
       this._accountService.getList(),
       this._fileService.getList(),
       this._transactionService.getList(),
+      this._analysisService.getAll(),
     ]);
-    return { version: 1, columnsMappings, accounts, files, transactions };
+    return { version: 1, columnsMappings, accounts, files, transactions, recurringTransactions };
   }
 }
 

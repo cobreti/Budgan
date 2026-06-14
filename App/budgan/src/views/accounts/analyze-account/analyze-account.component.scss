@@ -1,0 +1,46 @@
+.analyze-account {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__error {
+    color: var(--mat-sys-error, inherit);
+  }
+
+  &__empty {
+    color: var(--mat-sys-on-surface-variant, inherit);
+  }
+
+  &__table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 720px;
+
+    th,
+    td {
+      text-align: left;
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid var(--mat-sys-outline-variant);
+    }
+
+    th {
+      color: var(--mat-sys-on-surface-variant, inherit);
+      font-weight: 600;
+    }
+
+    td {
+      color: var(--mat-sys-on-surface, inherit);
+    }
+  }
+
+  &__cell-period {
+    font-variant-numeric: tabular-nums;
+  }
+}

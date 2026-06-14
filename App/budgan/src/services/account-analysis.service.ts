@@ -1,0 +1,97 @@
+import { inject, Injectable, InjectionToken } from '@angular/core';
+import moment from 'moment';
+import { IndexdbService } from './indexdb.service';
+import { ACCOUNT_TRANSACTION_SERVICE, AccountTransactionService } from './account-transaction.service';
+import { AccountTransactionRecordType } from '@models/accountTransactionModel';
+import { AccountRecurringTransactionModel } from '@models/accountRecurringTransactionModel';
+import { Result } from '@app-types/result';
+
+export interface AccountAnalysisService {
+  analyzeAccount(accountId: string): Promise<Result<void>>;
+  getRecurringTransactions(accountId: string): Promise<AccountRecurringTransactionModel[]>;
+  getAll(): Promise<AccountRecurringTransactionModel[]>;
+  deleteByAccount(accountId: string): Promise<void>;
+}
+
+export const ACCOUNT_ANALYSIS_SERVICE = new InjectionToken<AccountAnalysisService>('AccountAnalysisService');
+
+@Injectable({ providedIn: 'root' })
+export class AccountAnalysisServiceImpl implements AccountAnalysisService {
+  private readonly _indexDb = inject(IndexdbService);
+  private readonly _transactionService = inject<AccountTransactionService>(ACCOUNT_TRANSACTION_SERVICE);
+
+  async analyzeAccount(accountId: string): Promise<Result<void>> {
+    try {
+      const allTransactions = await this._transactionService.getListByAccount(accountId);
+
+      const normal = allTransactions.filter(
+        (t) => t.recordType === AccountTransactionRecordType.normal,
+      );
+
+      const groups = new Map<string, typeof normal>();
+      for (const t of normal) {
+        const existing = groups.get(t.recurringId) ?? [];
+        existing.push(t);
+        groups.set(t.recurringId, existing);
+      }
+
+      const results: AccountRecurringTransactionModel[] = [];
+      for (const [recurringId, transactions] of groups) {
+        if (transactions.length < 2) continue;
+
+        const sorted = [...transactions].sort((a, b) =>
+          a.dateInscriptionAsString.localeCompare(b.dateInscriptionAsString),
+        );
+
+        const intervals: number[] = [];
+        for (let i = 1; i < sorted.length; i++) {
+          const prev = moment(sorted[i - 1].dateInscriptionAsString);
+          const curr = moment(sorted[i].dateInscriptionAsString);
+          const diffDays = curr.diff(prev, 'days');
+          if (diffDays > 0) intervals.push(diffDays);
+        }
+
+        if (intervals.length === 0) continue;
+
+        results.push({ id: recurringId, accountId, periodInDays: median(intervals) });
+      }
+
+      await this._indexDb.accountRecurringTransactionsTable
+        .where('accountId')
+        .equals(accountId)
+        .delete();
+
+      if (results.length > 0) {
+        await this._indexDb.accountRecurringTransactionsTable.bulkAdd(results);
+      }
+
+      return { success: true, value: undefined };
+    } catch (e) {
+      return { success: false, error: e instanceof Error ? e.message : 'analysis-failed' };
+    }
+  }
+
+  getRecurringTransactions(accountId: string): Promise<AccountRecurringTransactionModel[]> {
+    return this._indexDb.accountRecurringTransactionsTable
+      .where('accountId')
+      .equals(accountId)
+      .toArray();
+  }
+
+  getAll(): Promise<AccountRecurringTransactionModel[]> {
+    return this._indexDb.accountRecurringTransactionsTable.toArray();
+  }
+
+  async deleteByAccount(accountId: string): Promise<void> {
+    await this._indexDb.accountRecurringTransactionsTable
+      .where('accountId')
+      .equals(accountId)
+      .delete();
+  }
+}
+
+function median(values: number[]): number {
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+}
