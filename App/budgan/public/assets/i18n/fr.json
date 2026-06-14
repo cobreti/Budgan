@@ -136,7 +136,7 @@
     "chooseFiles": "Choisir des fichiers CSV",
     "noFilesChosen": "Aucun fichier sélectionné",
     "import": "Importer",
-    "cancel": "Annuler",
+    "back": "Retour",
     "csvParseError": "Impossible d'analyser le fichier CSV.",
     "fileAlreadyImported": "Ce fichier a déjà été importé pour ce compte.",
     "duplicatesSkipped": "{{count}} transaction(s) en double ignorée(s)"
