@@ -1,0 +1,12 @@
+<app-page [title]="'analyzeAccount.title' | translate">
+  <app-page-menu page-menu>
+    <app-page-menu-button
+      icon="arrow_back"
+      [label]="'analyzeAccount.back' | translate"
+      (clicked)="onBack()"
+      data-testid="analyze-account-back"
+    />
+  </app-page-menu>
+  <app-page-body page-body>
+  </app-page-body>
+</app-page>

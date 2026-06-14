@@ -10,6 +10,7 @@ import { NewAccountComponent } from '@views/accounts/new-account/new-account.com
 import { AccountHomeComponent } from '@views/accounts/account-home.component';
 import { ImportFileComponent } from '@views/accounts/import-file/import-file.component';
 import { SaveAccountComponent } from '@views/accounts/save-account/save-account.component';
+import { AnalyzeAccountComponent } from '@views/accounts/analyze-account/analyze-account.component';
 import { SaveComponent } from '@views/save/save.component';
 import { LoadComponent } from '@views/load/load.component';
 import { SamplesComponent } from '@views/samples/samples.component';
@@ -35,6 +36,7 @@ export const routes: Routes = [
       { path: 'account/:accountId', component: AccountHomeComponent },
       { path: 'account/:accountId/import-file', component: ImportFileComponent },
       { path: 'account/:accountId/save', component: SaveAccountComponent },
+      { path: 'account/:accountId/analyze', component: AnalyzeAccountComponent },
       { path: 'save', component: SaveComponent },
       { path: 'load', component: LoadComponent },
       { path: 'samples', component: SamplesComponent },

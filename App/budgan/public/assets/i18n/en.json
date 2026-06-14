@@ -87,10 +87,15 @@
     "delete": "Delete",
     "save": "Save",
     "importFile": "Import File",
+    "analyze": "Analyze",
     "confirmDeleteTitle": "Delete this account?",
     "confirmDeleteMessage": "This will permanently delete the account, every imported file, and every transaction it owns. This action cannot be undone.",
     "confirmDeleteAccept": "Delete",
     "confirmDeleteCancel": "Cancel",
+    "back": "Back"
+  },
+  "analyzeAccount": {
+    "title": "Analyze Account",
     "back": "Back"
   },
   "accountHome": {

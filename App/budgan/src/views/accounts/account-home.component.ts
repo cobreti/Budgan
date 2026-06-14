@@ -68,6 +68,12 @@ export class AccountHomeComponent implements OnInit {
     this._router.navigate([this._locale.currentLocale(), 'account', account.id, 'import-file']);
   }
 
+  onAnalyze(): void {
+    const account = this.account();
+    if (!account) return;
+    this._router.navigate([this._locale.currentLocale(), 'account', account.id, 'analyze']);
+  }
+
   async onDelete(): Promise<void> {
     const account = this.account();
     if (!account) throw new Error('Account is undefined');
