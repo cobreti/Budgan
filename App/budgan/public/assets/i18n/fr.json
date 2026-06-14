@@ -101,9 +101,11 @@
     "empty": "Aucune transaction récurrente trouvée. Lancez l'analyse pour les détecter.",
     "error": "L'analyse a échoué. Veuillez réessayer.",
     "tableAriaLabel": "Transactions récurrentes",
-    "columnId": "Modèle de transaction",
-    "columnPeriod": "Période approximative",
-    "days": "jours"
+    "selectAll": "Tout sélectionner",
+    "columnDescription": "Description",
+    "columnCount": "#",
+    "columnAverageAmount": "Montant moy.",
+    "columnPeriod": "Période (jours)"
   },
   "accountHome": {
     "tabs": {

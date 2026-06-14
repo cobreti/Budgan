@@ -101,9 +101,11 @@
     "empty": "No recurring transactions found. Run the analysis to detect them.",
     "error": "Analysis failed. Please try again.",
     "tableAriaLabel": "Recurring transactions",
-    "columnId": "Transaction Pattern",
-    "columnPeriod": "Approximate Period",
-    "days": "days"
+    "selectAll": "Select all",
+    "columnDescription": "Description",
+    "columnCount": "#",
+    "columnAverageAmount": "Avg. Amount",
+    "columnPeriod": "Period (days)"
   },
   "accountHome": {
     "tabs": {

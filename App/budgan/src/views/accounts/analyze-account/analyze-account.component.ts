@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatButton } from '@angular/material/button';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
 import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
 import { ACCOUNT_ANALYSIS_SERVICE, AccountAnalysisService } from '@services/account-analysis.service';
 import { AccountRecurringTransactionModel } from '@models/accountRecurringTransactionModel';
@@ -26,8 +28,10 @@ import { PageBodyComponent } from '@components/page-body/page-body.component';
     PageMenuComponent,
     PageMenuButtonComponent,
     MatButton,
+    MatCheckbox,
     MatIcon,
     MatProgressSpinner,
+    MatTableModule,
   ],
 })
 export class AnalyzeAccountComponent {
@@ -41,6 +45,18 @@ export class AnalyzeAccountComponent {
   readonly isAnalyzing = signal(false);
   readonly errorKey = signal<string | null>(null);
   readonly recurringTransactions = signal<AccountRecurringTransactionModel[]>([]);
+  readonly selectedIds = signal<Set<string>>(new Set());
+
+  readonly allSelected = computed(() => {
+    const rows = this.recurringTransactions();
+    return rows.length > 0 && rows.every((t) => this.selectedIds().has(t.id));
+  });
+
+  readonly someSelected = computed(
+    () => this.recurringTransactions().some((t) => this.selectedIds().has(t.id)) && !this.allSelected(),
+  );
+
+  readonly columns = ['select', 'description', 'transactionCount', 'averageAmount', 'periodInDays'];
 
   constructor() {
     this._loadExisting();
@@ -58,10 +74,33 @@ export class AnalyzeAccountComponent {
     if (result.success) {
       const results = await this._analysisService.getRecurringTransactions(this.accountId);
       this.recurringTransactions.set(results);
+      this.selectedIds.set(new Set());
     } else {
       this.errorKey.set('analyzeAccount.error');
     }
     this.isAnalyzing.set(false);
+  }
+
+  isSelected(id: string): boolean {
+    return this.selectedIds().has(id);
+  }
+
+  toggleOne(id: string): void {
+    const next = new Set(this.selectedIds());
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
+    this.selectedIds.set(next);
+  }
+
+  toggleAll(): void {
+    if (this.allSelected()) {
+      this.selectedIds.set(new Set());
+    } else {
+      this.selectedIds.set(new Set(this.recurringTransactions().map((t) => t.id)));
+    }
   }
 
   onBack(): void {

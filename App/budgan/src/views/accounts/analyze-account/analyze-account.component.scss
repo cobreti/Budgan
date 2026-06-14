@@ -19,28 +19,37 @@
   }
 
   &__table {
-    border-collapse: collapse;
     width: 100%;
-    max-width: 720px;
+    max-width: 900px;
 
-    th,
-    td {
-      text-align: left;
-      padding: 0.5rem 1rem;
-      border-bottom: 1px solid var(--mat-sys-outline-variant);
+    .mat-column-select {
+      flex: none;
+      min-width: 64px;
+      width: 64px;
     }
 
-    th {
-      color: var(--mat-sys-on-surface-variant, inherit);
-      font-weight: 600;
+    .mat-column-transactionCount {
+      flex: none;
+      width: 64px;
+      justify-content: flex-end;
     }
 
-    td {
-      color: var(--mat-sys-on-surface, inherit);
+    .mat-column-averageAmount {
+      flex: none;
+      width: 130px;
+      justify-content: flex-end;
+      font-variant-numeric: tabular-nums;
     }
-  }
 
-  &__cell-period {
-    font-variant-numeric: tabular-nums;
+    .mat-column-periodInDays {
+      flex: none;
+      width: 130px;
+      justify-content: flex-end;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .mat-column-description {
+      flex: 1;
+    }
   }
 }
