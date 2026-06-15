@@ -61,13 +61,13 @@ export class AccountAnalysisServiceImpl implements AccountAnalysisService {
         results.push({ id: recurringId, accountId, periodInDays: median(intervals), transactionCount, description, averageAmount });
       }
 
-      await this._indexDb.accountRecurringTransactionsTable
+      await this._indexDb.recurringTransactionsTable
         .where('accountId')
         .equals(accountId)
         .delete();
 
       if (results.length > 0) {
-        await this._indexDb.accountRecurringTransactionsTable.bulkAdd(results);
+        await this._indexDb.recurringTransactionsTable.bulkAdd(results);
       }
 
       return { success: true, value: undefined };
@@ -77,25 +77,25 @@ export class AccountAnalysisServiceImpl implements AccountAnalysisService {
   }
 
   getRecurringTransactions(accountId: string): Promise<AccountRecurringTransactionModel[]> {
-    return this._indexDb.accountRecurringTransactionsTable
+    return this._indexDb.recurringTransactionsTable
       .where('accountId')
       .equals(accountId)
       .toArray();
   }
 
   getAll(): Promise<AccountRecurringTransactionModel[]> {
-    return this._indexDb.accountRecurringTransactionsTable.toArray();
+    return this._indexDb.recurringTransactionsTable.toArray();
   }
 
   async deleteByAccount(accountId: string): Promise<void> {
-    await this._indexDb.accountRecurringTransactionsTable
+    await this._indexDb.recurringTransactionsTable
       .where('accountId')
       .equals(accountId)
       .delete();
   }
 
   async delete(ids: string[]): Promise<void> {
-    await this._indexDb.accountRecurringTransactionsTable.bulkDelete(ids);
+    await this._indexDb.recurringTransactionsTable.bulkDelete(ids);
   }
 }
 

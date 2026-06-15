@@ -19,7 +19,7 @@ export class IndexdbService extends Dexie {
   accountsTable!: EntityTable<AccountModel, 'id'>;
   filesTable!: EntityTable<fileModel, 'id'>;
   accountTransactionsTable!: EntityTable<AccountTransactionModel, 'id'>;
-  accountRecurringTransactionsTable!: EntityTable<AccountRecurringTransactionModel, 'id'>;
+  recurringTransactionsTable!: EntityTable<AccountRecurringTransactionModel, 'id'>;
 
   constructor() {
     super('budgan');
@@ -71,13 +71,27 @@ export class IndexdbService extends Dexie {
       accountTransactions: '&id, accountId, fileId',
       accountRecurringTransactions: '&id, accountId',
     });
+    this.version(10).stores({
+      workspaces: '&id, &name',
+      columnMappings: '&id, &name',
+      accounts: '&id, &name',
+      files: '&id, filename, accountId',
+      accountTransactions: '&id, accountId, fileId',
+      accountRecurringTransactions: null,
+      recurringTransactions: '&id, accountId',
+    }).upgrade(async tx => {
+      const existing = await tx.table('accountRecurringTransactions').toArray();
+      if (existing.length > 0) {
+        await tx.table('recurringTransactions').bulkAdd(existing);
+      }
+    });
 
     this.workspaceTable = this.table('workspaces');
     this.columnsMappingTable = this.table('columnMappings');
     this.accountsTable = this.table('accounts');
     this.filesTable = this.table('files');
     this.accountTransactionsTable = this.table('accountTransactions');
-    this.accountRecurringTransactionsTable = this.table('accountRecurringTransactions');
+    this.recurringTransactionsTable = this.table('recurringTransactions');
 
     this.open();
   }
@@ -91,7 +105,7 @@ export class IndexdbService extends Dexie {
         this.accountsTable,
         this.filesTable,
         this.accountTransactionsTable,
-        this.accountRecurringTransactionsTable,
+        this.recurringTransactionsTable,
       ],
       async () => {
         await Promise.all([
@@ -100,7 +114,7 @@ export class IndexdbService extends Dexie {
           this.accountsTable.clear(),
           this.filesTable.clear(),
           this.accountTransactionsTable.clear(),
-          this.accountRecurringTransactionsTable.clear(),
+          this.recurringTransactionsTable.clear(),
         ]);
       },
     );
@@ -115,7 +129,7 @@ export class IndexdbService extends Dexie {
         this.accountsTable,
         this.filesTable,
         this.accountTransactionsTable,
-        this.accountRecurringTransactionsTable,
+        this.recurringTransactionsTable,
       ],
       async () => {
         await Promise.all([
@@ -124,7 +138,7 @@ export class IndexdbService extends Dexie {
           this.accountsTable.clear(),
           this.filesTable.clear(),
           this.accountTransactionsTable.clear(),
-          this.accountRecurringTransactionsTable.clear(),
+          this.recurringTransactionsTable.clear(),
         ]);
         await Promise.all([
           this.columnsMappingTable.bulkAdd(payload.columnsMappings),
@@ -132,7 +146,7 @@ export class IndexdbService extends Dexie {
           this.filesTable.bulkAdd(payload.files),
           this.accountTransactionsTable.bulkAdd(payload.transactions),
           ...(payload.recurringTransactions?.length
-            ? [this.accountRecurringTransactionsTable.bulkAdd(payload.recurringTransactions)]
+            ? [this.recurringTransactionsTable.bulkAdd(payload.recurringTransactions)]
             : []),
         ]);
       },
