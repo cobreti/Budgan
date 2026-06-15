@@ -105,7 +105,8 @@
     "columnDescription": "Description",
     "columnCount": "#",
     "columnAverageAmount": "Avg. Amount",
-    "columnPeriod": "Period (days)"
+    "columnPeriod": "Period (days)",
+    "apply": "Apply"
   },
   "accountHome": {
     "tabs": {

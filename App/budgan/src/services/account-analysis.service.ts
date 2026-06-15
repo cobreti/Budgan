@@ -11,6 +11,7 @@ export interface AccountAnalysisService {
   getRecurringTransactions(accountId: string): Promise<AccountRecurringTransactionModel[]>;
   getAll(): Promise<AccountRecurringTransactionModel[]>;
   deleteByAccount(accountId: string): Promise<void>;
+  delete(ids: string[]): Promise<void>;
 }
 
 export const ACCOUNT_ANALYSIS_SERVICE = new InjectionToken<AccountAnalysisService>('AccountAnalysisService');
@@ -91,6 +92,10 @@ export class AccountAnalysisServiceImpl implements AccountAnalysisService {
       .where('accountId')
       .equals(accountId)
       .delete();
+  }
+
+  async delete(ids: string[]): Promise<void> {
+    await this._indexDb.accountRecurringTransactionsTable.bulkDelete(ids);
   }
 }
 

@@ -105,7 +105,8 @@
     "columnDescription": "Description",
     "columnCount": "#",
     "columnAverageAmount": "Montant moy.",
-    "columnPeriod": "Période (jours)"
+    "columnPeriod": "Période (jours)",
+    "apply": "Appliquer"
   },
   "accountHome": {
     "tabs": {

@@ -24,6 +24,19 @@
           }
           {{ 'analyzeAccount.analyze' | translate }}
         </button>
+        <button
+          mat-raised-button
+          [disabled]="!hasSelection() || isAnalyzing() || isApplying()"
+          (click)="onApply()"
+          data-testid="analyze-account-apply"
+        >
+          @if (isApplying()) {
+            <mat-progress-spinner diameter="20" mode="indeterminate" />
+          } @else {
+            <mat-icon>check</mat-icon>
+          }
+          {{ 'analyzeAccount.apply' | translate }}
+        </button>
       </div>
 
       @if (errorKey()) {

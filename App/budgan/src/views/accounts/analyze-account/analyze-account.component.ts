@@ -43,6 +43,7 @@ export class AnalyzeAccountComponent {
   readonly accountId = this._route.snapshot.params['accountId'] as string;
 
   readonly isAnalyzing = signal(false);
+  readonly isApplying = signal(false);
   readonly errorKey = signal<string | null>(null);
   readonly recurringTransactions = signal<AccountRecurringTransactionModel[]>([]);
   readonly selectedIds = signal<Set<string>>(new Set());
@@ -56,6 +57,8 @@ export class AnalyzeAccountComponent {
     () => this.recurringTransactions().some((t) => this.selectedIds().has(t.id)) && !this.allSelected(),
   );
 
+  readonly hasSelection = computed(() => this.selectedIds().size > 0);
+
   readonly columns = ['select', 'description', 'transactionCount', 'averageAmount', 'periodInDays'];
 
   constructor() {
@@ -65,20 +68,34 @@ export class AnalyzeAccountComponent {
   private async _loadExisting(): Promise<void> {
     const results = await this._analysisService.getRecurringTransactions(this.accountId);
     this.recurringTransactions.set(results);
+    this.selectedIds.set(new Set(results.map(t => t.id)));
   }
 
   async onAnalyze(): Promise<void> {
     this.isAnalyzing.set(true);
     this.errorKey.set(null);
+    const previousIds = new Set(this.recurringTransactions().map(t => t.id));
     const result = await this._analysisService.analyzeAccount(this.accountId);
     if (result.success) {
       const results = await this._analysisService.getRecurringTransactions(this.accountId);
       this.recurringTransactions.set(results);
-      this.selectedIds.set(new Set());
+      this.selectedIds.set(new Set(results.filter(t => previousIds.has(t.id)).map(t => t.id)));
     } else {
       this.errorKey.set('analyzeAccount.error');
     }
     this.isAnalyzing.set(false);
+  }
+
+  async onApply(): Promise<void> {
+    this.isApplying.set(true);
+    const selected = this.selectedIds();
+    const idsToDelete = this.recurringTransactions()
+      .filter(t => !selected.has(t.id))
+      .map(t => t.id);
+    if (idsToDelete.length > 0) {
+      await this._analysisService.delete(idsToDelete);
+    }
+    this._router.navigate([this._locale.currentLocale(), 'account', this.accountId]);
   }
 
   isSelected(id: string): boolean {
