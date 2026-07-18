@@ -1,5 +1,6 @@
 export interface AccountTransactionModel {
   id: string;
+  recurringId: string;
   fileId: string;
   accountId: string;
   cardNumber: string;

@@ -87,11 +87,26 @@
     "delete": "Supprimer",
     "save": "Enregistrer",
     "importFile": "Importer un fichier",
+    "analyze": "Analyser",
     "confirmDeleteTitle": "Supprimer ce compte ?",
     "confirmDeleteMessage": "Cette action supprimera définitivement le compte, tous les fichiers importés et toutes ses transactions. Cette action est irréversible.",
     "confirmDeleteAccept": "Supprimer",
     "confirmDeleteCancel": "Annuler",
     "back": "Retour"
+  },
+  "analyzeAccount": {
+    "title": "Analyser le compte",
+    "back": "Retour",
+    "analyze": "Analyser",
+    "empty": "Aucune transaction récurrente trouvée. Lancez l'analyse pour les détecter.",
+    "error": "L'analyse a échoué. Veuillez réessayer.",
+    "tableAriaLabel": "Transactions récurrentes",
+    "selectAll": "Tout sélectionner",
+    "columnDescription": "Description",
+    "columnCount": "#",
+    "columnAverageAmount": "Montant moy.",
+    "columnPeriod": "Période (jours)",
+    "apply": "Appliquer"
   },
   "accountHome": {
     "tabs": {
@@ -136,7 +151,7 @@
     "chooseFiles": "Choisir des fichiers CSV",
     "noFilesChosen": "Aucun fichier sélectionné",
     "import": "Importer",
-    "cancel": "Annuler",
+    "back": "Retour",
     "csvParseError": "Impossible d'analyser le fichier CSV.",
     "fileAlreadyImported": "Ce fichier a déjà été importé pour ce compte.",
     "duplicatesSkipped": "{{count}} transaction(s) en double ignorée(s)"

@@ -19,6 +19,12 @@
       (clicked)="onImportFile()"
       data-testid="account-home-import"
     />
+    <app-page-menu-button
+      icon="manage_search"
+      [label]="'account.analyze' | translate"
+      (clicked)="onAnalyze()"
+      data-testid="account-home-analyze"
+    />
     <span class="account-home__menu-spacer"></span>
     <app-page-menu-button
       icon="delete"

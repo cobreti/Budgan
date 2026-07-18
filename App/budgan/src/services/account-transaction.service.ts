@@ -120,9 +120,14 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
     description: string,
   ): Promise<Result<string>> {
     const id = `${accountId}|${cardNumber}|${dateInscriptionAsString}|${amount}|${description}`;
+    const range = 0.15;
+    const lower = Math.floor(amount * (1 - range) / 5) * 5;
+    const upper = Math.floor(amount * (1 + range) / 5) * 5;
+    const recurringId = `${accountId}|${cardNumber}|${lower}|${upper}|${description}`;
     try {
       await this._indexDb.accountTransactionsTable.add({
         id,
+        recurringId,
         fileId,
         accountId,
         cardNumber,
@@ -152,6 +157,7 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
     const id = this.snapshotId(accountId);
     await this._indexDb.accountTransactionsTable.put({
       id,
+      recurringId: id,
       fileId: '',
       accountId,
       cardNumber: '',
