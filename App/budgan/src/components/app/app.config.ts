@@ -1,4 +1,5 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, isDevMode } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { environment } from '../../environments/environment';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -48,7 +49,7 @@ export const appConfig: ApplicationConfig = {
     { provide: ACCOUNT_ANALYSIS_SERVICE, useClass: AccountAnalysisServiceImpl },
     provideCharts(withDefaultRegisterables()),
     provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
+            enabled: environment.useServiceWorker,
             registrationStrategy: 'registerWhenStable:30000'
           }),
   ]
