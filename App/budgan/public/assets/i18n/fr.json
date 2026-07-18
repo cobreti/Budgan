@@ -79,7 +79,11 @@
   },
   "header": {
     "switchToDark": "Passer au thème sombre",
-    "switchToLight": "Passer au thème clair"
+    "switchToLight": "Passer au thème clair",
+    "clientMode": {
+      "pwa": "Application installée (PWA)",
+      "server": "Mode serveur"
+    }
   },
   "account": {
     "title": "Détails du compte",

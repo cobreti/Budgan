@@ -6,6 +6,12 @@
     <img class="brand-icon" ngSrc="/icons/Budgan48.png" width="48" height="48" alt="" priority />
     <span class="title">{{ 'app.title' | translate }}</span>
   </button>
+  <span
+    class="client-mode-badge"
+    [matTooltip]="('header.clientMode.' + buildType) | translate"
+    aria-hidden="true">
+    <mat-icon class="client-mode-icon">{{ buildType === 'pwa' ? 'install_desktop' : 'cloud' }}</mat-icon>
+  </span>
 
   <span class="spacer"></span>
 
