@@ -27,6 +27,21 @@
     user-select: none;
   }
 
+  .client-mode-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.5rem;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  .client-mode-icon {
+    color: var(--mat-sys-on-primary, inherit);
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
   .menu-icon {
     display: none;
     color: var(--mat-sys-on-primary);
