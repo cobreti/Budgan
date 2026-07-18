@@ -6,7 +6,13 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "build:pwa": "ng build --configuration=pwa",
+    "build:pwa:dev": "ng build --configuration=pwa-dev",
+    "build:server": "ng build --configuration=server",
+    "build:server:dev": "ng build --configuration=server-dev",
+    "serve:pwa": "ng serve --configuration=pwa-dev",
+    "serve:server": "ng serve --configuration=server-dev"
   },
   "private": true,
   "packageManager": "npm@11.9.0",
