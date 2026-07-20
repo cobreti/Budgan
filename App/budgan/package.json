@@ -11,6 +11,7 @@
     "build:pwa:dev": "ng build --configuration=pwa-dev",
     "build:server": "ng build --configuration=server",
     "build:server:dev": "ng build --configuration=server-dev",
+    "build:all": "npm run build:pwa && npm run build:pwa:dev && npm run build:server && npm run build:server:dev",
     "serve:pwa": "ng serve --configuration=pwa-dev",
     "serve:server": "ng serve --configuration=server-dev"
   },

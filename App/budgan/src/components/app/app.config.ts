@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '@/environments/environment';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -19,6 +19,8 @@ import { FILE_SERVICE, FileServiceImpl } from '@services/file.service';
 import { ACCOUNT_TRANSACTION_SERVICE, AccountTransactionServiceImpl } from '@services/account-transaction.service';
 import { BUDGAN_EXPORT_SERVICE, BudganExportServiceImpl } from '@services/budgan-export.service';
 import { ACCOUNT_ANALYSIS_SERVICE, AccountAnalysisServiceImpl } from '@services/account-analysis.service';
+import { API_MODE_SERVICE, ApiModeServiceImpl } from '@services/api-mode.service';
+import { TEST_API_SERVICE, TestApiServiceImpl, TestApiServiceNoopImpl } from '@services/server/test-api.service';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
@@ -47,6 +49,8 @@ export const appConfig: ApplicationConfig = {
     { provide: ACCOUNT_TRANSACTION_SERVICE, useClass: AccountTransactionServiceImpl },
     { provide: BUDGAN_EXPORT_SERVICE, useClass: BudganExportServiceImpl },
     { provide: ACCOUNT_ANALYSIS_SERVICE, useClass: AccountAnalysisServiceImpl },
+    { provide: API_MODE_SERVICE, useClass: ApiModeServiceImpl },
+    { provide: TEST_API_SERVICE, useClass: environment.buildType === 'server' ? TestApiServiceImpl : TestApiServiceNoopImpl },
     provideCharts(withDefaultRegisterables()),
     provideServiceWorker('ngsw-worker.js', {
             enabled: environment.useServiceWorker,
