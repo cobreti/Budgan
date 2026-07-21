@@ -110,6 +110,8 @@
     "columnCount": "#",
     "columnAverageAmount": "Montant moy.",
     "columnPeriod": "Période (jours)",
+    "columnFirstOccurrence": "Première occurrence",
+    "columnLastOccurrence": "Dernière occurrence",
     "apply": "Appliquer"
   },
   "accountHome": {

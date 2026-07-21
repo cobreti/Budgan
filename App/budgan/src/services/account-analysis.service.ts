@@ -57,8 +57,19 @@ export class AccountAnalysisServiceImpl implements AccountAnalysisService {
         const transactionCount = transactions.length;
         const description = sorted[0].description;
         const averageAmount = transactions.reduce((sum, t) => sum + t.amount, 0) / transactionCount;
+        const firstOccurrenceDate = sorted[0].dateInscriptionAsString;
+        const lastOccurrenceDate = sorted[sorted.length - 1].dateInscriptionAsString;
 
-        results.push({ id: recurringId, accountId, periodInDays: median(intervals), transactionCount, description, averageAmount });
+        results.push({
+          id: recurringId,
+          accountId,
+          periodInDays: median(intervals),
+          transactionCount,
+          description,
+          averageAmount,
+          firstOccurrenceDate,
+          lastOccurrenceDate,
+        });
       }
 
       await this._indexDb.recurringTransactionsTable
