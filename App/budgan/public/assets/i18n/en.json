@@ -110,6 +110,8 @@
     "columnCount": "#",
     "columnAverageAmount": "Avg. Amount",
     "columnPeriod": "Period (days)",
+    "columnFirstOccurrence": "First Occurrence",
+    "columnLastOccurrence": "Last Occurrence",
     "apply": "Apply"
   },
   "accountHome": {

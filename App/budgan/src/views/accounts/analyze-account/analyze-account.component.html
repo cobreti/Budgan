@@ -93,6 +93,18 @@
             <mat-cell *matCellDef="let item">{{ item.periodInDays | number: '1.0-1' }}</mat-cell>
           </ng-container>
 
+          <!-- First occurrence date column -->
+          <ng-container matColumnDef="firstOccurrenceDate">
+            <mat-header-cell *matHeaderCellDef>{{ 'analyzeAccount.columnFirstOccurrence' | translate }}</mat-header-cell>
+            <mat-cell *matCellDef="let item">{{ item.firstOccurrenceDate }}</mat-cell>
+          </ng-container>
+
+          <!-- Last occurrence date column -->
+          <ng-container matColumnDef="lastOccurrenceDate">
+            <mat-header-cell *matHeaderCellDef>{{ 'analyzeAccount.columnLastOccurrence' | translate }}</mat-header-cell>
+            <mat-cell *matCellDef="let item">{{ item.lastOccurrenceDate }}</mat-cell>
+          </ng-container>
+
           <mat-header-row *matHeaderRowDef="columns" />
           <mat-row *matRowDef="let row; columns: columns;" />
         </mat-table>

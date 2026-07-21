@@ -5,4 +5,6 @@ export interface AccountRecurringTransactionModel {
   transactionCount: number;
   description: string;
   averageAmount: number;
+  firstOccurrenceDate: string;
+  lastOccurrenceDate: string;
 }

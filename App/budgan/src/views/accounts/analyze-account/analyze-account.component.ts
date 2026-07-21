@@ -59,7 +59,15 @@ export class AnalyzeAccountComponent {
 
   readonly hasSelection = computed(() => this.selectedIds().size > 0);
 
-  readonly columns = ['select', 'description', 'transactionCount', 'averageAmount', 'periodInDays'];
+  readonly columns = [
+    'select',
+    'description',
+    'firstOccurrenceDate',
+    'lastOccurrenceDate',
+    'transactionCount',
+    'averageAmount',
+    'periodInDays',
+  ];
 
   constructor() {
     this._loadExisting();
