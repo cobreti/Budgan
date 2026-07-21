@@ -10,6 +10,27 @@
       "request": "launch",
       "command": "npm run start",
       "cwd": "${workspaceFolder}/App/Budgan"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Run Script: serve:pwa",
+      "request": "launch",
+      "command": "npm run serve:pwa",
+      "cwd": "${workspaceFolder}/App/Budgan"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Run Script: serve:server",
+      "request": "launch",
+      "command": "npm run serve:server",
+      "cwd": "${workspaceFolder}/App/Budgan"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Run Script: test",
+      "request": "launch",
+      "command": "npm run test",
+      "cwd": "${workspaceFolder}/App/Budgan"
     }
   ]
 }
