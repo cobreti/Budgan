@@ -110,8 +110,9 @@ export class ImportFileComponent {
         const cardNumber = row[header[mapping.cardNumberColumnIndex]] ?? '';
         const dateInscriptionAsString = row[header[mapping.dateInscriptionColumnIndex]] ?? '';
         const amountStr = (row[header[mapping.amountColumnIndex]] ?? '').replace(',', '.');
-        const amount = parseFloat(amountStr);
-        if (isNaN(amount)) continue;
+        const parsedAmount = parseFloat(amountStr);
+        if (isNaN(parsedAmount)) continue;
+        const amount = account.accountType === 'credit' ? -parsedAmount : parsedAmount;
         const description = row[header[mapping.descriptionColumnIndex]] ?? '';
         const result = await this._transactionService.create(fileId, this._accountId, cardNumber, dateInscriptionAsString, amount, description);
         if (!result.success && result.error === 'duplicate-transaction') {

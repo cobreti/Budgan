@@ -1,7 +1,8 @@
 .account-snapshot {
   display: block;
-  max-width: 50%;
-  margin: 1em;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
 
   .title {
     padding: 0.5em;

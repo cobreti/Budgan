@@ -20,6 +20,15 @@
         </mat-form-field>
 
         <mat-form-field>
+          <mat-label>{{ 'newAccount.accountTypePlaceholder' | translate }}</mat-label>
+          <mat-select formControlName="accountType">
+            @for (type of accountTypes; track type) {
+              <mat-option [value]="type">{{ accountTypeLabelKey(type) | translate }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
           <mat-label>{{ 'newAccount.columnsMappingPlaceholder' | translate }}</mat-label>
           <mat-select formControlName="columnsMappingId">
             @for (mapping of columnsMappings(); track mapping.id) {

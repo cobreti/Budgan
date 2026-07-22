@@ -96,7 +96,8 @@
     "confirmDeleteMessage": "Cette action supprimera définitivement le compte, tous les fichiers importés et toutes ses transactions. Cette action est irréversible.",
     "confirmDeleteAccept": "Supprimer",
     "confirmDeleteCancel": "Annuler",
-    "back": "Retour"
+    "back": "Retour",
+    "accountTypeLabel": "Type de compte"
   },
   "analyzeAccount": {
     "title": "Analyser le compte",
@@ -178,6 +179,9 @@
   "newAccount": {
     "title": "Nouveau compte",
     "namePlaceholder": "Nom du compte",
+    "accountTypePlaceholder": "Type de compte",
+    "accountTypeDebit": "Débit",
+    "accountTypeCredit": "Crédit",
     "columnsMappingPlaceholder": "Mappage de colonnes",
     "create": "Créer",
     "cancel": "Annuler",

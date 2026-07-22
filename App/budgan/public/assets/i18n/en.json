@@ -96,7 +96,8 @@
     "confirmDeleteMessage": "This will permanently delete the account, every imported file, and every transaction it owns. This action cannot be undone.",
     "confirmDeleteAccept": "Delete",
     "confirmDeleteCancel": "Cancel",
-    "back": "Back"
+    "back": "Back",
+    "accountTypeLabel": "Account type"
   },
   "analyzeAccount": {
     "title": "Analyze Account",
@@ -178,6 +179,9 @@
   "newAccount": {
     "title": "New Account",
     "namePlaceholder": "Account name",
+    "accountTypePlaceholder": "Account type",
+    "accountTypeDebit": "Debit",
+    "accountTypeCredit": "Credit",
     "columnsMappingPlaceholder": "Columns mapping",
     "create": "Create",
     "cancel": "Cancel",
