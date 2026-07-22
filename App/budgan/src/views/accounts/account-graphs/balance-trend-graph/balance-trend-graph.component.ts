@@ -53,12 +53,12 @@ export class BalanceTrendGraphComponent {
   // range, not a reset to zero.
   protected readonly _points = computed<DataPoint[]>(() => {
     const all = this._allPoints();
-    const startMonth = this.startMonth()?.replaceAll('-', '');
-    const endMonth = this.endMonth()?.replaceAll('-', '');
+    const startMonth = this.startMonth();
+    const endMonth = this.endMonth();
     if (!startMonth || !endMonth) return all;
 
-    const startIso = formatIsoDate(monthBounds(startMonth).start);
-    const endIso = formatIsoDate(monthBounds(endMonth).end);
+    const startIso = formatIsoDate(monthBounds(startMonth).start).replaceAll('-', '');
+    const endIso = formatIsoDate(monthBounds(endMonth).end).replaceAll('-', '');
 
     const withinRange = all.filter((p) => p.date >= startIso && p.date <= endIso);
     const before = all.filter((p) => p.date < startIso);
