@@ -70,9 +70,11 @@ export class AccountServiceImpl implements AccountService {
         this._indexDb.accountsTable,
         this._indexDb.filesTable,
         this._indexDb.accountTransactionsTable,
+        this._indexDb.recurringTransactionsTable,
       ],
       async () => {
         await this._indexDb.accountTransactionsTable.where('accountId').equals(id).delete();
+        await this._indexDb.recurringTransactionsTable.where('accountId').equals(id).delete();
         await this._indexDb.filesTable.where('accountId').equals(id).delete();
         await this._indexDb.accountsTable.delete(id);
       },
