@@ -16,6 +16,7 @@ import {
   AccountTransactionService,
 } from '@services/account-transaction.service';
 import { ACCOUNT_SERVICE, AccountService } from '@services/account.service';
+import { AccountModel } from '@models/accountModel';
 import {
   AccountTransactionModel,
   AccountTransactionRecordType,
@@ -52,8 +53,8 @@ export class BalanceTrendGraphComponent {
   // range, not a reset to zero.
   protected readonly _points = computed<DataPoint[]>(() => {
     const all = this._allPoints();
-    const startMonth = this.startMonth();
-    const endMonth = this.endMonth();
+    const startMonth = this.startMonth()?.replaceAll('-', '');
+    const endMonth = this.endMonth()?.replaceAll('-', '');
     if (!startMonth || !endMonth) return all;
 
     const startIso = formatIsoDate(monthBounds(startMonth).start);
@@ -102,7 +103,7 @@ export class BalanceTrendGraphComponent {
 
   readonly chartOptions: ChartOptions<'line'> = {
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
     },
@@ -119,13 +120,14 @@ export class BalanceTrendGraphComponent {
   constructor() {
     effect(() => {
       const id = this.accountId();
+      const viewType = this.viewType();
       // Track transactionsVersion so this effect re-runs when balances are recalculated
       this._transactionService.transactionsVersion();
-      this._loadPoints(id);
+      this._loadPoints(id, viewType);
     });
   }
 
-  private async _loadPoints(accountId: string): Promise<void> {
+  private async _loadPoints(accountId: string, viewType: ViewType): Promise<void> {
     const [account, txs] = await Promise.all([
       this._accountService.getById(accountId),
       this._transactionService.getListByAccount(accountId),
@@ -142,11 +144,24 @@ export class BalanceTrendGraphComponent {
         return (a.balanceDateOffset ?? 0) - (b.balanceDateOffset ?? 0);
       });
 
-    if (normal.length === 0) {
-      this._allPoints.set([]);
-      this._cdr.markForCheck();
-      return;
+    if (viewType === 'all') {
+      this._allPoints.set(this._buildBalancePoints(account, txs, normal));
+    } else {
+      // 'expense'/'income': the running account balance mixes both signs, so
+      // it isn't meaningful here — show a cumulative total of only the
+      // transactions matching the selected sign instead.
+      const matching = normal.filter((t) => (viewType === 'expense' ? t.amount < 0 : t.amount > 0));
+      this._allPoints.set(this._buildCumulativePoints(matching));
     }
+    this._cdr.markForCheck();
+  }
+
+  private _buildBalancePoints(
+    account: AccountModel,
+    txs: AccountTransactionModel[],
+    normal: AccountTransactionModel[],
+  ): DataPoint[] {
+    if (normal.length === 0) return [];
 
     // Opening point: the known balance one day before the earliest transaction.
     // Falls back to 0 when no reference balance is set (no snapshot).
@@ -158,18 +173,18 @@ export class BalanceTrendGraphComponent {
     // The snapshot has balanceDateOffset === 0, so it sorts between pre-snapshot
     // transactions (negative offset) and on-or-after-snapshot transactions (positive offset).
     const snapshotTx = txs.find((t) => t.recordType === AccountTransactionRecordType.snapshot);
-    const allPoints: DataPoint[] = normal.map((t) => ({
+    const points: DataPoint[] = normal.map((t) => ({
       date: t.dateInscriptionAsString,
       balance: t.balance!,
     }));
 
     if (snapshotTx) {
-      allPoints.push({
+      points.push({
         date: snapshotTx.dateInscriptionAsString,
         balance: snapshotTx.amount,
         isSnapshot: true,
       });
-      allPoints.sort((a, b) => {
+      points.sort((a, b) => {
         const d = a.date.localeCompare(b.date);
         if (d !== 0) return d;
         // On the same date: snapshot (isSnapshot) sits between negative-offset
@@ -180,7 +195,22 @@ export class BalanceTrendGraphComponent {
       });
     }
 
-    this._allPoints.set([opening, ...allPoints]);
-    this._cdr.markForCheck();
+    return [opening, ...points];
+  }
+
+  private _buildCumulativePoints(matching: AccountTransactionModel[]): DataPoint[] {
+    if (matching.length === 0) return [];
+
+    const opening: DataPoint = {
+      date: previousIsoDay(matching[0].dateInscriptionAsString),
+      balance: 0,
+    };
+    let running = 0;
+    const points: DataPoint[] = matching.map((t) => {
+      running += t.amount;
+      return { date: t.dateInscriptionAsString, balance: running };
+    });
+
+    return [opening, ...points];
   }
 }

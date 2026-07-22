@@ -20,13 +20,10 @@ import {
 } from '@angular/material/expansion';
 import { TranslatePipe } from '@ngx-translate/core';
 import {
-  ACCOUNT_ANALYSIS_SERVICE,
-  AccountAnalysisService,
-} from '@services/account-analysis.service';
-import {
   ACCOUNT_TRANSACTION_SERVICE,
   AccountTransactionService,
 } from '@services/account-transaction.service';
+import { AccountTransactionRecordType } from '@models/accountTransactionModel';
 import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
 import { MonthRange, ViewType, monthsBetween, toMonthKey } from '@/utils/recurring-month';
 import { BalanceTrendGraphComponent } from '@views/accounts/account-graphs/balance-trend-graph/balance-trend-graph.component';
@@ -53,7 +50,6 @@ import { RecurringPieChartComponent } from '@views/accounts/account-graphs/recur
   ],
 })
 export class AccountGraphsComponent {
-  private readonly _analysisService = inject<AccountAnalysisService>(ACCOUNT_ANALYSIS_SERVICE);
   private readonly _transactionService = inject<AccountTransactionService>(
     ACCOUNT_TRANSACTION_SERVICE,
   );
@@ -66,25 +62,26 @@ export class AccountGraphsComponent {
   protected readonly viewType = signal<ViewType>('all');
   protected readonly startMonth = signal<string | null>(null);
   protected readonly endMonth = signal<string | null>(null);
-  private readonly _recurringRange = signal<MonthRange | null>(null);
-  private _recurringMonthsRequestId = 0;
+  private readonly _monthRange = signal<MonthRange | null>(null);
+  private _availableMonthsRequestId = 0;
 
   // Ascending, so a start/end pair of dropdowns reads naturally left to right.
   readonly availableMonths = computed(() => {
-    const range = this._recurringRange();
+    const range = this._monthRange();
     if (!range) return [];
     return monthsBetween(range);
   });
 
   constructor() {
-    // Discovers which months are selectable (from the recognized recurring
-    // patterns' first/last occurrence matching the selected view type) and
-    // picks a default month.
+    // Discovers which months are selectable and picks a default month, from
+    // the account's full transaction history (not just recognized recurring
+    // patterns) filtered to the selected view type's sign — so the pickers
+    // stay available and in sync with what the graphs below actually show.
     effect(() => {
       const id = this.accountId();
       const viewType = this.viewType();
       this._transactionService.transactionsVersion();
-      this._loadRecurringMonths(id, viewType);
+      this._loadAvailableMonths(id, viewType);
     });
   }
 
@@ -120,44 +117,41 @@ export class AccountGraphsComponent {
     }
   }
 
-  private async _loadRecurringMonths(accountId: string, viewType: ViewType): Promise<void> {
+  private async _loadAvailableMonths(accountId: string, viewType: ViewType): Promise<void> {
     // Guards against out-of-order async resolution: if accountId/viewType
     // changes again before this call resolves, a later call's request id
     // will have moved on, so this (now stale) result is discarded instead of
     // overwriting the dropdowns with another account's months.
-    const requestId = ++this._recurringMonthsRequestId;
-    const recurring = await this._analysisService.getRecurringTransactions(accountId);
-    if (requestId !== this._recurringMonthsRequestId) return;
+    const requestId = ++this._availableMonthsRequestId;
+    const transactions = await this._transactionService.getListByAccount(accountId);
+    if (requestId !== this._availableMonthsRequestId) return;
 
-    // averageAmount carries the sign of every occurrence in the group (recurringId
-    // buckets amounts into a narrow range, so it never mixes expenses and income).
-    // 'all' keeps both signs.
-    const matchingRecurring = recurring.filter((r) => {
-      if (viewType === 'expense') return r.averageAmount < 0;
-      if (viewType === 'income') return r.averageAmount > 0;
-      return true;
-    });
+    // 'all' keeps both signs; expense/income keep only transactions of matching sign.
+    const matchingDates = transactions
+      .filter((t) => t.recordType === AccountTransactionRecordType.normal)
+      .filter((t) => {
+        if (viewType === 'expense') return t.amount < 0;
+        if (viewType === 'income') return t.amount > 0;
+        return true;
+      })
+      .map((t) => t.dateInscriptionAsString);
 
-    if (matchingRecurring.length === 0) {
-      this._recurringRange.set(null);
+    const startDate = matchingDates.length > 0 ? matchingDates.reduce((min, d) => (d < min ? d : min)) : undefined;
+    const endDate = matchingDates.length > 0 ? matchingDates.reduce((max, d) => (d > max ? d : max)) : undefined;
+
+    if (!startDate || !endDate) {
+      this._monthRange.set(null);
       this.startMonth.set(null);
       this.endMonth.set(null);
       this._cdr.markForCheck();
       return;
     }
 
-    const startDate = matchingRecurring
-      .map((r) => r.firstOccurrenceDate)
-      .reduce((min, d) => (d < min ? d : min));
-    const endDate = matchingRecurring
-      .map((r) => r.lastOccurrenceDate)
-      .reduce((max, d) => (d > max ? d : max));
-
     const startMonthKey = toMonthKey(startDate);
     const endMonthKey = toMonthKey(endDate);
     const range: MonthRange | null =
       startMonthKey && endMonthKey ? { start: startMonthKey, end: endMonthKey } : null;
-    this._recurringRange.set(range);
+    this._monthRange.set(range);
 
     const months = range ? monthsBetween(range) : [];
 
