@@ -63,13 +63,15 @@ export class AccountGraphsComponent {
 
   protected readonly viewTypes: ViewType[] = ['expense', 'income'];
   protected readonly viewType = signal<ViewType>('expense');
-  protected readonly selectedMonth = signal<string | null>(null);
+  protected readonly startMonth = signal<string | null>(null);
+  protected readonly endMonth = signal<string | null>(null);
   private readonly _recurringRange = signal<MonthRange | null>(null);
 
+  // Ascending, so a start/end pair of dropdowns reads naturally left to right.
   readonly availableMonths = computed(() => {
     const range = this._recurringRange();
     if (!range) return [];
-    return monthsBetween(range).reverse();
+    return monthsBetween(range);
   });
 
   constructor() {
@@ -96,8 +98,22 @@ export class AccountGraphsComponent {
     this.viewType.set(change.value as ViewType);
   }
 
-  onMonthChange(change: MatSelectChange): void {
-    this.selectedMonth.set(change.value as string);
+  onStartMonthChange(change: MatSelectChange): void {
+    const value = change.value as string;
+    this.startMonth.set(value);
+    const end = this.endMonth();
+    if (end && value > end) {
+      this.endMonth.set(value);
+    }
+  }
+
+  onEndMonthChange(change: MatSelectChange): void {
+    const value = change.value as string;
+    this.endMonth.set(value);
+    const start = this.startMonth();
+    if (start && value < start) {
+      this.startMonth.set(value);
+    }
   }
 
   private async _loadRecurringMonths(accountId: string, viewType: ViewType): Promise<void> {
@@ -111,7 +127,8 @@ export class AccountGraphsComponent {
 
     if (matchingRecurring.length === 0) {
       this._recurringRange.set(null);
-      this.selectedMonth.set(null);
+      this.startMonth.set(null);
+      this.endMonth.set(null);
       this._cdr.markForCheck();
       return;
     }
@@ -123,17 +140,25 @@ export class AccountGraphsComponent {
       .map((r) => r.lastOccurrenceDate)
       .reduce((max, d) => (d > max ? d : max));
 
-    const startMonth = toMonthKey(startDate);
-    const endMonth = toMonthKey(endDate);
+    const startMonthKey = toMonthKey(startDate);
+    const endMonthKey = toMonthKey(endDate);
     const range: MonthRange | null =
-      startMonth && endMonth ? { start: startMonth, end: endMonth } : null;
+      startMonthKey && endMonthKey ? { start: startMonthKey, end: endMonthKey } : null;
     this._recurringRange.set(range);
 
-    const months = range ? monthsBetween(range).reverse() : [];
-    const current = this.selectedMonth();
-    if (!current || !months.includes(current)) {
-      this.selectedMonth.set(months[0] ?? null);
-    }
+    const months = range ? monthsBetween(range) : [];
+
+    // Default to the full available span; keep an existing selection if it's
+    // still valid within the (possibly changed) range, otherwise reset it.
+    const currentStart = this.startMonth();
+    const currentEnd = this.endMonth();
+    const validStart =
+      currentStart && months.includes(currentStart) ? currentStart : (months[0] ?? null);
+    const validEnd =
+      currentEnd && months.includes(currentEnd) ? currentEnd : (months[months.length - 1] ?? null);
+
+    this.startMonth.set(validStart);
+    this.endMonth.set(validStart && validEnd && validEnd < validStart ? validStart : validEnd);
 
     this._cdr.markForCheck();
   }

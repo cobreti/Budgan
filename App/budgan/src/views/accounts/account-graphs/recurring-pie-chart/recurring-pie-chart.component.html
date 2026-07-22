@@ -1,5 +1,5 @@
 <div class="recurring-pie-chart">
-  @if (selectedMonth()) {
+  @if (startMonth() && endMonth()) {
     @if (slices().length > 0) {
       <div class="recurring-pie-chart__chart-container">
         <canvas
@@ -13,7 +13,7 @@
         ></canvas>
       </div>
     } @else {
-      <p class="recurring-pie-chart__empty">{{ 'recurringPieChart.noDataForMonth' | translate }}</p>
+      <p class="recurring-pie-chart__empty">{{ 'recurringPieChart.noDataForRange' | translate }}</p>
     }
   } @else {
     <p class="recurring-pie-chart__empty">{{ 'recurringPieChart.noData' | translate }}</p>

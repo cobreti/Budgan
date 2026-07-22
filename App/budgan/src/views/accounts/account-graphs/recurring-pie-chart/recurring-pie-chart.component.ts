@@ -34,7 +34,8 @@ export class RecurringPieChartComponent {
 
   readonly accountId = input.required<string>();
   readonly viewType = input.required<ViewType>();
-  readonly selectedMonth = input.required<string | null>();
+  readonly startMonth = input.required<string | null>();
+  readonly endMonth = input.required<string | null>();
 
   protected readonly slices = signal<RecurringSlice[]>([]);
 
@@ -61,28 +62,31 @@ export class RecurringPieChartComponent {
   };
 
   constructor() {
-    // Recomputed whenever the account, view type, or selected month changes.
+    // Recomputed whenever the account, view type, or selected range changes.
     effect(() => {
       const id = this.accountId();
-      const month = this.selectedMonth();
+      const startMonth = this.startMonth();
+      const endMonth = this.endMonth();
       const viewType = this.viewType();
       this._transactionService.transactionsVersion();
-      this._loadSlicesForMonth(id, month, viewType);
+      this._loadSlicesForRange(id, startMonth, endMonth, viewType);
     });
   }
 
-  private async _loadSlicesForMonth(
+  private async _loadSlicesForRange(
     accountId: string,
-    month: string | null,
+    startMonth: string | null,
+    endMonth: string | null,
     viewType: ViewType,
   ): Promise<void> {
-    if (!month) {
+    if (!startMonth || !endMonth) {
       this.slices.set([]);
       this._cdr.markForCheck();
       return;
     }
 
-    const { start, end } = monthBounds(month);
+    const start = monthBounds(startMonth).start;
+    const end = monthBounds(endMonth).end;
     const txs = await this._transactionService.getRecurringTransactionsByAccount(
       accountId,
       start,

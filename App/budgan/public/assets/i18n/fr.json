@@ -128,13 +128,14 @@
   },
   "recurringPieChart": {
     "title": "Transactions récurrentes",
-    "month": "Mois",
+    "startMonth": "Mois de début",
+    "endMonth": "Mois de fin",
     "viewType": "Affichage",
     "expenses": "Dépenses",
     "incomes": "Revenus",
     "ariaLabel": "Diagramme circulaire des transactions récurrentes",
     "noData": "Aucune transaction récurrente trouvée. Lancez l'analyse pour les détecter.",
-    "noDataForMonth": "Aucune transaction récurrente pour ce mois."
+    "noDataForRange": "Aucune transaction récurrente pour cette période."
   },
   "accountSnapshot": {
     "title": "Instantané du compte",

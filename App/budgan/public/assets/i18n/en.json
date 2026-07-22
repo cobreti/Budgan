@@ -128,13 +128,14 @@
   },
   "recurringPieChart": {
     "title": "Recurring Transactions",
-    "month": "Month",
+    "startMonth": "Start month",
+    "endMonth": "End month",
     "viewType": "View",
     "expenses": "Expenses",
     "incomes": "Income",
     "ariaLabel": "Recurring transactions pie chart",
     "noData": "No recurring transactions found. Run the analysis to detect them.",
-    "noDataForMonth": "No recurring transactions for this month."
+    "noDataForRange": "No recurring transactions for this period."
   },
   "accountSnapshot": {
     "title": "Account Snapshot",

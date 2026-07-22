@@ -41,39 +41,40 @@ export class BalanceTrendGraphComponent {
 
   readonly accountId = input.required<string>();
   readonly viewType = input.required<ViewType>();
-  readonly selectedMonth = input.required<string | null>();
+  readonly startMonth = input.required<string | null>();
+  readonly endMonth = input.required<string | null>();
 
   protected readonly _allPoints = signal<DataPoint[]>([]);
 
-  // Windows the full balance history to the selected month. The point carried
-  // in from just before the month start anchors the line so it doesn't start
+  // Windows the full balance history to the selected range. The point carried
+  // in from just before the range start anchors the line so it doesn't start
   // from a visual discontinuity — it reflects the real balance entering the
-  // month, not a reset to zero.
+  // range, not a reset to zero.
   protected readonly _points = computed<DataPoint[]>(() => {
     const all = this._allPoints();
-    const month = this.selectedMonth();
-    if (!month) return all;
+    const startMonth = this.startMonth();
+    const endMonth = this.endMonth();
+    if (!startMonth || !endMonth) return all;
 
-    const { start, end } = monthBounds(month);
-    const startIso = formatIsoDate(start).replaceAll('-', '');
-    const endIso = formatIsoDate(end).replaceAll('-', '');
+    const startIso = formatIsoDate(monthBounds(startMonth).start);
+    const endIso = formatIsoDate(monthBounds(endMonth).end);
 
-    const withinMonth = all.filter((p) => p.date >= startIso && p.date <= endIso);
+    const withinRange = all.filter((p) => p.date >= startIso && p.date <= endIso);
     const before = all.filter((p) => p.date < startIso);
     const carryIn = before.length > 0 ? before[before.length - 1] : null;
 
-    if (!carryIn || withinMonth[0]?.date === startIso) return withinMonth;
+    if (!carryIn || withinRange[0]?.date === startIso) return withinRange;
 
-    return [{ date: startIso, balance: carryIn.balance }, ...withinMonth];
+    return [{ date: startIso, balance: carryIn.balance }, ...withinRange];
   });
 
   // A full, unscoped history needs 2+ points to read as a "trend" at all.
-  // Once zoomed to a single month, though, even one point is real data (just
-  // a quiet month) rather than an absence of data — so the bar to display
+  // Once zoomed to a range, though, even one point is real data (just a
+  // quiet stretch) rather than an absence of data — so the bar to display
   // something is lower.
   readonly hasData = computed<boolean>(() => {
     const pts = this._points();
-    return this.selectedMonth() ? pts.length >= 1 : pts.length >= 2;
+    return this.startMonth() && this.endMonth() ? pts.length >= 1 : pts.length >= 2;
   });
 
   readonly chartData = computed<ChartData<'line'>>(() => {
