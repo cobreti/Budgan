@@ -94,8 +94,12 @@ export class RecurringPieChartComponent {
     );
 
     // getRecurringTransactionsByAccount returns both signs; keep only the
-    // ones matching the selected view type.
-    const matchingTxs = txs.filter((t) => (viewType === 'expense' ? t.amount < 0 : t.amount > 0));
+    // ones matching the selected view type ('all' keeps both).
+    const matchingTxs = txs.filter((t) => {
+      if (viewType === 'expense') return t.amount < 0;
+      if (viewType === 'income') return t.amount > 0;
+      return true;
+    });
 
     const totals = new Map<string, number>();
     for (const t of matchingTxs) {

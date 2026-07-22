@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 export type MonthRange = { start: string; end: string };
-export type ViewType = 'expense' | 'income';
+export type ViewType = 'expense' | 'income' | 'all';
 
 // Normalizes any parseable date string to a canonical 'YYYY-MM' key. Using
 // moment (rather than a raw string slice) means transaction dates that

@@ -131,6 +131,7 @@
     "startMonth": "Mois de début",
     "endMonth": "Mois de fin",
     "viewType": "Affichage",
+    "all": "Tout",
     "expenses": "Dépenses",
     "incomes": "Revenus",
     "ariaLabel": "Diagramme circulaire des transactions récurrentes",

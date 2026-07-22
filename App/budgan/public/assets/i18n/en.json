@@ -131,6 +131,7 @@
     "startMonth": "Start month",
     "endMonth": "End month",
     "viewType": "View",
+    "all": "All",
     "expenses": "Expenses",
     "incomes": "Income",
     "ariaLabel": "Recurring transactions pie chart",

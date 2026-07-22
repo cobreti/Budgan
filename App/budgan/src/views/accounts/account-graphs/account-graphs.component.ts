@@ -11,7 +11,7 @@ import {
 import moment from 'moment';
 import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { MatSelect, MatSelectChange, MatSelectTrigger } from '@angular/material/select';
 import {
   MatAccordion,
   MatExpansionPanel,
@@ -47,6 +47,7 @@ import { RecurringPieChartComponent } from '@views/accounts/account-graphs/recur
     MatFormField,
     MatLabel,
     MatSelect,
+    MatSelectTrigger,
     MatOption,
     TranslatePipe,
   ],
@@ -61,11 +62,12 @@ export class AccountGraphsComponent {
 
   readonly accountId = input.required<string>();
 
-  protected readonly viewTypes: ViewType[] = ['expense', 'income'];
-  protected readonly viewType = signal<ViewType>('expense');
+  protected readonly viewTypes: ViewType[] = ['all', 'expense', 'income'];
+  protected readonly viewType = signal<ViewType>('all');
   protected readonly startMonth = signal<string | null>(null);
   protected readonly endMonth = signal<string | null>(null);
   private readonly _recurringRange = signal<MonthRange | null>(null);
+  private _recurringMonthsRequestId = 0;
 
   // Ascending, so a start/end pair of dropdowns reads naturally left to right.
   readonly availableMonths = computed(() => {
@@ -91,7 +93,9 @@ export class AccountGraphsComponent {
   }
 
   viewTypeLabelKey(viewType: ViewType): string {
-    return viewType === 'expense' ? 'recurringPieChart.expenses' : 'recurringPieChart.incomes';
+    if (viewType === 'expense') return 'recurringPieChart.expenses';
+    if (viewType === 'income') return 'recurringPieChart.incomes';
+    return 'recurringPieChart.all';
   }
 
   onViewTypeChange(change: MatSelectChange): void {
@@ -117,13 +121,22 @@ export class AccountGraphsComponent {
   }
 
   private async _loadRecurringMonths(accountId: string, viewType: ViewType): Promise<void> {
+    // Guards against out-of-order async resolution: if accountId/viewType
+    // changes again before this call resolves, a later call's request id
+    // will have moved on, so this (now stale) result is discarded instead of
+    // overwriting the dropdowns with another account's months.
+    const requestId = ++this._recurringMonthsRequestId;
     const recurring = await this._analysisService.getRecurringTransactions(accountId);
+    if (requestId !== this._recurringMonthsRequestId) return;
 
     // averageAmount carries the sign of every occurrence in the group (recurringId
     // buckets amounts into a narrow range, so it never mixes expenses and income).
-    const matchingRecurring = recurring.filter((r) =>
-      viewType === 'expense' ? r.averageAmount < 0 : r.averageAmount > 0,
-    );
+    // 'all' keeps both signs.
+    const matchingRecurring = recurring.filter((r) => {
+      if (viewType === 'expense') return r.averageAmount < 0;
+      if (viewType === 'income') return r.averageAmount > 0;
+      return true;
+    });
 
     if (matchingRecurring.length === 0) {
       this._recurringRange.set(null);
