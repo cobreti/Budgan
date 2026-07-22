@@ -27,6 +27,7 @@ import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
 
 type RecurringSlice = { description: string; amount: number };
 type MonthRange = { start: string; end: string };
+type ViewType = 'expense' | 'income';
 
 // Normalizes any parseable date string to a canonical 'YYYY-MM' key. Using
 // moment (rather than a raw string slice) means transaction dates that
@@ -73,6 +74,8 @@ export class RecurringPieChartComponent {
 
   readonly accountId = input.required<string>();
 
+  protected readonly viewTypes: ViewType[] = ['expense', 'income'];
+  protected readonly viewType = signal<ViewType>('expense');
   protected readonly _recurringRange = signal<MonthRange | null>(null);
   protected readonly selectedMonth = signal<string | null>(null);
   protected readonly slices = signal<RecurringSlice[]>([]);
@@ -107,11 +110,13 @@ export class RecurringPieChartComponent {
 
   constructor() {
     // Discovers which months are selectable (from the recognized recurring
-    // expense patterns' first/last occurrence) and picks a default month.
+    // patterns' first/last occurrence matching the selected view type) and
+    // picks a default month.
     effect(() => {
       const id = this.accountId();
+      const viewType = this.viewType();
       this._transactionService.transactionsVersion();
-      this._loadRecurringMonths(id);
+      this._loadRecurringMonths(id, viewType);
     });
 
     // Recomputed on every dropdown change: only the selected month's
@@ -119,8 +124,9 @@ export class RecurringPieChartComponent {
     effect(() => {
       const id = this.accountId();
       const month = this.selectedMonth();
+      const viewType = this.viewType();
       this._transactionService.transactionsVersion();
-      this._loadSlicesForMonth(id, month);
+      this._loadSlicesForMonth(id, month, viewType);
     });
   }
 
@@ -128,28 +134,38 @@ export class RecurringPieChartComponent {
     return moment(month, 'YYYY-MM').locale(this._locale.currentLocale()).format('MMMM YYYY');
   }
 
+  viewTypeLabelKey(viewType: ViewType): string {
+    return viewType === 'expense' ? 'recurringPieChart.expenses' : 'recurringPieChart.incomes';
+  }
+
   onMonthChange(change: MatSelectChange): void {
     this.selectedMonth.set(change.value as string);
   }
 
-  private async _loadRecurringMonths(accountId: string): Promise<void> {
+  onViewTypeChange(change: MatSelectChange): void {
+    this.viewType.set(change.value as ViewType);
+  }
+
+  private async _loadRecurringMonths(accountId: string, viewType: ViewType): Promise<void> {
     const recurring = await this._analysisService.getRecurringTransactions(accountId);
 
     // averageAmount carries the sign of every occurrence in the group (recurringId
     // buckets amounts into a narrow range, so it never mixes expenses and income).
-    const expenseRecurring = recurring.filter((r) => r.averageAmount < 0);
+    const matchingRecurring = recurring.filter((r) =>
+      viewType === 'expense' ? r.averageAmount < 0 : r.averageAmount > 0,
+    );
 
-    if (expenseRecurring.length === 0) {
+    if (matchingRecurring.length === 0) {
       this._recurringRange.set(null);
       this.selectedMonth.set(null);
       this._cdr.markForCheck();
       return;
     }
 
-    const startDate = expenseRecurring
+    const startDate = matchingRecurring
       .map((r) => r.firstOccurrenceDate)
       .reduce((min, d) => (d < min ? d : min));
-    const endDate = expenseRecurring
+    const endDate = matchingRecurring
       .map((r) => r.lastOccurrenceDate)
       .reduce((max, d) => (d > max ? d : max));
 
@@ -168,7 +184,11 @@ export class RecurringPieChartComponent {
     this._cdr.markForCheck();
   }
 
-  private async _loadSlicesForMonth(accountId: string, month: string | null): Promise<void> {
+  private async _loadSlicesForMonth(
+    accountId: string,
+    month: string | null,
+    viewType: ViewType,
+  ): Promise<void> {
     if (!month) {
       this.slices.set([]);
       this._cdr.markForCheck();
@@ -182,9 +202,12 @@ export class RecurringPieChartComponent {
       end,
     );
 
+    // getRecurringTransactionsByAccount returns both signs; keep only the
+    // ones matching the selected view type.
+    const matchingTxs = txs.filter((t) => (viewType === 'expense' ? t.amount < 0 : t.amount > 0));
+
     const totals = new Map<string, number>();
-    for (const t of txs) {
-      // if (!recurringIds.has(t.recurringId)) continue;
+    for (const t of matchingTxs) {
       totals.set(t.description, (totals.get(t.description) ?? 0) + Math.abs(t.amount));
     }
 

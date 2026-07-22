@@ -1,18 +1,35 @@
 <div class="recurring-pie-chart">
-  @if (availableMonths().length > 0) {
-    <mat-form-field class="recurring-pie-chart__month-field">
-      <mat-label>{{ 'recurringPieChart.month' | translate }}</mat-label>
+  <div class="recurring-pie-chart__filters">
+    <mat-form-field class="recurring-pie-chart__view-type-field">
+      <mat-label>{{ 'recurringPieChart.viewType' | translate }}</mat-label>
       <mat-select
-        [value]="selectedMonth()"
-        (selectionChange)="onMonthChange($event)"
-        data-testid="recurring-pie-chart-month"
+        [value]="viewType()"
+        (selectionChange)="onViewTypeChange($event)"
+        data-testid="recurring-pie-chart-view-type"
       >
-        @for (month of availableMonths(); track month) {
-          <mat-option [value]="month">{{ monthLabel(month) }}</mat-option>
+        @for (type of viewTypes; track type) {
+          <mat-option [value]="type">{{ viewTypeLabelKey(type) | translate }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
 
+    @if (availableMonths().length > 0) {
+      <mat-form-field class="recurring-pie-chart__month-field">
+        <mat-label>{{ 'recurringPieChart.month' | translate }}</mat-label>
+        <mat-select
+          [value]="selectedMonth()"
+          (selectionChange)="onMonthChange($event)"
+          data-testid="recurring-pie-chart-month"
+        >
+          @for (month of availableMonths(); track month) {
+            <mat-option [value]="month">{{ monthLabel(month) }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+  </div>
+
+  @if (availableMonths().length > 0) {
     @if (slices().length > 0) {
       <div class="recurring-pie-chart__chart-container">
         <canvas

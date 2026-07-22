@@ -127,11 +127,14 @@
     "noData": "Aucune donnée de solde disponible. Définissez un instantané pour activer le graphique."
   },
   "recurringPieChart": {
-    "title": "Dépenses récurrentes",
+    "title": "Transactions récurrentes",
     "month": "Mois",
-    "ariaLabel": "Diagramme circulaire des dépenses récurrentes",
-    "noData": "Aucune dépense récurrente trouvée. Lancez l'analyse pour les détecter.",
-    "noDataForMonth": "Aucune dépense récurrente pour ce mois."
+    "viewType": "Affichage",
+    "expenses": "Dépenses",
+    "incomes": "Revenus",
+    "ariaLabel": "Diagramme circulaire des transactions récurrentes",
+    "noData": "Aucune transaction récurrente trouvée. Lancez l'analyse pour les détecter.",
+    "noDataForMonth": "Aucune transaction récurrente pour ce mois."
   },
   "accountSnapshot": {
     "title": "Instantané du compte",
