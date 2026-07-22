@@ -8,10 +8,6 @@ import {
   input,
   signal,
 } from '@angular/core';
-import moment from 'moment';
-import { MatOption } from '@angular/material/core';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { TranslatePipe } from '@ngx-translate/core';
 import { BaseChartDirective } from 'ng2-charts';
 import type { ChartData, ChartOptions } from 'chart.js';
@@ -19,72 +15,28 @@ import {
   ACCOUNT_TRANSACTION_SERVICE,
   AccountTransactionService,
 } from '@services/account-transaction.service';
-import {
-  ACCOUNT_ANALYSIS_SERVICE,
-  AccountAnalysisService,
-} from '@services/account-analysis.service';
-import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
+import { monthBounds, ViewType } from '@/utils/recurring-month';
 
 type RecurringSlice = { description: string; amount: number };
-type MonthRange = { start: string; end: string };
-type ViewType = 'expense' | 'income';
-
-// Normalizes any parseable date string to a canonical 'YYYY-MM' key. Using
-// moment (rather than a raw string slice) means transaction dates that
-// aren't already zero-padded ISO (e.g. '2026-7-5') still produce the same
-// key as the moment-formatted keys used for the month dropdown, so the two
-// never silently fail to match.
-function toMonthKey(dateAsString: string): string | null {
-  const parsed = moment(dateAsString);
-  return parsed.isValid() ? parsed.format('YYYY-MM') : null;
-}
-
-function monthsBetween(range: MonthRange): string[] {
-  const months: string[] = [];
-  const cursor = moment(range.start, 'YYYY-MM');
-  const last = moment(range.end, 'YYYY-MM');
-  while (cursor.isSameOrBefore(last, 'month')) {
-    months.push(cursor.format('YYYY-MM'));
-    cursor.add(1, 'month');
-  }
-  return months;
-}
-
-function monthBounds(month: string): { start: Date; end: Date } {
-  return {
-    start: moment(month, 'YYYY-MM').startOf('month').toDate(),
-    end: moment(month, 'YYYY-MM').endOf('month').toDate(),
-  };
-}
 
 @Component({
   selector: 'app-recurring-pie-chart',
   templateUrl: './recurring-pie-chart.component.html',
   styleUrl: './recurring-pie-chart.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, BaseChartDirective, MatFormField, MatLabel, MatSelect, MatOption],
+  imports: [TranslatePipe, BaseChartDirective],
 })
 export class RecurringPieChartComponent {
   private readonly _transactionService = inject<AccountTransactionService>(
     ACCOUNT_TRANSACTION_SERVICE,
   );
-  private readonly _analysisService = inject<AccountAnalysisService>(ACCOUNT_ANALYSIS_SERVICE);
-  private readonly _locale = inject<LocaleService>(LOCALE_SERVICE);
   private readonly _cdr = inject(ChangeDetectorRef);
 
   readonly accountId = input.required<string>();
+  readonly viewType = input.required<ViewType>();
+  readonly selectedMonth = input.required<string | null>();
 
-  protected readonly viewTypes: ViewType[] = ['expense', 'income'];
-  protected readonly viewType = signal<ViewType>('expense');
-  protected readonly _recurringRange = signal<MonthRange | null>(null);
-  protected readonly selectedMonth = signal<string | null>(null);
   protected readonly slices = signal<RecurringSlice[]>([]);
-
-  readonly availableMonths = computed(() => {
-    const range = this._recurringRange();
-    if (!range) return [];
-    return monthsBetween(range).reverse();
-  });
 
   readonly chartData = computed<ChartData<'pie'>>(() => {
     const slices = this.slices();
@@ -109,18 +61,7 @@ export class RecurringPieChartComponent {
   };
 
   constructor() {
-    // Discovers which months are selectable (from the recognized recurring
-    // patterns' first/last occurrence matching the selected view type) and
-    // picks a default month.
-    effect(() => {
-      const id = this.accountId();
-      const viewType = this.viewType();
-      this._transactionService.transactionsVersion();
-      this._loadRecurringMonths(id, viewType);
-    });
-
-    // Recomputed on every dropdown change: only the selected month's
-    // transactions are fetched, not the whole recurring date range.
+    // Recomputed whenever the account, view type, or selected month changes.
     effect(() => {
       const id = this.accountId();
       const month = this.selectedMonth();
@@ -128,60 +69,6 @@ export class RecurringPieChartComponent {
       this._transactionService.transactionsVersion();
       this._loadSlicesForMonth(id, month, viewType);
     });
-  }
-
-  monthLabel(month: string): string {
-    return moment(month, 'YYYY-MM').locale(this._locale.currentLocale()).format('MMMM YYYY');
-  }
-
-  viewTypeLabelKey(viewType: ViewType): string {
-    return viewType === 'expense' ? 'recurringPieChart.expenses' : 'recurringPieChart.incomes';
-  }
-
-  onMonthChange(change: MatSelectChange): void {
-    this.selectedMonth.set(change.value as string);
-  }
-
-  onViewTypeChange(change: MatSelectChange): void {
-    this.viewType.set(change.value as ViewType);
-  }
-
-  private async _loadRecurringMonths(accountId: string, viewType: ViewType): Promise<void> {
-    const recurring = await this._analysisService.getRecurringTransactions(accountId);
-
-    // averageAmount carries the sign of every occurrence in the group (recurringId
-    // buckets amounts into a narrow range, so it never mixes expenses and income).
-    const matchingRecurring = recurring.filter((r) =>
-      viewType === 'expense' ? r.averageAmount < 0 : r.averageAmount > 0,
-    );
-
-    if (matchingRecurring.length === 0) {
-      this._recurringRange.set(null);
-      this.selectedMonth.set(null);
-      this._cdr.markForCheck();
-      return;
-    }
-
-    const startDate = matchingRecurring
-      .map((r) => r.firstOccurrenceDate)
-      .reduce((min, d) => (d < min ? d : min));
-    const endDate = matchingRecurring
-      .map((r) => r.lastOccurrenceDate)
-      .reduce((max, d) => (d > max ? d : max));
-
-    const startMonth = toMonthKey(startDate);
-    const endMonth = toMonthKey(endDate);
-    const range: MonthRange | null =
-      startMonth && endMonth ? { start: startMonth, end: endMonth } : null;
-    this._recurringRange.set(range);
-
-    const months = range ? monthsBetween(range).reverse() : [];
-    const current = this.selectedMonth();
-    if (!current || !months.includes(current)) {
-      this.selectedMonth.set(months[0] ?? null);
-    }
-
-    this._cdr.markForCheck();
   }
 
   private async _loadSlicesForMonth(

@@ -1,17 +1,55 @@
 <div class="account-graphs">
+  <div class="account-graphs__filters">
+    <mat-form-field class="account-graphs__view-type-field">
+      <mat-label>{{ 'recurringPieChart.viewType' | translate }}</mat-label>
+      <mat-select
+        [value]="viewType()"
+        (selectionChange)="onViewTypeChange($event)"
+        data-testid="account-graphs-view-type"
+      >
+        @for (type of viewTypes; track type) {
+          <mat-option [value]="type">{{ viewTypeLabelKey(type) | translate }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (availableMonths().length > 0) {
+      <mat-form-field class="account-graphs__month-field">
+        <mat-label>{{ 'recurringPieChart.month' | translate }}</mat-label>
+        <mat-select
+          [value]="selectedMonth()"
+          (selectionChange)="onMonthChange($event)"
+          data-testid="account-graphs-month"
+        >
+          @for (month of availableMonths(); track month) {
+            <mat-option [value]="month">{{ monthLabel(month) }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+  </div>
+
   <mat-accordion class="account-graphs__accordion" multi>
     <mat-expansion-panel class="graph" [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title>{{ 'recurringPieChart.title' | translate }}</mat-panel-title>
       </mat-expansion-panel-header>
-      <app-recurring-pie-chart [accountId]="accountId()" />
+      <app-recurring-pie-chart
+        [accountId]="accountId()"
+        [viewType]="viewType()"
+        [selectedMonth]="selectedMonth()"
+      />
     </mat-expansion-panel>
 
     <mat-expansion-panel class="graph" [expanded]="true">
       <mat-expansion-panel-header>
         <mat-panel-title>{{ 'balanceTrendGraph.title' | translate }}</mat-panel-title>
       </mat-expansion-panel-header>
-      <app-balance-trend-graph [accountId]="accountId()" />
+      <app-balance-trend-graph
+        [accountId]="accountId()"
+        [viewType]="viewType()"
+        [selectedMonth]="selectedMonth()"
+      />
     </mat-expansion-panel>
   </mat-accordion>
 </div>
