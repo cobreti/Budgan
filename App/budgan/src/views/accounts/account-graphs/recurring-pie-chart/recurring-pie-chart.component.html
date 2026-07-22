@@ -1,0 +1,34 @@
+<div class="recurring-pie-chart">
+  @if (availableMonths().length > 0) {
+    <mat-form-field class="recurring-pie-chart__month-field">
+      <mat-label>{{ 'recurringPieChart.month' | translate }}</mat-label>
+      <mat-select
+        [value]="selectedMonth()"
+        (selectionChange)="onMonthChange($event)"
+        data-testid="recurring-pie-chart-month"
+      >
+        @for (month of availableMonths(); track month) {
+          <mat-option [value]="month">{{ monthLabel(month) }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (slices().length > 0) {
+      <div class="recurring-pie-chart__chart-container">
+        <canvas
+          baseChart
+          class="recurring-pie-chart__canvas"
+          [type]="'pie'"
+          [data]="chartData()"
+          [options]="chartOptions"
+          [attr.aria-label]="'recurringPieChart.ariaLabel' | translate"
+          role="img"
+        ></canvas>
+      </div>
+    } @else {
+      <p class="recurring-pie-chart__empty">{{ 'recurringPieChart.noDataForMonth' | translate }}</p>
+    }
+  } @else {
+    <p class="recurring-pie-chart__empty">{{ 'recurringPieChart.noData' | translate }}</p>
+  }
+</div>

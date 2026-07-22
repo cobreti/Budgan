@@ -125,6 +125,12 @@
     "ariaLabel": "Graphique de tendance du solde du compte",
     "noData": "Aucune donnée de solde disponible. Définissez un instantané pour activer le graphique."
   },
+  "recurringPieChart": {
+    "month": "Mois",
+    "ariaLabel": "Diagramme circulaire des dépenses récurrentes",
+    "noData": "Aucune dépense récurrente trouvée. Lancez l'analyse pour les détecter.",
+    "noDataForMonth": "Aucune dépense récurrente pour ce mois."
+  },
   "accountSnapshot": {
     "title": "Instantané du compte",
     "date": "Date de l'instantané",
