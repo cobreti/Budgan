@@ -3,6 +3,12 @@
 }
 
 .balance-trend-graph {
+  &__title {
+    margin: 0 0 1em;
+    font: var(--mat-sys-title-medium);
+    color: var(--mat-sys-on-surface, inherit);
+  }
+
   &__canvas {
     width: 100%;
     height: auto;

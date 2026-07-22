@@ -122,10 +122,12 @@
     }
   },
   "balanceTrendGraph": {
+    "title": "Balance Trend",
     "ariaLabel": "Account balance trend chart",
     "noData": "No balance data available. Set a snapshot to enable the chart."
   },
   "recurringPieChart": {
+    "title": "Recurring Expenses",
     "month": "Month",
     "ariaLabel": "Recurring expenses pie chart",
     "noData": "No recurring expenses found. Run the analysis to detect them.",

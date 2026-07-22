@@ -2,6 +2,14 @@
   display: block;
 }
 
+.account-graphs {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
 .graph {
-  max-height: 20em;
+  max-height: 60vh;
+  margin-top: 2em;
+  margin-bottom: 2em;
 }
