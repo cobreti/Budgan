@@ -2,7 +2,7 @@
   display: block;
 }
 
-.account-graphs {
+.account-graphs__accordion {
   display: flex;
   flex-direction: column;
   gap: 2em;
@@ -10,6 +10,5 @@
 
 .graph {
   max-height: 60vh;
-  margin-top: 2em;
-  margin-bottom: 2em;
+  border-bottom: 1px solid var(--mat-sys-outline, inherit);
 }

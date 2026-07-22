@@ -1,4 +1,17 @@
 <div class="account-graphs">
-  <app-balance-trend-graph class="graph" [accountId]="accountId()" />
-  <app-recurring-pie-chart class="graph" [accountId]="accountId()" />
+  <mat-accordion class="account-graphs__accordion" multi>
+    <mat-expansion-panel class="graph" [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>{{ 'recurringPieChart.title' | translate }}</mat-panel-title>
+      </mat-expansion-panel-header>
+      <app-recurring-pie-chart [accountId]="accountId()" />
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="graph" [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>{{ 'balanceTrendGraph.title' | translate }}</mat-panel-title>
+      </mat-expansion-panel-header>
+      <app-balance-trend-graph [accountId]="accountId()" />
+    </mat-expansion-panel>
+  </mat-accordion>
 </div>
