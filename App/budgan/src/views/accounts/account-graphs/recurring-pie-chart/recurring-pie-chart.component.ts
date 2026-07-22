@@ -73,7 +73,6 @@ export class RecurringPieChartComponent {
 
   readonly accountId = input.required<string>();
 
-  protected readonly _expenseRecurringIds = signal<ReadonlySet<string>>(new Set());
   protected readonly _recurringRange = signal<MonthRange | null>(null);
   protected readonly selectedMonth = signal<string | null>(null);
   protected readonly slices = signal<RecurringSlice[]>([]);
@@ -120,9 +119,8 @@ export class RecurringPieChartComponent {
     effect(() => {
       const id = this.accountId();
       const month = this.selectedMonth();
-      const recurringIds = this._expenseRecurringIds();
       this._transactionService.transactionsVersion();
-      this._loadSlicesForMonth(id, month, recurringIds);
+      this._loadSlicesForMonth(id, month);
     });
   }
 
@@ -142,14 +140,11 @@ export class RecurringPieChartComponent {
     const expenseRecurring = recurring.filter((r) => r.averageAmount < 0);
 
     if (expenseRecurring.length === 0) {
-      this._expenseRecurringIds.set(new Set());
       this._recurringRange.set(null);
       this.selectedMonth.set(null);
       this._cdr.markForCheck();
       return;
     }
-
-    this._expenseRecurringIds.set(new Set(expenseRecurring.map((r) => r.id)));
 
     const startDate = expenseRecurring
       .map((r) => r.firstOccurrenceDate)
@@ -173,12 +168,8 @@ export class RecurringPieChartComponent {
     this._cdr.markForCheck();
   }
 
-  private async _loadSlicesForMonth(
-    accountId: string,
-    month: string | null,
-    recurringIds: ReadonlySet<string>,
-  ): Promise<void> {
-    if (!month || recurringIds.size === 0) {
+  private async _loadSlicesForMonth(accountId: string, month: string | null): Promise<void> {
+    if (!month) {
       this.slices.set([]);
       this._cdr.markForCheck();
       return;

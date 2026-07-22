@@ -7,12 +7,17 @@ import {
 } from '@models/accountTransactionModel';
 import { Result } from '@app-types/result';
 import { ACCOUNT_SERVICE, AccountService } from './account.service';
-import { formatIsoDate, previousIsoDay } from '@/utils/date';
+import { formatIsoDate, parseIsoDate, previousIsoDay } from '@/utils/date';
 
 export type TransactionPage = {
   transactions: AccountTransactionModel[];
   totalPages: number;
   page: number;
+};
+
+export type RecurringTransactionsSpan = {
+  start: Date;
+  end: Date;
 };
 
 export type TransactionSortField = 'cardNumber' | 'dateInscription' | 'description' | 'amount';
@@ -49,6 +54,7 @@ export interface AccountTransactionService {
     startDate: Date,
     endDate: Date,
   ): Promise<AccountTransactionModel[]>;
+  getRecurringTransactionsSpan(accountId: string): Promise<RecurringTransactionsSpan | undefined>;
   getById(id: string): Promise<AccountTransactionModel>;
   delete(id: string): Promise<void>;
   recalculateBalances(accountId: string): Promise<void>;
@@ -215,6 +221,33 @@ export class AccountTransactionServiceImpl implements AccountTransactionService 
           t.dateInscriptionAsString <= endDateAsString,
       )
       .sort((a, b) => a.dateInscriptionAsString.localeCompare(b.dateInscriptionAsString));
+  }
+
+  async getRecurringTransactionsSpan(
+    accountId: string,
+  ): Promise<RecurringTransactionsSpan | undefined> {
+    const recurringPatterns = await this._indexDb.recurringTransactionsTable
+      .where('accountId')
+      .equals(accountId)
+      .toArray();
+    const recurringIds = new Set(recurringPatterns.map((r) => r.id));
+
+    const transactions = await this.getListByAccount(accountId);
+
+    const dates = transactions
+      .filter(
+        (t) =>
+          t.recordType === AccountTransactionRecordType.normal && recurringIds.has(t.recurringId),
+      )
+      .map((t) => t.dateInscriptionAsString);
+
+    if (dates.length === 0) return undefined;
+
+    const start = parseIsoDate(dates.reduce((min, d) => (d < min ? d : min)));
+    const end = parseIsoDate(dates.reduce((max, d) => (d > max ? d : max)));
+    if (!start || !end) return undefined;
+
+    return { start, end };
   }
 
   async getById(id: string): Promise<AccountTransactionModel> {
