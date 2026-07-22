@@ -1,3 +1,71 @@
 <div class="account-graphs">
-  <app-balance-trend-graph [accountId]="accountId()" />
+  <div class="account-graphs__filters">
+    <mat-form-field class="account-graphs__view-type-field">
+      <mat-label>{{ 'recurringPieChart.viewType' | translate }}</mat-label>
+      <mat-select
+        [value]="viewType()"
+        (selectionChange)="onViewTypeChange($event)"
+        data-testid="account-graphs-view-type"
+      >
+        <mat-select-trigger>{{ viewTypeLabelKey(viewType()) | translate }}</mat-select-trigger>
+        @for (type of viewTypes; track type) {
+          <mat-option [value]="type">{{ viewTypeLabelKey(type) | translate }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (availableMonths().length > 0) {
+      <mat-form-field class="account-graphs__month-field">
+        <mat-label>{{ 'recurringPieChart.startMonth' | translate }}</mat-label>
+        <mat-select
+          [value]="startMonth()"
+          (selectionChange)="onStartMonthChange($event)"
+          data-testid="account-graphs-start-month"
+        >
+          @for (month of availableMonths(); track month) {
+            <mat-option [value]="month">{{ monthLabel(month) }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="account-graphs__month-field">
+        <mat-label>{{ 'recurringPieChart.endMonth' | translate }}</mat-label>
+        <mat-select
+          [value]="endMonth()"
+          (selectionChange)="onEndMonthChange($event)"
+          data-testid="account-graphs-end-month"
+        >
+          @for (month of availableMonths(); track month) {
+            <mat-option [value]="month">{{ monthLabel(month) }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+  </div>
+
+  <mat-accordion class="account-graphs__accordion" multi>
+    <mat-expansion-panel class="graph" [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>{{ 'recurringPieChart.title' | translate }}</mat-panel-title>
+      </mat-expansion-panel-header>
+      <app-recurring-pie-chart
+        [accountId]="accountId()"
+        [viewType]="viewType()"
+        [startMonth]="startMonth()"
+        [endMonth]="endMonth()"
+      />
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="graph" [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>{{ 'balanceTrendGraph.title' | translate }}</mat-panel-title>
+      </mat-expansion-panel-header>
+      <app-balance-trend-graph
+        [accountId]="accountId()"
+        [viewType]="viewType()"
+        [startMonth]="startMonth()"
+        [endMonth]="endMonth()"
+      />
+    </mat-expansion-panel>
+  </mat-accordion>
 </div>

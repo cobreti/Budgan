@@ -20,7 +20,8 @@ import {
   AccountTransactionModel,
   AccountTransactionRecordType,
 } from '@models/accountTransactionModel';
-import { previousIsoDay } from '@/utils/date';
+import { formatIsoDate, previousIsoDay } from '@/utils/date';
+import { monthBounds, ViewType } from '@/utils/recurring-month';
 
 type DataPoint = { date: string; balance: number; isSnapshot?: boolean };
 
@@ -39,8 +40,42 @@ export class BalanceTrendGraphComponent {
   private readonly _cdr = inject(ChangeDetectorRef);
 
   readonly accountId = input.required<string>();
+  readonly viewType = input.required<ViewType>();
+  readonly startMonth = input.required<string | null>();
+  readonly endMonth = input.required<string | null>();
 
-  protected readonly _points = signal<DataPoint[]>([]);
+  protected readonly _allPoints = signal<DataPoint[]>([]);
+
+  // Windows the full balance history to the selected range. The point carried
+  // in from just before the range start anchors the line so it doesn't start
+  // from a visual discontinuity — it reflects the real balance entering the
+  // range, not a reset to zero.
+  protected readonly _points = computed<DataPoint[]>(() => {
+    const all = this._allPoints();
+    const startMonth = this.startMonth();
+    const endMonth = this.endMonth();
+    if (!startMonth || !endMonth) return all;
+
+    const startIso = formatIsoDate(monthBounds(startMonth).start);
+    const endIso = formatIsoDate(monthBounds(endMonth).end);
+
+    const withinRange = all.filter((p) => p.date >= startIso && p.date <= endIso);
+    const before = all.filter((p) => p.date < startIso);
+    const carryIn = before.length > 0 ? before[before.length - 1] : null;
+
+    if (!carryIn || withinRange[0]?.date === startIso) return withinRange;
+
+    return [{ date: startIso, balance: carryIn.balance }, ...withinRange];
+  });
+
+  // A full, unscoped history needs 2+ points to read as a "trend" at all.
+  // Once zoomed to a range, though, even one point is real data (just a
+  // quiet stretch) rather than an absence of data — so the bar to display
+  // something is lower.
+  readonly hasData = computed<boolean>(() => {
+    const pts = this._points();
+    return this.startMonth() && this.endMonth() ? pts.length >= 1 : pts.length >= 2;
+  });
 
   readonly chartData = computed<ChartData<'line'>>(() => {
     const pts = this._points();
@@ -99,7 +134,7 @@ export class BalanceTrendGraphComponent {
     // Keep only normal transactions that have a computed balance, sorted chronologically
     const normal: AccountTransactionModel[] = txs
       .filter(
-        t => t.recordType === AccountTransactionRecordType.normal && t.balance !== undefined,
+        (t) => t.recordType === AccountTransactionRecordType.normal && t.balance !== undefined,
       )
       .sort((a, b) => {
         const d = a.dateInscriptionAsString.localeCompare(b.dateInscriptionAsString);
@@ -108,7 +143,7 @@ export class BalanceTrendGraphComponent {
       });
 
     if (normal.length === 0) {
-      this._points.set([]);
+      this._allPoints.set([]);
       this._cdr.markForCheck();
       return;
     }
@@ -122,8 +157,8 @@ export class BalanceTrendGraphComponent {
     // Build remaining points: normal transactions + the snapshot itself (if present).
     // The snapshot has balanceDateOffset === 0, so it sorts between pre-snapshot
     // transactions (negative offset) and on-or-after-snapshot transactions (positive offset).
-    const snapshotTx = txs.find(t => t.recordType === AccountTransactionRecordType.snapshot);
-    const allPoints: DataPoint[] = normal.map(t => ({
+    const snapshotTx = txs.find((t) => t.recordType === AccountTransactionRecordType.snapshot);
+    const allPoints: DataPoint[] = normal.map((t) => ({
       date: t.dateInscriptionAsString,
       balance: t.balance!,
     }));
@@ -145,7 +180,7 @@ export class BalanceTrendGraphComponent {
       });
     }
 
-    this._points.set([opening, ...allPoints]);
+    this._allPoints.set([opening, ...allPoints]);
     this._cdr.markForCheck();
   }
 }
