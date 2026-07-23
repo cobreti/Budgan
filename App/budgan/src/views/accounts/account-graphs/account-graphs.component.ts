@@ -25,7 +25,7 @@ import {
 } from '@services/account-transaction.service';
 import { AccountTransactionRecordType } from '@models/accountTransactionModel';
 import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
-import { MonthRange, ViewType, monthsBetween, toMonthKey } from '@/utils/recurring-month';
+import { MonthRange, monthsBetween, toMonthKey } from '@/utils/recurring-month';
 import { BalanceTrendGraphComponent } from '@views/accounts/account-graphs/balance-trend-graph/balance-trend-graph.component';
 import { RecurringPieChartComponent } from '@views/accounts/account-graphs/recurring-pie-chart/recurring-pie-chart.component';
 
@@ -58,8 +58,6 @@ export class AccountGraphsComponent {
 
   readonly accountId = input.required<string>();
 
-  protected readonly viewTypes: ViewType[] = ['all', 'expense', 'income'];
-  protected readonly viewType = signal<ViewType>('all');
   protected readonly startMonth = signal<string | null>(null);
   protected readonly endMonth = signal<string | null>(null);
   private readonly _monthRange = signal<MonthRange | null>(null);
@@ -74,29 +72,17 @@ export class AccountGraphsComponent {
 
   constructor() {
     // Discovers which months are selectable and picks a default month, from
-    // the account's full transaction history (not just recognized recurring
-    // patterns) filtered to the selected view type's sign — so the pickers
-    // stay available and in sync with what the graphs below actually show.
+    // the account's full transaction history — so the pickers stay available
+    // and in sync with what the graphs below actually show.
     effect(() => {
       const id = this.accountId();
-      const viewType = this.viewType();
       this._transactionService.transactionsVersion();
-      this._loadAvailableMonths(id, viewType);
+      this._loadAvailableMonths(id);
     });
   }
 
   monthLabel(month: string): string {
     return moment(month, 'YYYY-MM').locale(this._locale.currentLocale()).format('MMMM YYYY');
-  }
-
-  viewTypeLabelKey(viewType: ViewType): string {
-    if (viewType === 'expense') return 'recurringPieChart.expenses';
-    if (viewType === 'income') return 'recurringPieChart.incomes';
-    return 'recurringPieChart.all';
-  }
-
-  onViewTypeChange(change: MatSelectChange): void {
-    this.viewType.set(change.value as ViewType);
   }
 
   onStartMonthChange(change: MatSelectChange): void {
@@ -117,27 +103,23 @@ export class AccountGraphsComponent {
     }
   }
 
-  private async _loadAvailableMonths(accountId: string, viewType: ViewType): Promise<void> {
-    // Guards against out-of-order async resolution: if accountId/viewType
-    // changes again before this call resolves, a later call's request id
-    // will have moved on, so this (now stale) result is discarded instead of
+  private async _loadAvailableMonths(accountId: string): Promise<void> {
+    // Guards against out-of-order async resolution: if accountId changes
+    // again before this call resolves, a later call's request id will have
+    // moved on, so this (now stale) result is discarded instead of
     // overwriting the dropdowns with another account's months.
     const requestId = ++this._availableMonthsRequestId;
     const transactions = await this._transactionService.getListByAccount(accountId);
     if (requestId !== this._availableMonthsRequestId) return;
 
-    // 'all' keeps both signs; expense/income keep only transactions of matching sign.
     const matchingDates = transactions
       .filter((t) => t.recordType === AccountTransactionRecordType.normal)
-      .filter((t) => {
-        if (viewType === 'expense') return t.amount < 0;
-        if (viewType === 'income') return t.amount > 0;
-        return true;
-      })
       .map((t) => t.dateInscriptionAsString);
 
-    const startDate = matchingDates.length > 0 ? matchingDates.reduce((min, d) => (d < min ? d : min)) : undefined;
-    const endDate = matchingDates.length > 0 ? matchingDates.reduce((max, d) => (d > max ? d : max)) : undefined;
+    const startDate =
+      matchingDates.length > 0 ? matchingDates.reduce((min, d) => (d < min ? d : min)) : undefined;
+    const endDate =
+      matchingDates.length > 0 ? matchingDates.reduce((max, d) => (d > max ? d : max)) : undefined;
 
     if (!startDate || !endDate) {
       this._monthRange.set(null);
