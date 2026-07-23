@@ -125,7 +125,11 @@
   "balanceTrendGraph": {
     "title": "Balance Trend",
     "ariaLabel": "Account balance trend chart",
-    "noData": "No balance data available. Set a snapshot to enable the chart."
+    "noData": "No balance data available. Set a snapshot to enable the chart.",
+    "snapshot": "Snapshot",
+    "openingBalance": "Opening balance",
+    "amount": "Amount",
+    "cumulatedBalance": "Balance"
   },
   "recurringPieChart": {
     "title": "Recurring Transactions",
@@ -137,7 +141,9 @@
     "incomes": "Income",
     "ariaLabel": "Recurring transactions pie chart",
     "noData": "No recurring transactions found. Run the analysis to detect them.",
-    "noDataForRange": "No recurring transactions for this period."
+    "noDataForRange": "No recurring transactions for this period.",
+    "total": "Total",
+    "completeTotal": "Total (all items)"
   },
   "accountSnapshot": {
     "title": "Account Snapshot",
