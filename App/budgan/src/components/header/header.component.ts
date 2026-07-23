@@ -33,7 +33,10 @@ export class HeaderComponent {
   }
 
   switchLocale(locale: string): void {
-    this._router.navigate([locale]);
+    const urlTree = this._router.parseUrl(this._router.url);
+    const segments = urlTree.root.children['primary']?.segments ?? [];
+    const remaining = segments.slice(1).map((s) => s.path);
+    this._router.navigate([locale, ...remaining], { queryParams: urlTree.queryParams });
   }
 
   async onHome(): Promise<void> {
