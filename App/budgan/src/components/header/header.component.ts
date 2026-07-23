@@ -27,6 +27,7 @@ export class HeaderComponent {
   private readonly _themeService = inject(THEME_SERVICE);
   protected readonly isDark = this._themeService.isDark;
   protected readonly buildType = environment.buildType;
+  protected readonly currentLocale = this._localeService.currentLocale;
 
   onMenuBtnClick(): void {
     this._mainMenuService.toggleMenu();
