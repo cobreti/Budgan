@@ -29,9 +29,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "styles": ["src/styles.scss"],
             "allowedCommonJsDependencies": ["moment"]
           },
           "configurations": {
@@ -128,23 +126,29 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "budgan:build:production"
+              "buildTarget": "budgan:build:production",
+              "port": 4210
             },
             "development": {
-              "buildTarget": "budgan:build:development"
+              "buildTarget": "budgan:build:development",
+              "port": 4200
             },
             "pwa": {
-              "buildTarget": "budgan:build:pwa"
+              "buildTarget": "budgan:build:pwa",
+              "port": 4220
             },
             "pwa-dev": {
-              "buildTarget": "budgan:build:pwa-dev"
+              "buildTarget": "budgan:build:pwa-dev",
+              "port": 4230
             },
             "server": {
-              "buildTarget": "budgan:build:server"
+              "buildTarget": "budgan:build:server",
+              "port": 4240
             },
             "server-dev": {
               "buildTarget": "budgan:build:server-dev",
-              "proxyConfig": "proxy.conf.json"
+              "proxyConfig": "proxy.conf.json",
+              "port": 4250
             }
           },
           "defaultConfiguration": "development"
