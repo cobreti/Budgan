@@ -125,7 +125,11 @@
   "balanceTrendGraph": {
     "title": "Tendance du solde",
     "ariaLabel": "Graphique de tendance du solde du compte",
-    "noData": "Aucune donnée de solde disponible. Définissez un instantané pour activer le graphique."
+    "noData": "Aucune donnée de solde disponible. Définissez un instantané pour activer le graphique.",
+    "snapshot": "Instantané",
+    "openingBalance": "Solde d'ouverture",
+    "amount": "Montant",
+    "cumulatedBalance": "Solde"
   },
   "recurringPieChart": {
     "title": "Transactions récurrentes",

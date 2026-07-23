@@ -8,14 +8,16 @@ import {
   input,
   signal,
 } from '@angular/core';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { BaseChartDirective } from 'ng2-charts';
-import type { ChartData, ChartOptions } from 'chart.js';
+import type { ChartData, ChartOptions, TooltipItem } from 'chart.js';
+import moment from 'moment';
 import {
   ACCOUNT_TRANSACTION_SERVICE,
   AccountTransactionService,
 } from '@services/account-transaction.service';
 import { ACCOUNT_SERVICE, AccountService } from '@services/account.service';
+import { LOCALE_SERVICE, LocaleService } from '@services/locale.service';
 import { AccountModel } from '@models/accountModel';
 import {
   AccountTransactionModel,
@@ -24,7 +26,13 @@ import {
 import { formatIsoDate, previousIsoDay } from '@/utils/date';
 import { monthBounds } from '@/utils/recurring-month';
 
-type DataPoint = { date: string; balance: number; isSnapshot?: boolean };
+type DataPoint = {
+  date: string;
+  balance: number;
+  isSnapshot?: boolean;
+  description?: string;
+  amount?: number;
+};
 
 @Component({
   selector: 'app-balance-trend-graph',
@@ -38,6 +46,8 @@ export class BalanceTrendGraphComponent {
     ACCOUNT_TRANSACTION_SERVICE,
   );
   private readonly _accountService = inject<AccountService>(ACCOUNT_SERVICE);
+  private readonly _locale = inject<LocaleService>(LOCALE_SERVICE);
+  private readonly _translate = inject(TranslateService);
   private readonly _cdr = inject(ChangeDetectorRef);
 
   readonly accountId = input.required<string>();
@@ -105,6 +115,37 @@ export class BalanceTrendGraphComponent {
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
+      tooltip: {
+        callbacks: {
+          // Reads from _points() (rather than the closure captured when
+          // chartData was computed) so the tooltip always reflects the
+          // range/filter currently applied, since chartOptions itself is a
+          // static field and isn't recreated on every recompute.
+          title: (items: TooltipItem<'line'>[]) => {
+            const point = this._points()[items[0]?.dataIndex];
+            return point ? this._formatTooltipDate(point.date) : '';
+          },
+          label: (item: TooltipItem<'line'>) => {
+            const point = this._points()[item.dataIndex];
+            if (!point) return '';
+            const lines: string[] = [];
+            if (point.isSnapshot) {
+              lines.push(this._translate.instant('balanceTrendGraph.snapshot'));
+            } else if (point.description !== undefined) {
+              lines.push(point.description);
+              lines.push(
+                `${this._translate.instant('balanceTrendGraph.amount')}: ${this._formatAmount(point.amount ?? 0)}`,
+              );
+            } else {
+              lines.push(this._translate.instant('balanceTrendGraph.openingBalance'));
+            }
+            lines.push(
+              `${this._translate.instant('balanceTrendGraph.cumulatedBalance')}: ${this._formatAmount(point.balance)}`,
+            );
+            return lines;
+          },
+        },
+      },
     },
     scales: {
       x: {
@@ -123,6 +164,23 @@ export class BalanceTrendGraphComponent {
       this._transactionService.transactionsVersion();
       this._loadPoints(id);
     });
+  }
+
+  private _formatAmount(amount: number): string {
+    const [intPart, decPart] = amount.toFixed(2).split('.');
+    const sign = intPart.startsWith('-') ? '-' : '';
+    const intAbs = sign ? intPart.slice(1) : intPart;
+    const grouped = intAbs.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    return `${sign}${grouped}.${decPart}`;
+  }
+
+  // Points' dates come from either dashed ("YYYY-MM-DD", normal transactions)
+  // or dashless ("YYYYMMDD", snapshot) storage formats — moment is given both
+  // so it can parse either without guessing wrong on one of them.
+  private _formatTooltipDate(date: string): string {
+    return moment(date, ['YYYY-MM-DD', 'YYYYMMDD'])
+      .locale(this._locale.currentLocale())
+      .format('LL');
   }
 
   private async _loadPoints(accountId: string): Promise<void> {
@@ -166,6 +224,8 @@ export class BalanceTrendGraphComponent {
     const points: DataPoint[] = normal.map((t) => ({
       date: t.dateInscriptionAsString,
       balance: t.balance!,
+      description: t.description,
+      amount: t.amount,
     }));
 
     if (snapshotTx) {

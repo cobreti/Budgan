@@ -125,7 +125,11 @@
   "balanceTrendGraph": {
     "title": "Balance Trend",
     "ariaLabel": "Account balance trend chart",
-    "noData": "No balance data available. Set a snapshot to enable the chart."
+    "noData": "No balance data available. Set a snapshot to enable the chart.",
+    "snapshot": "Snapshot",
+    "openingBalance": "Opening balance",
+    "amount": "Amount",
+    "cumulatedBalance": "Balance"
   },
   "recurringPieChart": {
     "title": "Recurring Transactions",
