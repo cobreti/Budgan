@@ -137,7 +137,9 @@
     "incomes": "Revenus",
     "ariaLabel": "Diagramme circulaire des transactions récurrentes",
     "noData": "Aucune transaction récurrente trouvée. Lancez l'analyse pour les détecter.",
-    "noDataForRange": "Aucune transaction récurrente pour cette période."
+    "noDataForRange": "Aucune transaction récurrente pour cette période.",
+    "total": "Total",
+    "completeTotal": "Total (tous les éléments)"
   },
   "accountSnapshot": {
     "title": "Instantané du compte",

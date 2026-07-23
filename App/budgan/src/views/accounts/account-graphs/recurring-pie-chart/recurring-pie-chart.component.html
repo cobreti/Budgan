@@ -26,6 +26,18 @@
           role="img"
         ></canvas>
       </div>
+      <p class="recurring-pie-chart__total" data-testid="recurring-pie-chart-total">
+        {{ 'recurringPieChart.total' | translate }}: {{ formatTotal(visibleTotal()) }}
+        @if (hiddenIndices().size > 0) {
+          <span
+            class="recurring-pie-chart__total-complete"
+            data-testid="recurring-pie-chart-total-complete"
+          >
+            ({{ 'recurringPieChart.completeTotal' | translate }}:
+            {{ formatTotal(completeTotal()) }})
+          </span>
+        }
+      </p>
     } @else {
       <p class="recurring-pie-chart__empty">{{ 'recurringPieChart.noDataForRange' | translate }}</p>
     }

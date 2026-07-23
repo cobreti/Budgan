@@ -137,7 +137,9 @@
     "incomes": "Income",
     "ariaLabel": "Recurring transactions pie chart",
     "noData": "No recurring transactions found. Run the analysis to detect them.",
-    "noDataForRange": "No recurring transactions for this period."
+    "noDataForRange": "No recurring transactions for this period.",
+    "total": "Total",
+    "completeTotal": "Total (all items)"
   },
   "accountSnapshot": {
     "title": "Account Snapshot",

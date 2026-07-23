@@ -24,6 +24,18 @@
     min-height: 0;
   }
 
+  &__total {
+    flex: 0 0 auto;
+    margin: 0;
+    text-align: center;
+    color: var(--mat-sys-on-surface-variant, inherit);
+  }
+
+  &__total-complete {
+    font-size: 0.9em;
+    opacity: 0.8;
+  }
+
   &__empty {
     color: var(--mat-sys-on-surface-variant, inherit);
   }
