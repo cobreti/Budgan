@@ -11,6 +11,9 @@ import {
 import { TranslatePipe } from '@ngx-translate/core';
 import { BaseChartDirective } from 'ng2-charts';
 import type { ChartData, ChartOptions } from 'chart.js';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatSelect, MatSelectChange, MatSelectTrigger } from '@angular/material/select';
 import {
   ACCOUNT_TRANSACTION_SERVICE,
   AccountTransactionService,
@@ -24,7 +27,15 @@ type RecurringSlice = { description: string; amount: number };
   templateUrl: './recurring-pie-chart.component.html',
   styleUrl: './recurring-pie-chart.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, BaseChartDirective],
+  imports: [
+    TranslatePipe,
+    BaseChartDirective,
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatSelectTrigger,
+    MatOption,
+  ],
 })
 export class RecurringPieChartComponent {
   private readonly _transactionService = inject<AccountTransactionService>(
@@ -33,9 +44,11 @@ export class RecurringPieChartComponent {
   private readonly _cdr = inject(ChangeDetectorRef);
 
   readonly accountId = input.required<string>();
-  readonly viewType = input.required<ViewType>();
   readonly startMonth = input.required<string | null>();
   readonly endMonth = input.required<string | null>();
+
+  protected readonly viewTypes: ViewType[] = ['all', 'expense', 'income'];
+  protected readonly viewType = signal<ViewType>('all');
 
   protected readonly slices = signal<RecurringSlice[]>([]);
 
@@ -71,6 +84,16 @@ export class RecurringPieChartComponent {
       this._transactionService.transactionsVersion();
       this._loadSlicesForRange(id, startMonth, endMonth, viewType);
     });
+  }
+
+  viewTypeLabelKey(viewType: ViewType): string {
+    if (viewType === 'expense') return 'recurringPieChart.expenses';
+    if (viewType === 'income') return 'recurringPieChart.incomes';
+    return 'recurringPieChart.all';
+  }
+
+  onViewTypeChange(change: MatSelectChange): void {
+    this.viewType.set(change.value as ViewType);
   }
 
   private async _loadSlicesForRange(

@@ -86,7 +86,7 @@ export class AccountSnapshotComponent {
     if (date === null || amount === null) return;
     const result = await this._transactionService.setSnapshot(
       this.accountId(),
-      formatIsoDate(date),
+      formatIsoDate(date).replaceAll('-', ''),
       amount,
     );
     if (result.success) {

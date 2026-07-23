@@ -1,4 +1,18 @@
 <div class="recurring-pie-chart">
+  <mat-form-field class="recurring-pie-chart__view-type-field">
+    <mat-label>{{ 'recurringPieChart.viewType' | translate }}</mat-label>
+    <mat-select
+      [value]="viewType()"
+      (selectionChange)="onViewTypeChange($event)"
+      data-testid="recurring-pie-chart-view-type"
+    >
+      <mat-select-trigger>{{ viewTypeLabelKey(viewType()) | translate }}</mat-select-trigger>
+      @for (type of viewTypes; track type) {
+        <mat-option [value]="type">{{ viewTypeLabelKey(type) | translate }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
   @if (startMonth() && endMonth()) {
     @if (slices().length > 0) {
       <div class="recurring-pie-chart__chart-container">

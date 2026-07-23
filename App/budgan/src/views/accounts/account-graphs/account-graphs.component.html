@@ -1,19 +1,5 @@
 <div class="account-graphs">
   <div class="account-graphs__filters">
-    <mat-form-field class="account-graphs__view-type-field">
-      <mat-label>{{ 'recurringPieChart.viewType' | translate }}</mat-label>
-      <mat-select
-        [value]="viewType()"
-        (selectionChange)="onViewTypeChange($event)"
-        data-testid="account-graphs-view-type"
-      >
-        <mat-select-trigger>{{ viewTypeLabelKey(viewType()) | translate }}</mat-select-trigger>
-        @for (type of viewTypes; track type) {
-          <mat-option [value]="type">{{ viewTypeLabelKey(type) | translate }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
     @if (availableMonths().length > 0) {
       <mat-form-field class="account-graphs__month-field">
         <mat-label>{{ 'recurringPieChart.startMonth' | translate }}</mat-label>
@@ -50,7 +36,6 @@
       </mat-expansion-panel-header>
       <app-recurring-pie-chart
         [accountId]="accountId()"
-        [viewType]="viewType()"
         [startMonth]="startMonth()"
         [endMonth]="endMonth()"
       />
@@ -62,7 +47,6 @@
       </mat-expansion-panel-header>
       <app-balance-trend-graph
         [accountId]="accountId()"
-        [viewType]="viewType()"
         [startMonth]="startMonth()"
         [endMonth]="endMonth()"
       />

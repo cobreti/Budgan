@@ -22,7 +22,7 @@ import {
   AccountTransactionRecordType,
 } from '@models/accountTransactionModel';
 import { formatIsoDate, previousIsoDay } from '@/utils/date';
-import { monthBounds, ViewType } from '@/utils/recurring-month';
+import { monthBounds } from '@/utils/recurring-month';
 
 type DataPoint = { date: string; balance: number; isSnapshot?: boolean };
 
@@ -41,7 +41,6 @@ export class BalanceTrendGraphComponent {
   private readonly _cdr = inject(ChangeDetectorRef);
 
   readonly accountId = input.required<string>();
-  readonly viewType = input.required<ViewType>();
   readonly startMonth = input.required<string | null>();
   readonly endMonth = input.required<string | null>();
 
@@ -120,14 +119,13 @@ export class BalanceTrendGraphComponent {
   constructor() {
     effect(() => {
       const id = this.accountId();
-      const viewType = this.viewType();
       // Track transactionsVersion so this effect re-runs when balances are recalculated
       this._transactionService.transactionsVersion();
-      this._loadPoints(id, viewType);
+      this._loadPoints(id);
     });
   }
 
-  private async _loadPoints(accountId: string, viewType: ViewType): Promise<void> {
+  private async _loadPoints(accountId: string): Promise<void> {
     const [account, txs] = await Promise.all([
       this._accountService.getById(accountId),
       this._transactionService.getListByAccount(accountId),
@@ -144,15 +142,7 @@ export class BalanceTrendGraphComponent {
         return (a.balanceDateOffset ?? 0) - (b.balanceDateOffset ?? 0);
       });
 
-    if (viewType === 'all') {
-      this._allPoints.set(this._buildBalancePoints(account, txs, normal));
-    } else {
-      // 'expense'/'income': the running account balance mixes both signs, so
-      // it isn't meaningful here — show a cumulative total of only the
-      // transactions matching the selected sign instead.
-      const matching = normal.filter((t) => (viewType === 'expense' ? t.amount < 0 : t.amount > 0));
-      this._allPoints.set(this._buildCumulativePoints(matching));
-    }
+    this._allPoints.set(this._buildBalancePoints(account, txs, normal));
     this._cdr.markForCheck();
   }
 
@@ -194,22 +184,6 @@ export class BalanceTrendGraphComponent {
         return 0;
       });
     }
-
-    return [opening, ...points];
-  }
-
-  private _buildCumulativePoints(matching: AccountTransactionModel[]): DataPoint[] {
-    if (matching.length === 0) return [];
-
-    const opening: DataPoint = {
-      date: previousIsoDay(matching[0].dateInscriptionAsString),
-      balance: 0,
-    };
-    let running = 0;
-    const points: DataPoint[] = matching.map((t) => {
-      running += t.amount;
-      return { date: t.dateInscriptionAsString, balance: running };
-    });
 
     return [opening, ...points];
   }
