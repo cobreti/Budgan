@@ -26,6 +26,7 @@ interface AccountTransactionDto {
   balance?: number | null;
   balanceDateOffset?: number | null;
   description: string;
+  curatedDescription: string;
   uniqueKey: string;
   recurringId: string;
   recordType: string;
@@ -56,6 +57,7 @@ export class AccountTransactionServiceServerImpl implements AccountTransactionSe
       balance: dto.balance ?? undefined,
       balanceDateOffset: dto.balanceDateOffset ?? undefined,
       description: dto.description,
+      curatedDescription: dto.curatedDescription,
       recordType:
         dto.recordType === 'snapshot'
           ? AccountTransactionRecordType.snapshot

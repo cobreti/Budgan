@@ -22,6 +22,7 @@ interface AccountTransactionDto {
   balance?: number | null;
   balanceDateOffset?: number | null;
   description: string;
+  curatedDescription: string;
   uniqueKey: string;
   recurringId: string;
   recordType: string;
@@ -37,6 +38,7 @@ interface AccountRecurringTransactionItemDto {
   periodInDays: number;
   transactionCount: number;
   description: string;
+  curatedDescription: string;
   averageAmount: number;
   firstOccurrenceDate: string;
   lastOccurrenceDate: string;
@@ -63,6 +65,7 @@ export class AccountRecurringTransactionServiceServerImpl implements AccountRecu
       balance: dto.balance ?? undefined,
       balanceDateOffset: dto.balanceDateOffset ?? undefined,
       description: dto.description,
+      curatedDescription: dto.curatedDescription,
       recordType:
         dto.recordType === 'snapshot'
           ? AccountTransactionRecordType.snapshot
@@ -191,6 +194,7 @@ export class AccountRecurringTransactionServiceServerImpl implements AccountRecu
       periodInDays: dto.periodInDays,
       transactionCount: dto.transactionCount,
       description: dto.description,
+      curatedDescription: dto.curatedDescription,
       averageAmount: dto.averageAmount,
       firstOccurrenceDate: dto.firstOccurrenceDate,
       lastOccurrenceDate: dto.lastOccurrenceDate,
@@ -214,6 +218,7 @@ export class AccountRecurringTransactionServiceServerImpl implements AccountRecu
       periodInDays: dto.periodInDays,
       transactionCount: dto.transactionCount,
       description: dto.description,
+      curatedDescription: dto.curatedDescription,
       averageAmount: dto.averageAmount,
       firstOccurrenceDate: dto.firstOccurrenceDate,
       lastOccurrenceDate: dto.lastOccurrenceDate,
