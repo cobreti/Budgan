@@ -331,7 +331,7 @@ export class AccountTransactionServicePwaImpl implements AccountTransactionServi
     const groups = match?.groups ?? {};
 
     if (groups['prec']) {
-      return `${groups['prec']}${groups['succ']}`;
+      return `${groups['prec']} ${groups['succ']}`;
     } else {
       return description;
     }
