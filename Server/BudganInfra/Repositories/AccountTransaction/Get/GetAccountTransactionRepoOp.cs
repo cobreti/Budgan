@@ -35,6 +35,7 @@ public class GetAccountTransactionRepoOp : BaseRepositoryOperationWithResultValu
                 Balance = entity.Balance,
                 BalanceDateOffset = entity.BalanceDateOffset,
                 Description = entity.Description,
+                CuratedDescription = entity.CuratedDescription,
                 RecordType = entity.RecordType,
             });
         }

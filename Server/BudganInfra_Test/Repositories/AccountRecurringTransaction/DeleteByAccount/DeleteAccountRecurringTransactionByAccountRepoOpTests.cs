@@ -29,6 +29,7 @@ public class DeleteAccountRecurringTransactionByAccountRepoOpTests
             PeriodInDays = 30,
             TransactionCount = 2,
             Description = "Subscription",
+            CuratedDescription = "Subscription",
             AverageAmount = 10.00m,
             FirstOccurrenceDate = new DateOnly(2026, 1, 1),
             LastOccurrenceDate = new DateOnly(2026, 2, 1),

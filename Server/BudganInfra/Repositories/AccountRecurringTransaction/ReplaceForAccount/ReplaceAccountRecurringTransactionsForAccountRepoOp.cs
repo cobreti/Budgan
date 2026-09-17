@@ -45,6 +45,7 @@ public class ReplaceAccountRecurringTransactionsForAccountRepoOp : BaseRepositor
                 PeriodInDays = x.PeriodInDays,
                 TransactionCount = x.TransactionCount,
                 Description = x.Description,
+                CuratedDescription = x.CuratedDescription,
                 AverageAmount = x.AverageAmount,
                 FirstOccurrenceDate = x.FirstOccurrenceDate,
                 LastOccurrenceDate = x.LastOccurrenceDate,

@@ -41,6 +41,7 @@ internal class SetSnapshotAccountTransactionUseCase : BaseUseCaseWithResultValue
             Balance = this._model.Amount,
             BalanceDateOffset = 0,
             Description = string.Empty,
+            CuratedDescription = string.Empty,
             RecordType = AccountTransactionRecordTypeConverter.ToDao(AccountTransactionRecordType.Snapshot),
         };
 

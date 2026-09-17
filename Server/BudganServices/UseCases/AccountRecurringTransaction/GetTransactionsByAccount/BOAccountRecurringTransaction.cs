@@ -13,6 +13,7 @@ public class BOAccountRecurringTransaction
     public decimal? Balance { get; set; }
     public int? BalanceDateOffset { get; set; }
     public required string Description { get; set; }
+    public required string CuratedDescription { get; set; }
     public required string UniqueKey { get; set; }
     public required string RecurringId { get; set; }
     public required AccountTransactionRecordType RecordType { get; set; }

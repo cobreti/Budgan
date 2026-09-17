@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.RegularExpressions;
 using BudganGlobal.Errors;
 using BudganGlobal.Errors.Exceptions;
 using BudganInfra.Repositories.AccountTransaction;
@@ -25,7 +26,8 @@ internal class CreateAccountTransactionUseCase : BaseUseCaseWithResultValue<Guid
         var dateInscription = DateOnly.ParseExact(this._model.DateInscriptionAsString, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 
         var uniqueKey = BuildUniqueKey(this._model, this._model.DateInscriptionAsString);
-        var recurringId = BuildRecurringId(this._model);
+        var curatedDescription = GetCuratedDescription(this._model.Description);
+        var recurringId = BuildRecurringId(this._model, curatedDescription);
 
         var dao = new DaoSaveAccountTransaction
         {
@@ -41,6 +43,7 @@ internal class CreateAccountTransactionUseCase : BaseUseCaseWithResultValue<Guid
             Balance = null,
             BalanceDateOffset = null,
             Description = this._model.Description,
+            CuratedDescription = curatedDescription,
             RecordType = AccountTransactionRecordTypeConverter.ToDao(AccountTransactionRecordType.Normal),
         };
 
@@ -66,11 +69,27 @@ internal class CreateAccountTransactionUseCase : BaseUseCaseWithResultValue<Guid
         return $"{model.AccountId}|{dateInscriptionAsString}|{model.Amount.ToString(CultureInfo.InvariantCulture)}|{model.Description}";
     }
 
-    private static string BuildRecurringId(BOCreateAccountTransaction model)
+    private static string GetCuratedDescription(string description)
+    {
+        var regex = new Regex("^(?<prec>[^\\*]*)\\*(?<opt>\\s*[^\\s]*\\s)?(?<succ>.*)?$");
+        var match = regex.Match(description);
+
+        if (match.Success)
+        {
+            var prec = match.Groups["prec"];
+            var succ = match.Groups["succ"];
+
+            return $"{prec}{succ}";
+        }
+
+        return description;
+    }
+
+    private static string BuildRecurringId(BOCreateAccountTransaction model, string curatedDescription)
     {
         var lower = (long)(Math.Floor(model.Amount * (1 - RecurringRange) / 5m) * 5m);
         var upper = (long)(Math.Floor(model.Amount * (1 + RecurringRange) / 5m) * 5m);
 
-        return $"{model.AccountId}|{lower}|{upper}|{model.Description}";
+        return $"{model.AccountId}|{lower}|{upper}|{curatedDescription}";
     }
 }

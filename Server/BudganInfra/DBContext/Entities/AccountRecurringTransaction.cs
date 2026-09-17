@@ -18,6 +18,9 @@ public class AccountRecurringTransaction : BaseEntity
     [MaxLength(450)]
     public required string Description { get; set; }
 
+    [MaxLength(450)]
+    public required string CuratedDescription { get; set; }
+
     public required decimal AverageAmount { get; set; }
     public required DateOnly FirstOccurrenceDate { get; set; }
     public required DateOnly LastOccurrenceDate { get; set; }
