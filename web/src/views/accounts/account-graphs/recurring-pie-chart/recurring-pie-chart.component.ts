@@ -183,7 +183,7 @@ export class RecurringPieChartComponent {
         }
         return sum;
       }, 0);
-      const description = transactions[0]?.description || 'Unknown';
+      const description = transactions[0]?.curatedDescription || 'Unknown';
       if (totalAmount > 0) {
         this.activeRecurringTransactionIds = [
           ...this.activeRecurringTransactionIds,

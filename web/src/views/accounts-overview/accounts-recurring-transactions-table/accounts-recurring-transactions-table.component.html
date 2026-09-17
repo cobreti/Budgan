@@ -25,7 +25,7 @@
         data-testid="sort-header-description">
         {{ 'accountsRecurringTransactionTable.description' | translate }}
       </th>
-      <td mat-cell *matCellDef="let row">{{ row.description }}</td>
+      <td mat-cell *matCellDef="let row">{{ row.curatedDescription }}</td>
     </ng-container>
 
     <ng-container matColumnDef="firstOccurrenceDate">
