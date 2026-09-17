@@ -47,9 +47,11 @@
               {{ formatTotal(completeExpenses()) }}
             </span>
           }
-          <span style="margin-right: 2em"></span>
-          {{ 'recurringPieChart.total' | translate }}:
-          {{ formatTotal(completeTotal()) }}
+          @if (viewType() == 'all') {
+            <span style="margin-right: 2em"></span>
+            {{ 'recurringPieChart.total' | translate }}:
+            {{ formatTotal(completeTotal()) }}
+          }
         </p>
       } @else {
         <p class="recurring-pie-chart__empty">
