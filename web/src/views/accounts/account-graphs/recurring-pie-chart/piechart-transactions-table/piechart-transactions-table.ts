@@ -46,6 +46,7 @@ export class PiechartTransactionsTableComponent implements OnInit {
   readonly accountService = inject<AccountService>(ACCOUNT_SERVICE);
   readonly showAccountColumn = input<boolean>(false);
   readonly accountTransactions = input.required<AccountTransactionModel[]>();
+  readonly title = input.required<string | undefined>();
   readonly color = input<string | undefined>('');
 
   accounts = signal<AccountModel[]>([]);

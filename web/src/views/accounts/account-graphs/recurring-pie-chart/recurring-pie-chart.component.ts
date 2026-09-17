@@ -64,6 +64,7 @@ export class RecurringPieChartComponent {
   readonly selectedTransactions = signal<AccountTransactionModel[]>([]);
   selectedRecurringTransactionId = '';
   readonly selectedColor = signal<string | undefined>(undefined);
+  readonly selectedName = signal<string | undefined>(undefined);
   activeRecurringTransactionIds: string[] = [];
 
   // Indices manually hidden by clicking a legend entry (Chart.js toggles a
@@ -118,6 +119,7 @@ export class RecurringPieChartComponent {
           this.selectedRecurringTransactionId = d.id;
           this.selectedTransactions.set(this.recurringTransactions()[d.id]);
           this.selectedColor.set(legendItem.fillStyle?.toString());
+          this.selectedName.set(legendItem.text);
         },
       },
     },

@@ -57,6 +57,7 @@
           (close)="onPieChartTransactionsTableClosed()"
           [showAccountColumn]="false"
           [accountTransactions]="selectedTransactions()"
+          [title]="selectedName()"
           [color]="selectedColor()"></app-piechart-transactions-table>
       }
     </div>
