@@ -79,7 +79,7 @@ internal class CreateAccountTransactionUseCase : BaseUseCaseWithResultValue<Guid
             var prec = match.Groups["prec"];
             var succ = match.Groups["succ"];
 
-            return $"{prec} {succ}";
+            return $"{prec} * {succ}";
         }
 
         return description;
