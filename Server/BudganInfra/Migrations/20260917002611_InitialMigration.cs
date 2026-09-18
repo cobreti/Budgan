@@ -77,6 +77,7 @@ namespace BudganInfra.Migrations
                     PeriodInDays = table.Column<double>(type: "float", nullable: false),
                     TransactionCount = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    CuratedDescription = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     AverageAmount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     FirstOccurrenceDate = table.Column<DateOnly>(type: "date", nullable: false),
                     LastOccurrenceDate = table.Column<DateOnly>(type: "date", nullable: false),
@@ -108,6 +109,7 @@ namespace BudganInfra.Migrations
                     Balance = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     BalanceDateOffset = table.Column<int>(type: "int", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    CuratedDescription = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     RecordType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
                 },

@@ -102,7 +102,8 @@ export class AccountTransactionServicePwaImpl implements AccountTransactionServi
     const range = 0.15;
     const lower = Math.floor((amount * (1 - range)) / 5) * 5;
     const upper = Math.floor((amount * (1 + range)) / 5) * 5;
-    const recurringId = `${accountId}|${lower}|${upper}|${description}`;
+    const curatedDescription = this.getCuratedDescription(description);
+    const recurringId = `${accountId}|${lower}|${upper}|${curatedDescription}`;
     try {
       await this._indexDb.accountTransactionsTable.add({
         id,
@@ -114,6 +115,7 @@ export class AccountTransactionServicePwaImpl implements AccountTransactionServi
         dateInscriptionAsString,
         amount,
         description,
+        curatedDescription,
         recordType: AccountTransactionRecordType.normal,
       });
       return { success: true, value: id };
@@ -152,6 +154,7 @@ export class AccountTransactionServicePwaImpl implements AccountTransactionServi
       balance: amount,
       balanceDateOffset: 0,
       description: '',
+      curatedDescription: '',
       recordType: AccountTransactionRecordType.snapshot,
     });
     await this.recalculateBalances(accountId);
@@ -320,5 +323,17 @@ export class AccountTransactionServicePwaImpl implements AccountTransactionServi
     }
 
     return {};
+  }
+
+  private getCuratedDescription(description: string): string {
+    const regex = /^(?<prec>[^\*]*)\*(?<opt>\s*[^\s]*\s)?(?<succ>.*)?$/;
+    const match = regex.exec(description);
+    const groups = match?.groups ?? {};
+
+    if (groups['prec']) {
+      return `${groups['prec']} * ${groups['succ']}`;
+    } else {
+      return description;
+    }
   }
 }

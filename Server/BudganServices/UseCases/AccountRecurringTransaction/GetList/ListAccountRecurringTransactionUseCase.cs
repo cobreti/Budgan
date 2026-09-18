@@ -27,6 +27,7 @@ internal class ListAccountRecurringTransactionUseCase
                 PeriodInDays = x.PeriodInDays,
                 TransactionCount = x.TransactionCount,
                 Description = x.Description,
+                CuratedDescription = x.CuratedDescription,
                 AverageAmount = x.AverageAmount,
                 FirstOccurrenceDateAsString = x.FirstOccurrenceDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
                 LastOccurrenceDateAsString = x.LastOccurrenceDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),

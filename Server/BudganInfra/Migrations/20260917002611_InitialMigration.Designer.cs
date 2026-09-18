@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BudganInfra.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20260909152329_InitialMigration")]
+    [Migration("20260917002611_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -71,6 +71,11 @@ namespace BudganInfra.Migrations
                     b.Property<decimal>("AverageAmount")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("CuratedDescription")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -133,6 +138,11 @@ namespace BudganInfra.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("CuratedDescription")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateOnly>("DateInscription")
                         .HasColumnType("date");

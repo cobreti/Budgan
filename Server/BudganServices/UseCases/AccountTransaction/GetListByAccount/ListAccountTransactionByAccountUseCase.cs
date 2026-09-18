@@ -32,6 +32,7 @@ internal class ListAccountTransactionByAccountUseCase : BaseUseCaseWithResultVal
                 Balance = x.Balance,
                 BalanceDateOffset = x.BalanceDateOffset,
                 Description = x.Description,
+                CuratedDescription = x.CuratedDescription,
                 UniqueKey = x.UniqueKey,
                 RecurringId = x.RecurringId,
                 RecordType = AccountTransactionRecordTypeConverter.FromDao(x.RecordType),

@@ -12,7 +12,7 @@
 
   .table-panel {
     min-width: 30em;
-    width: 45%;
+    width: 100%;
   }
 
   .graph-row {
@@ -27,14 +27,14 @@
       flex-direction: column;
       flex: 1 1 auto;
       gap: 0.5em;
-      width: 45%;
+      width: 100%;
     }
 
     .graph-row-table {
       display: flex;
       flex-direction: column;
       flex: 1 1 auto;
-      width: 50%;
+      width: 100%;
     }
   }
 

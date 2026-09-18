@@ -10,6 +10,7 @@ export interface AccountTransactionModel {
   balance?: number;
   balanceDateOffset?: number;
   description: string;
+  curatedDescription: string;
   recordType: AccountTransactionRecordType;
 }
 
@@ -23,7 +24,7 @@ export function buildTransactionUniqueKey(
   cardNumber: string,
   dateInscriptionAsString: string,
   amount: number,
-  description: string,
+  description: string
 ): string {
   return `${accountId}|${dateInscriptionAsString}|${amount}|${description}`;
 }

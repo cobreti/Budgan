@@ -52,6 +52,7 @@ public class GetPageAccountTransactionByAccountRepoOp
                 Balance = x.Balance,
                 BalanceDateOffset = x.BalanceDateOffset,
                 Description = x.Description,
+                CuratedDescription = x.CuratedDescription,
                 RecordType = x.RecordType,
             })
             .ToListAsync();

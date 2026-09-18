@@ -36,6 +36,7 @@ internal class GetAccountTransactionUseCase : BaseUseCaseWithResultValue<BOGetAc
                 Balance = r.Balance,
                 BalanceDateOffset = r.BalanceDateOffset,
                 Description = r.Description,
+                CuratedDescription = r.CuratedDescription,
                 UniqueKey = r.UniqueKey,
                 RecurringId = r.RecurringId,
                 RecordType = AccountTransactionRecordTypeConverter.FromDao(r.RecordType),

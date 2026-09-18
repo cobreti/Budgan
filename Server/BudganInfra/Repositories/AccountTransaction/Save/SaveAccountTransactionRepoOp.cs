@@ -46,6 +46,7 @@ public class SaveAccountTransactionRepoOp : BaseRepositoryOperationWithResultVal
             Balance = this._daoSaveAccountTransaction.Balance,
             BalanceDateOffset = this._daoSaveAccountTransaction.BalanceDateOffset,
             Description = this._daoSaveAccountTransaction.Description,
+            CuratedDescription = this._daoSaveAccountTransaction.CuratedDescription,
             RecordType = this._daoSaveAccountTransaction.RecordType,
         };
 

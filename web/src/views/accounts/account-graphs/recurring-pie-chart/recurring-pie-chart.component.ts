@@ -28,7 +28,13 @@ import { AccountTransactionModel } from '@/Models/accountTransactionModel';
 import { PiechartTransactionsTableComponent } from './piechart-transactions-table/piechart-transactions-table';
 import { CommonModule } from '@angular/common';
 
-type RecurringSlice = { id: string; description: string; amount: number };
+type RecurringSlice = {
+  id: string;
+  description: string;
+  amount: number;
+  income: number;
+  expense: number;
+};
 
 @Component({
   selector: 'app-recurring-pie-chart',
@@ -64,6 +70,7 @@ export class RecurringPieChartComponent {
   readonly selectedTransactions = signal<AccountTransactionModel[]>([]);
   selectedRecurringTransactionId = '';
   readonly selectedColor = signal<string | undefined>(undefined);
+  readonly selectedName = signal<string | undefined>(undefined);
   activeRecurringTransactionIds: string[] = [];
 
   // Indices manually hidden by clicking a legend entry (Chart.js toggles a
@@ -83,6 +90,14 @@ export class RecurringPieChartComponent {
   // of what the user has hidden from the chart's legend.
   readonly completeTotal = computed(() =>
     this.slices().reduce((sum, s) => sum + s.amount, 0)
+  );
+
+  readonly completeIncome = computed(() =>
+    this.slices().reduce((sum, s) => sum + s.income, 0)
+  );
+
+  readonly completeExpenses = computed(() =>
+    this.slices().reduce((sum, s) => sum + s.expense, 0)
   );
 
   // Calculated total only counts slices still visible on the chart.
@@ -118,6 +133,7 @@ export class RecurringPieChartComponent {
           this.selectedRecurringTransactionId = d.id;
           this.selectedTransactions.set(this.recurringTransactions()[d.id]);
           this.selectedColor.set(legendItem.fillStyle?.toString());
+          this.selectedName.set(legendItem.text);
         },
       },
     },
@@ -173,6 +189,17 @@ export class RecurringPieChartComponent {
     for (const [id, transactions] of Object.entries(
       this.recurringTransactions()
     )) {
+      let income = 0,
+        expense = 0;
+
+      for (const trx of transactions) {
+        if (trx.amount < 0) {
+          expense += Math.abs(trx.amount);
+        } else {
+          income += Math.abs(trx.amount);
+        }
+      }
+
       const totalAmount = transactions.reduce((sum, t) => {
         if (viewType == 'expense' && t.amount < 0) {
           return sum + Math.abs(t.amount);
@@ -183,7 +210,7 @@ export class RecurringPieChartComponent {
         }
         return sum;
       }, 0);
-      const description = transactions[0]?.description || 'Unknown';
+      const description = transactions[0]?.curatedDescription || 'Unknown';
       if (totalAmount > 0) {
         this.activeRecurringTransactionIds = [
           ...this.activeRecurringTransactionIds,
@@ -191,7 +218,7 @@ export class RecurringPieChartComponent {
         ];
         this.slices.update((prev) => [
           ...prev,
-          { id, description, amount: totalAmount },
+          { id, description, amount: totalAmount, income, expense },
         ]);
       }
 

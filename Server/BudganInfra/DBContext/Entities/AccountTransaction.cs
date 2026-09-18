@@ -37,5 +37,8 @@ public class AccountTransaction : BaseEntity
     [MaxLength(450)]
     public required string Description { get; set; }
 
+    [MaxLength(450)]
+    public required string CuratedDescription { get; set; }
+
     public required AccountTransactionRecordType RecordType { get; set; }
 }

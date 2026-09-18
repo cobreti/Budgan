@@ -4,6 +4,7 @@ export interface AccountRecurringTransactionModel {
   periodInDays: number;
   transactionCount: number;
   description: string;
+  curatedDescription: string;
   averageAmount: number;
   firstOccurrenceDate: string;
   lastOccurrenceDate: string;

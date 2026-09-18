@@ -32,15 +32,25 @@
         <p
           class="recurring-pie-chart__total"
           data-testid="recurring-pie-chart-total">
-          {{ 'recurringPieChart.total' | translate }}:
-          {{ formatTotal(visibleTotal()) }}
-          @if (hiddenIndices().size > 0) {
-            <span
-              class="recurring-pie-chart__total-complete"
-              data-testid="recurring-pie-chart-total-complete">
-              ({{ 'recurringPieChart.completeTotal' | translate }}:
-              {{ formatTotal(completeTotal()) }})
+          @if (viewType() == 'all' || viewType() == 'income') {
+            <span>
+              {{ 'recurringPieChart.totalIncome' | translate }}:
+              {{ formatTotal(completeIncome()) }}
             </span>
+          }
+          @if (viewType() == 'all') {
+            <span style="margin-right: 2em"></span>
+          }
+          @if (viewType() == 'all' || viewType() == 'expense') {
+            <span>
+              {{ 'recurringPieChart.totalExpense' | translate }}:
+              {{ formatTotal(completeExpenses()) }}
+            </span>
+          }
+          @if (viewType() == 'all') {
+            <span style="margin-right: 2em"></span>
+            {{ 'recurringPieChart.total' | translate }}:
+            {{ formatTotal(completeTotal()) }}
           }
         </p>
       } @else {
@@ -49,12 +59,15 @@
         </p>
       }
     </div>
+  </div>
+  <div>
     <div class="table-panel">
       @if (selectedTransactions().length > 0) {
         <app-piechart-transactions-table
           (close)="onPieChartTransactionsTableClosed()"
           [showAccountColumn]="false"
           [accountTransactions]="selectedTransactions()"
+          [title]="selectedName()"
           [color]="selectedColor()"></app-piechart-transactions-table>
       }
     </div>

@@ -1,6 +1,9 @@
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import moment from 'moment';
-import { ACCOUNT_TRANSACTION_SERVICE, AccountTransactionService } from './account-transaction.service';
+import {
+  ACCOUNT_TRANSACTION_SERVICE,
+  AccountTransactionService,
+} from './account-transaction.service';
 import { AccountTransactionRecordType } from '@models/accountTransactionModel';
 import { AccountRecurringTransactionModel } from '@models/accountRecurringTransactionModel';
 import {
@@ -10,32 +13,43 @@ import {
 import { Result } from '@app-types/result';
 
 export interface AccountAnalysisService {
-  analyzeAccount(accountId: string): Promise<Result<AccountRecurringTransactionModel[]>>;
+  analyzeAccount(
+    accountId: string
+  ): Promise<Result<AccountRecurringTransactionModel[]>>;
   applyAnalysis(
     accountId: string,
-    transactions: AccountRecurringTransactionModel[],
+    transactions: AccountRecurringTransactionModel[]
   ): Promise<Result<void>>;
-  getRecurringTransactions(accountId: string): Promise<AccountRecurringTransactionModel[]>;
+  getRecurringTransactions(
+    accountId: string
+  ): Promise<AccountRecurringTransactionModel[]>;
   getAll(): Promise<AccountRecurringTransactionModel[]>;
   deleteByAccount(accountId: string): Promise<void>;
   delete(ids: string[]): Promise<void>;
 }
 
-export const ACCOUNT_ANALYSIS_SERVICE = new InjectionToken<AccountAnalysisService>('AccountAnalysisService');
+export const ACCOUNT_ANALYSIS_SERVICE =
+  new InjectionToken<AccountAnalysisService>('AccountAnalysisService');
 
 @Injectable({ providedIn: 'root' })
 export class AccountAnalysisServiceImpl implements AccountAnalysisService {
-  private readonly _transactionService = inject<AccountTransactionService>(ACCOUNT_TRANSACTION_SERVICE);
-  private readonly _recurringTransactionService = inject<AccountRecurringTransactionService>(
-    ACCOUNT_RECURRING_TRANSACTION_SERVICE,
+  private readonly _transactionService = inject<AccountTransactionService>(
+    ACCOUNT_TRANSACTION_SERVICE
   );
+  private readonly _recurringTransactionService =
+    inject<AccountRecurringTransactionService>(
+      ACCOUNT_RECURRING_TRANSACTION_SERVICE
+    );
 
-  async analyzeAccount(accountId: string): Promise<Result<AccountRecurringTransactionModel[]>> {
+  async analyzeAccount(
+    accountId: string
+  ): Promise<Result<AccountRecurringTransactionModel[]>> {
     try {
-      const allTransactions = await this._transactionService.getListByAccount(accountId);
+      const allTransactions =
+        await this._transactionService.getListByAccount(accountId);
 
       const normal = allTransactions.filter(
-        (t) => t.recordType === AccountTransactionRecordType.normal,
+        (t) => t.recordType === AccountTransactionRecordType.normal
       );
 
       const groups = new Map<string, typeof normal>();
@@ -50,7 +64,7 @@ export class AccountAnalysisServiceImpl implements AccountAnalysisService {
         if (transactions.length < 2) continue;
 
         const sorted = [...transactions].sort((a, b) =>
-          a.dateInscriptionAsString.localeCompare(b.dateInscriptionAsString),
+          a.dateInscriptionAsString.localeCompare(b.dateInscriptionAsString)
         );
 
         const intervals: number[] = [];
@@ -65,9 +79,12 @@ export class AccountAnalysisServiceImpl implements AccountAnalysisService {
 
         const transactionCount = transactions.length;
         const description = sorted[0].description;
-        const averageAmount = transactions.reduce((sum, t) => sum + t.amount, 0) / transactionCount;
+        const curatedDescription = sorted[0].curatedDescription;
+        const averageAmount =
+          transactions.reduce((sum, t) => sum + t.amount, 0) / transactionCount;
         const firstOccurrenceDate = sorted[0].dateInscriptionAsString;
-        const lastOccurrenceDate = sorted[sorted.length - 1].dateInscriptionAsString;
+        const lastOccurrenceDate =
+          sorted[sorted.length - 1].dateInscriptionAsString;
 
         results.push({
           id: recurringId,
@@ -75,6 +92,7 @@ export class AccountAnalysisServiceImpl implements AccountAnalysisService {
           periodInDays: median(intervals),
           transactionCount,
           description,
+          curatedDescription,
           averageAmount,
           firstOccurrenceDate,
           lastOccurrenceDate,
@@ -83,24 +101,35 @@ export class AccountAnalysisServiceImpl implements AccountAnalysisService {
 
       return { success: true, value: results };
     } catch (e) {
-      return { success: false, error: e instanceof Error ? e.message : 'analysis-failed' };
+      return {
+        success: false,
+        error: e instanceof Error ? e.message : 'analysis-failed',
+      };
     }
   }
 
   async applyAnalysis(
     accountId: string,
-    transactions: AccountRecurringTransactionModel[],
+    transactions: AccountRecurringTransactionModel[]
   ): Promise<Result<void>> {
     try {
-      await this._recurringTransactionService.replaceForAccount(accountId, transactions);
+      await this._recurringTransactionService.replaceForAccount(
+        accountId,
+        transactions
+      );
 
       return { success: true, value: undefined };
     } catch (e) {
-      return { success: false, error: e instanceof Error ? e.message : 'apply-analysis-failed' };
+      return {
+        success: false,
+        error: e instanceof Error ? e.message : 'apply-analysis-failed',
+      };
     }
   }
 
-  getRecurringTransactions(accountId: string): Promise<AccountRecurringTransactionModel[]> {
+  getRecurringTransactions(
+    accountId: string
+  ): Promise<AccountRecurringTransactionModel[]> {
     return this._recurringTransactionService.getListByAccount(accountId);
   }
 
@@ -120,5 +149,7 @@ export class AccountAnalysisServiceImpl implements AccountAnalysisService {
 function median(values: number[]): number {
   const sorted = [...values].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+  return sorted.length % 2 === 0
+    ? (sorted[mid - 1] + sorted[mid]) / 2
+    : sorted[mid];
 }

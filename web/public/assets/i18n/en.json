@@ -145,6 +145,8 @@
     "noData": "No recurring transactions found. Run the analysis to detect them.",
     "noDataForRange": "No recurring transactions for this period.",
     "total": "Total",
+    "totalIncome": "total incomes",
+    "totalExpense": "total expenses",
     "completeTotal": "Total (all items)"
   },
   "accountSnapshot": {

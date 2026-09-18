@@ -29,6 +29,7 @@ internal class ReplaceAccountRecurringTransactionsForAccountUseCase : BaseUseCas
                 PeriodInDays = item.PeriodInDays,
                 TransactionCount = item.TransactionCount,
                 Description = item.Description,
+                CuratedDescription = item.CuratedDescription,
                 AverageAmount = item.AverageAmount,
                 FirstOccurrenceDate = DateOnly.ParseExact(item.FirstOccurrenceDateAsString, "yyyy-MM-dd", CultureInfo.InvariantCulture),
                 LastOccurrenceDate = DateOnly.ParseExact(item.LastOccurrenceDateAsString, "yyyy-MM-dd", CultureInfo.InvariantCulture),

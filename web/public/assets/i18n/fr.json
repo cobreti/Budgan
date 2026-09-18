@@ -145,6 +145,8 @@
     "noData": "Aucune transaction récurrente trouvée. Lancez l'analyse pour les détecter.",
     "noDataForRange": "Aucune transaction récurrente pour cette période.",
     "total": "Total",
+    "totalIncome": "revenus total",
+    "totalExpense": "dépenses total",
     "completeTotal": "Total (tous les éléments)"
   },
   "accountSnapshot": {
