@@ -8,7 +8,6 @@ import {
   signal,
 } from '@angular/core';
 import moment from 'moment';
-import { MatSelectChange } from '@angular/material/select';
 import {
   MatAccordion,
   MatExpansionPanel,
@@ -69,6 +68,9 @@ export class AccountGraphsComponent {
   readonly accountId = input.required<string>();
   readonly dateMonthRange = signal<DateMonthRange>({});
 
+  readonly selectedStartMonth = signal<string | null>(null);
+  readonly selectedEndMonth = signal<string | null>(null);
+
   protected readonly startMonth = signal<string | null>(null);
   protected readonly endMonth = signal<string | null>(null);
 
@@ -91,6 +93,9 @@ export class AccountGraphsComponent {
       const { startMonth, endMonth } = this.dateMonthRange();
 
       if (startMonth && endMonth) {
+        this.selectedStartMonth.set(startMonth);
+        this.selectedEndMonth.set(endMonth);
+
         await this.updateRecurringTransactions(id, startMonth, endMonth);
       }
     });
@@ -100,24 +105,6 @@ export class AccountGraphsComponent {
     return moment(month, 'YYYY-MM')
       .locale(this._locale.currentLocale())
       .format('MMMM YYYY');
-  }
-
-  async onStartMonthChange(change: MatSelectChange): Promise<void> {
-    const value = change.value as string;
-    this.startMonth.set(value);
-    const end = this.endMonth();
-    if (end && value > end) {
-      this.endMonth.set(value);
-    }
-  }
-
-  async onEndMonthChange(change: MatSelectChange): Promise<void> {
-    const value = change.value as string;
-    this.endMonth.set(value);
-    const start = this.startMonth();
-    if (start && value < start) {
-      this.startMonth.set(value);
-    }
   }
 
   private async updateRecurringTransactions(
