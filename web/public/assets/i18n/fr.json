@@ -85,7 +85,8 @@
       "pwa": "Application installée (PWA)",
       "server": "Mode serveur"
     },
-    "signOut": "Se déconnecter"
+    "signOut": "Se déconnecter",
+    "about": "À propos"
   },
   "account": {
     "title": "Détails du compte",
@@ -286,5 +287,8 @@
   "dateRange": {
     "startMonth": "Mois de début",
     "endMonth": "Mois de fin"
+  },
+  "about": {
+    "title": "À propos"
   }
 }

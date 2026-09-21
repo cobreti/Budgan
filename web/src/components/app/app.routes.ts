@@ -15,6 +15,7 @@ import { AnalyzeAccountComponent } from '@views/accounts/analyze-account/analyze
 import { SaveComponent } from '@views/save/save.component';
 import { LoadComponent } from '@views/load/load.component';
 import { AccountOverviewComponent } from '@/views/accounts-overview/accounts-overview';
+import { AboutPageComponent } from '@/views/about-page/about-page';
 
 export const routes: Routes = [
   {
@@ -52,6 +53,10 @@ export const routes: Routes = [
       {
         path: 'accounts/overview',
         component: AccountOverviewComponent,
+      },
+      {
+        path: 'about',
+        component: AboutPageComponent,
       },
     ],
   },

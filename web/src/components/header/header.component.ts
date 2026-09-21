@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatToolbar } from '@angular/material/toolbar';
-import { MatIconButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -19,7 +19,19 @@ import { AUTH_SERVICE } from '@services/auth.service';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatToolbar, HeaderPageTitleComponent, MatIconButton, MatIcon, MatMenu, MatMenuItem, MatMenuTrigger, MatTooltip, TranslatePipe, NgOptimizedImage],
+  imports: [
+    MatToolbar,
+    HeaderPageTitleComponent,
+    MatIconButton,
+    MatButton,
+    MatIcon,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
+    MatTooltip,
+    TranslatePipe,
+    NgOptimizedImage,
+  ],
 })
 export class HeaderComponent {
   private readonly _mainMenuService = inject(MainMenuService);
@@ -39,11 +51,17 @@ export class HeaderComponent {
     const urlTree = this._router.parseUrl(this._router.url);
     const segments = urlTree.root.children['primary']?.segments ?? [];
     const remaining = segments.slice(1).map((s) => s.path);
-    this._router.navigate([locale, ...remaining], { queryParams: urlTree.queryParams });
+    this._router.navigate([locale, ...remaining], {
+      queryParams: urlTree.queryParams,
+    });
   }
 
   async onHome(): Promise<void> {
     await this._router.navigate([this._localeService.currentLocale()]);
+  }
+
+  async onAbout(): Promise<void> {
+    await this._router.navigate([this._localeService.currentLocale(), 'about']);
   }
 
   toggleTheme(): void {
