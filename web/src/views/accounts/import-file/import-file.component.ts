@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButton } from '@angular/material/button';
@@ -22,6 +29,8 @@ import {
   DemoStatementPickerComponent,
   DemoStatementPickerData,
 } from '@components/demo-statement-picker/demo-statement-picker.component';
+import { ACCOUNT_SERVICE, AccountService } from '@/services/account.service';
+import { AccountModel } from '@/Models/accountModel';
 
 interface FileImportStatus {
   file: File;
@@ -35,17 +44,32 @@ interface FileImportStatus {
   templateUrl: './import-file.component.html',
   styleUrl: './import-file.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatButton, MatIcon, NgTemplateOutlet, TranslatePipe, PageComponent, PageBodyComponent, PageMenuComponent, PageMenuButtonComponent],
+  imports: [
+    MatButton,
+    MatIcon,
+    NgTemplateOutlet,
+    TranslatePipe,
+    PageComponent,
+    PageBodyComponent,
+    PageMenuComponent,
+    PageMenuButtonComponent,
+  ],
 })
-export class ImportFileComponent {
+export class ImportFileComponent implements OnInit {
   private readonly _route = inject(ActivatedRoute);
   private readonly _router = inject(Router);
   private readonly _locale = inject<LocaleService>(LOCALE_SERVICE);
-  private readonly _importCsvTransactionsService = inject<ImportCsvTransactionsService>(IMPORT_CSV_TRANSACTIONS_SERVICE);
+  private readonly _importCsvTransactionsService =
+    inject<ImportCsvTransactionsService>(IMPORT_CSV_TRANSACTIONS_SERVICE);
+  private readonly _accountService = inject<AccountService>(ACCOUNT_SERVICE);
   private readonly _dialog = inject(MatDialog);
   private readonly _authService = inject(AUTH_SERVICE);
 
-  private readonly _accountId = this._route.snapshot.params['accountId'] as string;
+  private readonly _accountId = this._route.snapshot.params[
+    'accountId'
+  ] as string;
+
+  readonly account = signal<AccountModel | null>(null);
 
   readonly selectedFiles = signal<File[]>([]);
   readonly importStatuses = signal<FileImportStatus[]>([]);
@@ -54,8 +78,15 @@ export class ImportFileComponent {
   readonly importCompleted = signal<boolean>(false);
   readonly hasSelectedFiles = computed(() => this.selectedFiles().length > 0);
   readonly canChooseCsvFile = computed(
-    () => !isServerBuild() || this._authService.roles().includes(Role.PersonalDataAllowed),
+    () =>
+      !isServerBuild() ||
+      this._authService.roles().includes(Role.PersonalDataAllowed)
   );
+
+  async ngOnInit(): Promise<void> {
+    const account = await this._accountService.getById(this._accountId);
+    this.account.set(account);
+  }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -66,10 +97,11 @@ export class ImportFileComponent {
   }
 
   async onLoadDemoStatements(): Promise<void> {
-    const ref = this._dialog.open<DemoStatementPickerComponent, DemoStatementPickerData, File[]>(
+    const ref = this._dialog.open<
       DemoStatementPickerComponent,
-      { data: { multiple: true } },
-    );
+      DemoStatementPickerData,
+      File[]
+    >(DemoStatementPickerComponent, { data: { multiple: true } });
     const files = await ref.afterClosed().toPromise();
     if (!files || files.length === 0) return;
     this.setSelectedFiles(files, 'demo');
@@ -77,7 +109,7 @@ export class ImportFileComponent {
 
   private setSelectedFiles(files: File[], source: 'native' | 'demo'): void {
     this.selectedFiles.set(files);
-    this.importStatuses.set(files.map(file => ({ file, status: 'pending' })));
+    this.importStatuses.set(files.map((file) => ({ file, status: 'pending' })));
     this.filesSource.set(source);
     this.importCompleted.set(false);
   }
@@ -89,29 +121,51 @@ export class ImportFileComponent {
     const summary = await this._importCsvTransactionsService.importFiles(
       this._accountId,
       this.selectedFiles(),
-      i => this.importStatuses.update(s => s.map((x, idx) => idx === i ? { ...x, status: 'importing' } : x)),
-      (i, outcome) => this.importStatuses.update(s => s.map((x, idx) => {
-        if (idx !== i) return x;
-        if (outcome.status === 'success') return { ...x, status: 'success' };
-        if (outcome.status === 'warning') return { ...x, status: 'warning', duplicates: outcome.duplicates };
-        return {
-          ...x, status: 'error',
-          error: outcome.error === 'file-already-imported'
-            ? 'importFile.fileAlreadyImported'
-            : 'importFile.csvParseError',
-        };
-      })),
+      (i) =>
+        this.importStatuses.update((s) =>
+          s.map((x, idx) => (idx === i ? { ...x, status: 'importing' } : x))
+        ),
+      (i, outcome) =>
+        this.importStatuses.update((s) =>
+          s.map((x, idx) => {
+            if (idx !== i) return x;
+            if (outcome.status === 'success')
+              return { ...x, status: 'success' };
+            if (outcome.status === 'warning')
+              return {
+                ...x,
+                status: 'warning',
+                duplicates: outcome.duplicates,
+              };
+            return {
+              ...x,
+              status: 'error',
+              error:
+                outcome.error === 'file-already-imported'
+                  ? 'importFile.fileAlreadyImported'
+                  : 'importFile.csvParseError',
+            };
+          })
+        )
     );
 
     this.isImporting.set(false);
     this.importCompleted.set(true);
 
     if (!summary.anyError && !summary.anyWarning) {
-      await this._router.navigate([this._locale.currentLocale(), 'account', this._accountId]);
+      await this._router.navigate([
+        this._locale.currentLocale(),
+        'account',
+        this._accountId,
+      ]);
     }
   }
 
   onCancel(): void {
-    this._router.navigate([this._locale.currentLocale(), 'account', this._accountId]);
+    this._router.navigate([
+      this._locale.currentLocale(),
+      'account',
+      this._accountId,
+    ]);
   }
 }
