@@ -3,5 +3,18 @@
   "trailingComma": "es5",
   "endOfLine": "auto",
   "bracketSameLine": true,
-  "htmlWhitespaceSensitivity": "ignore"
-}
+  "htmlWhitespaceSensitivity": "ignore",
+  "overrides": [  
+    {  
+      "files": "*.html",  
+      "options": {  
+        "parser": "angular"  
+      }  
+    },  
+    {  
+      "files": "*.ts",  
+      "options": {  
+        "parser": "typescript"  
+      }  
+    }  
+  ]  }

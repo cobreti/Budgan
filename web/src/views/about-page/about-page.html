@@ -9,4 +9,18 @@
       <span>{{ 'about.title' | translate }}</span>
     </h1>
   </div>
+  <div class="content-row">
+    @if (isPWABuild) {
+      @if (currentLocale() == 'fr') {
+        <div class="content">
+          <app-pwa-fr-about></app-pwa-fr-about>
+        </div>
+      }
+      @if (currentLocale() == 'en') {
+        <div class="content">
+          <app-pwa-en-about></app-pwa-en-about>
+        </div>
+      }
+    }
+  </div>
 </div>
