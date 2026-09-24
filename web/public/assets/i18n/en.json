@@ -85,7 +85,8 @@
       "pwa": "Running as installed app (PWA)",
       "server": "Running in server mode"
     },
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "about": "About"
   },
   "account": {
     "title": "Account Details",
@@ -287,5 +288,8 @@
   "dateRange": {
     "startMonth": "Start month",
     "endMonth": "End month"
+  },
+  "about": {
+    "title": "About"
   }
 }

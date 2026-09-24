@@ -29,12 +29,13 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-account-overview-graph',
   templateUrl: './account-overview-graph.html',
   styleUrl: './account-overview-graph.scss',
-  imports: [RecurringPieChartComponent, DateRangeComponent],
+  imports: [RecurringPieChartComponent, DateRangeComponent, TranslatePipe],
 })
 export class AccountOverviewGraphComponent {
   private readonly _transactionService = inject<AccountTransactionService>(

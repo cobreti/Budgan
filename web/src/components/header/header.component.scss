@@ -3,6 +3,10 @@
   height: var(--header-height);
   width: 100%;
 
+  .about-btn {
+    color: var(--mat-sys-on-primary);
+  }
+
   .brand {
     display: inline-flex;
     align-items: center;
@@ -46,7 +50,6 @@
     display: none;
     color: var(--mat-sys-on-primary);
   }
-
 
   [mat-button]:not([disabled]),
   [mat-icon-button]:not([disabled]),

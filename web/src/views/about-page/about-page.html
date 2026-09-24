@@ -1,0 +1,39 @@
+<div class="about-page">
+  <div class="close-btn">
+    <button mat-icon-button (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="title-row">
+    <h1>
+      <span>{{ 'about.title' | translate }}</span>
+    </h1>
+  </div>
+  <div class="content-row">
+    @if (isPWABuild) {
+      @if (currentLocale() == 'fr') {
+        <div class="content">
+          <app-pwa-fr-about></app-pwa-fr-about>
+        </div>
+      }
+      @if (currentLocale() == 'en') {
+        <div class="content">
+          <app-pwa-en-about></app-pwa-en-about>
+        </div>
+      }
+    }
+
+    @if (isServerBuild) {
+      @if (currentLocale() == 'fr') {
+        <div class="content">
+          <app-server-fr-about></app-server-fr-about>
+        </div>
+      }
+      @if (currentLocale() == 'en') {
+        <div class="content">
+          <app-server-en-about></app-server-en-about>
+        </div>
+      }
+    }
+  </div>
+</div>
