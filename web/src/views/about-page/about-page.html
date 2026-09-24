@@ -22,5 +22,18 @@
         </div>
       }
     }
+
+    @if (isServerBuild) {
+      @if (currentLocale() == 'fr') {
+        <div class="content">
+          <app-server-fr-about></app-server-fr-about>
+        </div>
+      }
+      @if (currentLocale() == 'en') {
+        <div class="content">
+          <app-server-en-about></app-server-en-about>
+        </div>
+      }
+    }
   </div>
 </div>

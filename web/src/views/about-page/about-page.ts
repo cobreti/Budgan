@@ -6,7 +6,9 @@ import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { PwaEnAboutComponent } from './pwa-en-about/pwa-en-about';
 import { PwaFrAboutComponent } from './pwa-fr-about/pwa-fr-about';
-import { isPWABuild } from '@/utils/build-type';
+import { isPWABuild, isServerBuild } from '@/utils/build-type';
+import { ServerEnAboutComponent } from './server-en-about/server-en-about';
+import { ServerFrAboutComponent } from './server-fr-about/server-fr-about';
 
 @Component({
   selector: 'app-about-page',
@@ -18,6 +20,8 @@ import { isPWABuild } from '@/utils/build-type';
     TranslatePipe,
     PwaEnAboutComponent,
     PwaFrAboutComponent,
+    ServerEnAboutComponent,
+    ServerFrAboutComponent,
   ],
 })
 export class AboutPageComponent {
@@ -25,6 +29,7 @@ export class AboutPageComponent {
   private readonly _router = inject(Router);
 
   readonly isPWABuild = isPWABuild();
+  readonly isServerBuild = isServerBuild();
   readonly currentLocale = signal<string>(this._localeService.currentLocale());
 
   constructor() {
